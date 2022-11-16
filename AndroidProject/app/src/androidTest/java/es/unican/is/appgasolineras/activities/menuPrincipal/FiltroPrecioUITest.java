@@ -47,7 +47,6 @@ public class FiltroPrecioUITest {
         onView(withId(R.id.etPrecioLimite)).check(matches(withText("2.03")));
     }
 
-
     @Test
     public void modificaFiltroPrecioTest() {
         onView(withId(R.id.btnAccederLista)).perform(scrollTo(), click());
@@ -86,6 +85,5 @@ public class FiltroPrecioUITest {
         onView(withId(R.id.btnMostrarResultados)).perform(scrollTo(), click());
         onView(withId(R.id.lvGasolineras)).check(matches(hasElements()));
     }
-
 
 }

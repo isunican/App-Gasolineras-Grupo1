@@ -12,29 +12,34 @@ public class Matchers {
     /**
      * Metodo para comprobar en los test de interfaz si una lista tiene elementos. Para
      * utilizarlo se usa:
-     *      onView(withId(R.id.id_de_la_lista)).check(matches(hasElements()))
+     * onView(withId(R.id.id_de_la_lista)).check(matches(hasElements()))
+     *
      * @return Matcher<View>
      */
     public static Matcher<View> hasElements() {
         return new TypeSafeMatcher<>() {
-            @Override public boolean matchesSafely (final View view) {
-                return ((ListView) view).getCount () > 0;
+            @Override
+            public boolean matchesSafely(final View view) {
+                return ((ListView) view).getCount() > 0;
             }
 
-            @Override public void describeTo (final Description description) {
-                description.appendText ("ListView should not be empty");
+            @Override
+            public void describeTo(final Description description) {
+                description.appendText("ListView should not be empty");
             }
         };
     }
 
     public static Matcher<View> sizeElements(int num) {
         return new TypeSafeMatcher<>() {
-            @Override public boolean matchesSafely (final View view) {
+            @Override
+            public boolean matchesSafely(final View view) {
                 return ((ListView) view).getCount() == num;
             }
 
-            @Override public void describeTo (final Description description) {
-                description.appendText ("ListView elements doesnt match with the number");
+            @Override
+            public void describeTo(final Description description) {
+                description.appendText("ListView elements doesnt match with the number");
             }
         };
     }
