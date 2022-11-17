@@ -17,19 +17,19 @@ public class GasolineraDetailPresenter implements IDetailContract.Presenter {
 
     @Override
     public void init() {
-        String municipio = "";
+        String municipio = "-";
         if (!g.getMunicipio().isEmpty()) {
             municipio = g.getMunicipio();
         }
-        String rotulo = "";
+        String rotulo = "-";
         if (!g.getRotulo().isEmpty()) {
             rotulo = g.getRotulo().toLowerCase();
         }
-        String horario = "";
+        String horario = "-";
         if (!g.getHorario().isEmpty()) {
             horario = g.getHorario();
         }
-        String precioDiesel = "";
+        String precioDiesel = "-";
         if (!g.getDieselA().isEmpty()) {
             precioDiesel = g.getDieselA();
             if (precioDiesel.length() > 3) {
@@ -38,7 +38,7 @@ public class GasolineraDetailPresenter implements IDetailContract.Presenter {
                 precioDiesel += " €";
             }
         }
-        String precioGasolina = "";
+        String precioGasolina = "-";
         if (!g.getNormal95().isEmpty()) {
             precioGasolina = g.getNormal95();
             if (precioGasolina.length() > 3) {
@@ -47,7 +47,7 @@ public class GasolineraDetailPresenter implements IDetailContract.Presenter {
                 precioGasolina += " €";
             }
         }
-        String direccion = "";
+        String direccion = "-";
         if (!g.getDireccion().isEmpty()) {
             direccion = g.getDireccion();
         }
@@ -59,7 +59,7 @@ public class GasolineraDetailPresenter implements IDetailContract.Presenter {
     @Override
     public String calcula() {
         if (g.getDieselA().isEmpty() || g.getNormal95().isEmpty()) {
-            return "";
+            return "-";
         }
         double diesel = Double.parseDouble(g.getDieselA().replace(",", "."));
         double gasolina = Double.parseDouble(g.getNormal95().replace(",", "."));

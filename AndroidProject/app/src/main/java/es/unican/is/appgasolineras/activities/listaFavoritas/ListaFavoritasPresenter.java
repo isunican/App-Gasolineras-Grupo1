@@ -90,7 +90,7 @@ public class ListaFavoritasPresenter implements IListaFavoritasContract.Presente
         List<Gasolinera> todasGasolineras = new ArrayList<>();
         if (!masDeUnaComunidad) {
             todasGasolineras = repository.getGasolineras(idComunidad);
-        } else {
+        } else if (!lista.isEmpty()){
             Map<String, List<String>> mapaMun = new HashMap<>();
             for (Gasolinera g : lista) {
                 List<String> listaId = mapaMun.get(g.getIdMun());

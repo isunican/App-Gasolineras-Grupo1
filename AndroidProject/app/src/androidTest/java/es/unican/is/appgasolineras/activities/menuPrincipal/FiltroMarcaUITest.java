@@ -50,7 +50,6 @@ public class FiltroMarcaUITest {
         onView(withId(R.id.spinner_marca)).check(matches(withSpinnerText("Todas")));
     }
 
-
     @Test
     public void modificaFiltroMarcaTest() {
         onView(withId(R.id.btnAccederLista)).perform(scrollTo(), click());
@@ -128,8 +127,6 @@ public class FiltroMarcaUITest {
         onView(withId(R.id.btnMostrarResultados)).perform(scrollTo(), click());
         onView(withId(R.id.lvGasolineras)).check(matches(sizeElements(8)));
         onView(withId(R.id.btnFiltroPrecio)).perform(click());
-
     }
-
 
 }

@@ -16,7 +16,6 @@ import static es.unican.is.appgasolineras.utils.Matchers.sizeElements;
 import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.Espresso;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
-import androidx.test.rule.GrantPermissionRule;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -47,9 +46,6 @@ public class OrdenaPorUbicacionUITest {
     @Rule
     public ActivityScenarioRule<MenuPrincipalView> activityRule =
             new ActivityScenarioRule(MenuPrincipalView.class);
-
-    @Rule
-    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
     @Test
     public void guardarFiltrosTest() {
@@ -151,3 +147,4 @@ public class OrdenaPorUbicacionUITest {
         onView(withId(R.id.btnAccederLista)).perform(scrollTo(), click());
     }
 }
+

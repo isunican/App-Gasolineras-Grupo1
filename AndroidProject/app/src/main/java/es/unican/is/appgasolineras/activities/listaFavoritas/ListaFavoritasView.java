@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -75,31 +76,28 @@ public class ListaFavoritasView extends AppCompatActivity implements IListaFavor
 
     @Override
     public void showLoadCorrect(int gasolinerasCount) {
-        if (gasolinerasCount == 0) {
-            String text = getResources().getString(R.string.no_gasolineras_con_filtros);
-            Toast.makeText(this, text, Toast.LENGTH_LONG).show();
-        } else {
-            String text = getResources().getString(R.string.loadCorrect);
-            Toast.makeText(this, String.format(text, gasolinerasCount), Toast.LENGTH_SHORT).show();
-        }
+        TextView error = findViewById(R.id.tvErroresFavoritas);
+        error.setText("");
+        String text = getResources().getString(R.string.loadCorrect);
+        Toast.makeText(this, String.format(text, gasolinerasCount), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showLoadErrorServidor() {
-        String text = getResources().getString(R.string.loadErrorServidor);
-        Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+        TextView error = findViewById(R.id.tvErroresFavoritas);
+        error.setText(getResources().getString(R.string.loadErrorServidor));
     }
 
     @Override
     public void showLoadErrorDAOVacia() {
-        String text = "No tiene gasolineras marcadas como favoritas";
-        Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+        TextView error = findViewById(R.id.tvErroresFavoritas);
+        error.setText("No tiene gasolineras marcadas como favoritas");
     }
 
     @Override
     public void showLoadErrorRed() {
-        String text = getResources().getString(R.string.loadErrorRed);
-        Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+        TextView error = findViewById(R.id.tvErroresFavoritas);
+        error.setText(getResources().getString(R.string.loadErrorRed));
     }
 
     @Override

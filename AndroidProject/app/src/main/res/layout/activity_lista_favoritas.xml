@@ -19,6 +19,19 @@
 
     </ListView>
 
+    <TextView
+        android:id="@+id/tvErroresFavoritas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="?android:textColorPrimary"
+        android:textSize="24sp"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="@+id/lvGasolineras2"
+        app:layout_constraintEnd_toEndOf="@+id/lvGasolineras2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/lvGasolineras2" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
