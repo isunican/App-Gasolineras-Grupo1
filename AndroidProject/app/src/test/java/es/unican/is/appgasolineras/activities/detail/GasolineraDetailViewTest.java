@@ -17,7 +17,7 @@ import es.unican.is.appgasolineras.model.Gasolinera;
 import es.unican.is.appgasolineras.repository.db.GasolineraDatabase;
 import es.unican.is.appgasolineras.repository.rest.GasolinerasServiceConstants;
 
-public class GasolineraDetailPresenterTest {
+public class GasolineraDetailViewTest {
 
     private static IDetailContract.Presenter presenter;
     private static IDetailContract.View view;
@@ -43,7 +43,6 @@ public class GasolineraDetailPresenterTest {
      */
     @Test
     public void initGasolineraDetailPresenterTest() {
-
         /*
         Caso de prueba UGIC.2a
          */
@@ -125,6 +124,5 @@ public class GasolineraDetailPresenterTest {
 
         verify(view3, times(1))
                 .setInfo("Santander","repsol","L-D:10:00-20:00","1,90 €","1,87 €", presenter.calcula(), "Avenida los castros, 35");
-
     }
 }
