@@ -18,6 +18,8 @@ public interface IListaFavoritasContract {
          * This method synchronizes the favourite gas stations
          */
         void doSyncInitFavoritas();
+
+        List<Gasolinera> conseguirGasolinerasActualizadas(boolean masDeUnaComunidad, List<Gasolinera> lista, String idComunidad);
     }
 
     public interface View {

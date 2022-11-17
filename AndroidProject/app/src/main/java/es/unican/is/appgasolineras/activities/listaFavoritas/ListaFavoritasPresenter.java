@@ -86,6 +86,7 @@ public class ListaFavoritasPresenter implements IListaFavoritasContract.Presente
         }
     }
 
+    @Override
     public List<Gasolinera> conseguirGasolinerasActualizadas(boolean masDeUnaComunidad, List<Gasolinera> lista, String idComunidad) {
         List<Gasolinera> todasGasolineras = new ArrayList<>();
         if (!masDeUnaComunidad) {
