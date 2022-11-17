@@ -59,6 +59,7 @@ public class GasolineraDetailViewTest {
         verify(g1, times(1)).getHorario();
         verify(g1, times(1)).getNormal95();
         verify(g1, times(1)).getDireccion();
+        
         // Se llama dos veces a getDieselA, 1 en el propio metodo y otra en el calcula
         verify(g1, times(2)).getDieselA();
 
