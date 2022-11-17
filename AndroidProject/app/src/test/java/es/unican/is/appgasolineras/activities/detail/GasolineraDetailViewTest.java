@@ -5,17 +5,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-
 
 import es.unican.is.appgasolineras.model.Gasolinera;
 import es.unican.is.appgasolineras.repository.db.GasolineraDatabase;
-import es.unican.is.appgasolineras.repository.rest.GasolinerasServiceConstants;
 
 public class GasolineraDetailViewTest {
 
@@ -63,9 +57,10 @@ public class GasolineraDetailViewTest {
         verify(g1, times(1)).getMunicipio();
         verify(g1, times(1)).getRotulo();
         verify(g1, times(1)).getHorario();
-        verify(g1, times(2)).getDieselA();
         verify(g1, times(1)).getNormal95();
         verify(g1, times(1)).getDireccion();
+        // Se llama dos veces a getDieselA, 1 en el propio metodo y otra en el calcula
+        verify(g1, times(2)).getDieselA();
 
         verify(view, times(1))
                 .setInfo("-","-","-","-","-","-","-");
@@ -90,9 +85,11 @@ public class GasolineraDetailViewTest {
         verify(g2, times(2)).getMunicipio();
         verify(g2, times(2)).getRotulo();
         verify(g2, times(2)).getHorario();
+        verify(g2, times(2)).getDireccion();
+
+        // Estos dos se llaman 4 veces, 2 en el metodo init y dos en calcula
         verify(g2, times(4)).getDieselA();
         verify(g2, times(4)).getNormal95();
-        verify(g2, times(2)).getDireccion();
 
         verify(view2, times(1))
                 .setInfo("Santander","cepsa","L-D:10:00-21:00","1,90 €","1,87 €", presenter.calcula(), "Avenida los castros, 36");
@@ -118,9 +115,11 @@ public class GasolineraDetailViewTest {
         verify(g3, times(2)).getMunicipio();
         verify(g3, times(2)).getRotulo();
         verify(g3, times(2)).getHorario();
+        verify(g3, times(2)).getDireccion();
+
+        // Estos dos se llaman 4 veces, 2 en el metodo init y dos en calcula
         verify(g3, times(4)).getDieselA();
         verify(g3, times(4)).getNormal95();
-        verify(g3, times(2)).getDireccion();
 
         verify(view3, times(1))
                 .setInfo("Santander","repsol","L-D:10:00-20:00","1,90 €","1,87 €", presenter.calcula(), "Avenida los castros, 35");
