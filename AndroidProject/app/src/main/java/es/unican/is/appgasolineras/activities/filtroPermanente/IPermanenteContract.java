@@ -25,10 +25,16 @@ public interface IPermanenteContract {
 
 
     public interface View {
+
         /**
          * Initialization method
          */
         void init();
+
+        /**
+         * This method open the main view
+         */
+        void openMainView();
     }
 
 }

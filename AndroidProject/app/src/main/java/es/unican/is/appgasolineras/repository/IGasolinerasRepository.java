@@ -28,7 +28,16 @@ public interface IGasolinerasRepository {
      */
     public List<Gasolinera> getGasolineras(String idCCAA);
 
+    /**
+     * Request gas stations of Spain
+     * @return the list of Spain gas stations, or null if some error occurred
+     */
     public List<Gasolinera> todasGasolineras();
 
+    /**
+     * Request gas stations of a municipio
+     * @param idMun id of the municipio
+     * @return the list of the municipio gas stations, or null if some error occurred
+     */
     public List<Gasolinera> gasolinerasMunicipio(String idMun);
 }

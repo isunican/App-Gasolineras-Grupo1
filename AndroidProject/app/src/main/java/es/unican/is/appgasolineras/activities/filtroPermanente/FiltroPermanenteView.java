@@ -143,6 +143,7 @@ public class FiltroPermanenteView extends AppCompatActivity implements IPermanen
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
     public void openMainView() {
         Intent myIntent = new Intent(this, MenuPrincipalView.class);
         startActivity(myIntent);
