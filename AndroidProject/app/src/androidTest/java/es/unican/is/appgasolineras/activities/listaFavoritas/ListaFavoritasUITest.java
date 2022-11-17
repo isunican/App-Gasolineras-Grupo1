@@ -90,7 +90,6 @@ public class ListaFavoritasUITest {
 
     @Test
     public void anhadirGasolineraAListaFavoritasTest() {
-
         /*
           Seleccionamos Cantabria como comunidad ya que el fichero estatico solo
           dispone de gasolineras de esta comunidad autonoma
@@ -299,7 +298,6 @@ public class ListaFavoritasUITest {
         onView(withId(R.id.btnResetearPermanentes)).perform(scrollTo(), click());
         // Compruebo que los filtros se han reseteado
         onView(withId(R.id.spinner_CCAA)).check(matches(withSpinnerText("Todas")));
-
     }
 
 
