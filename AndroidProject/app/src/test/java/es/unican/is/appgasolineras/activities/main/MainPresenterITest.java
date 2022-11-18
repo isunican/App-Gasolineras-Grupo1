@@ -38,7 +38,7 @@ import es.unican.is.appgasolineras.repository.rest.GasolinerasServiceConstants;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = {Build.VERSION_CODES.O_MR1})
-public class MainViewITest {
+public class MainPresenterITest {
 
     private static IMainContract.Presenter presenter;
     private static IMainContract.View view;
