@@ -1,4 +1,4 @@
-package es.unican.is.appgasolineras.listaFavoritas;
+package es.unican.is.appgasolineras.activities.listaFavoritas;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -19,8 +19,6 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import es.unican.is.appgasolineras.activities.listaFavoritas.IListaFavoritasContract;
-import es.unican.is.appgasolineras.activities.listaFavoritas.ListaFavoritasPresenter;
 import es.unican.is.appgasolineras.model.Gasolinera;
 import es.unican.is.appgasolineras.repository.GasolinerasRepository;
 import es.unican.is.appgasolineras.repository.IGasolinerasRepository;
@@ -28,11 +26,9 @@ import es.unican.is.appgasolineras.repository.db.GasolineraDao;
 import es.unican.is.appgasolineras.repository.db.GasolineraDatabase;
 import es.unican.is.appgasolineras.repository.rest.GasolinerasServiceConstants;
 
-//Pedro Berrío Valdor
-
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = {Build.VERSION_CODES.O_MR1})
-public class ConsultaGasolinerasITest {
+public class ListaFavoritasPresenterITest {
 
     private static IListaFavoritasContract.Presenter presenter;
     private static IListaFavoritasContract.View view;
@@ -49,7 +45,6 @@ public class ConsultaGasolinerasITest {
         view = mock(IListaFavoritasContract.View.class);
         when(view.getGasolineraRepository()).thenReturn(repository);
         presenter = new ListaFavoritasPresenter(view, db, true);
-
     }
 
     @After
@@ -67,6 +62,9 @@ public class ConsultaGasolinerasITest {
         GasolinerasServiceConstants.setMinecoURL();
     }
 
+    /**
+     * Test implementado por Pedro Berrío
+     */
     @Test
     public void onGasolineraClickedTest(){
         //Creo una gasolinera
@@ -107,7 +105,5 @@ public class ConsultaGasolinerasITest {
 
         //Borro base de datos
         gasDao.deleteAll();
-
     }
-
 }
