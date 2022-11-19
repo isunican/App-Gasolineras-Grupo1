@@ -8,6 +8,7 @@ import java.util.List;
 
 import es.unican.is.appgasolineras.model.Gasolinera;
 
+
 /**
  * DAO defined with Room
  * Usage: https://developer.android.com/training/data-storage/room
@@ -23,5 +24,8 @@ public interface GasolineraDao {
 
     @Query("DELETE FROM gasolineras")
     void deleteAll();
+
+    @Query("SELECT * FROM gasolineras where gasolineras.id = :id")
+    Gasolinera getGasolineraById(int id);
 
 }

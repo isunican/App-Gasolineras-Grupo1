@@ -21,11 +21,11 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
-            android:layout_weight="2.6"
+            android:layout_weight="1.5"
             android:fontFamily="sans-serif"
             android:gravity="center|start"
             android:lineSpacingExtra="0sp"
-            android:textColor = "?android:textColorPrimary"
+            android:textColor="?android:textColorPrimary"
             android:textSize="24sp"
             android:textStyle="bold" />
 
@@ -42,7 +42,7 @@
             android:id="@+id/btnFiltroPrecio"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1.8"
+            android:layout_weight="2.5"
             android:text="@string/filtrar"
             android:textSize="20sp"
             android:textStyle="bold" />

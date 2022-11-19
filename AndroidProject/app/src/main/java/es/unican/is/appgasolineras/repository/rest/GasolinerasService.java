@@ -21,16 +21,27 @@ public class GasolinerasService {
 
     private static GasolinerasAPI api;
 
+    private static String textoAPIURLAntiguo = null;
+    private static String textoAPIURL = null;
+
     private GasolinerasService() {}
 
     private static GasolinerasAPI getAPI() {
+        textoAPIURL = GasolinerasServiceConstants.getAPIURL();
         if (api == null) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(GasolinerasServiceConstants.getAPIURL())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
             api = retrofit.create(GasolinerasAPI.class);
+        } else if (!textoAPIURLAntiguo.equals(textoAPIURL)) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(GasolinerasServiceConstants.getAPIURL())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            api = retrofit.create(GasolinerasAPI.class);
         }
+        textoAPIURLAntiguo = GasolinerasServiceConstants.getAPIURL();
         return api;
     }
 
@@ -58,6 +69,11 @@ public class GasolinerasService {
      */
     public static GasolinerasResponse todasGasolineras() {
         final Call<GasolinerasResponse> call = getAPI().todasGasolineras();
+        return devolverResponse(call);
+    }
+
+    public static GasolinerasResponse gasolinerasMunicipio(String id) {
+        final Call<GasolinerasResponse> call = getAPI().gasolinerasMunicipio(id);
         return devolverResponse(call);
     }
 

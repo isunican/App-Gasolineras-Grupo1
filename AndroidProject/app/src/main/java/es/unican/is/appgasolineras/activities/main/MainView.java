@@ -4,12 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,6 +30,7 @@ import es.unican.is.appgasolineras.activities.filtrar.FiltrarView;
 import es.unican.is.appgasolineras.activities.detail.GasolineraDetailView;
 import es.unican.is.appgasolineras.activities.info.InfoView;
 import es.unican.is.appgasolineras.activities.menuPrincipal.MenuPrincipalView;
+import es.unican.is.appgasolineras.common.Red;
 import es.unican.is.appgasolineras.common.prefs.IPrefs;
 import es.unican.is.appgasolineras.common.prefs.Prefs;
 import es.unican.is.appgasolineras.model.Gasolinera;
@@ -69,12 +67,11 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         prefs = Prefs.from(this);
+        prefs.putString("favoritas", "");
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
+        if (Red.isNetworkAvailable(this)) {
             presenter = new MainPresenter(this, prefs, true);
         } else {
             presenter = new MainPresenter(this, prefs, false);

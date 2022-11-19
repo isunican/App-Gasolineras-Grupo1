@@ -61,6 +61,7 @@
     <string name="filtrar_por_marca">Filtrar Por Marca</string>
     <string name="filtrar_por_precio">Filtrar Por Precio</string>
     <string name="filtros">Filtros</string>
+    <string name="favoritas">FAVORITAS</string>
 
     <string-array name="marcasArray">
         <item>Todas</item>

@@ -21,5 +21,13 @@ public interface IMenuPrincipalContract {
          * This method open the filtros permanentes view
          */
         void openFiltrosPermanentesView();
+
+        /**
+         * This method open the lista favoritas view
+         */
+        void openListaFavoritasView();
     }
+
+
+
 }

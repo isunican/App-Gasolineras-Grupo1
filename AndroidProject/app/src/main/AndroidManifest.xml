@@ -3,10 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="es.unican.is.appgasolineras">
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" tools:node="replace"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" tools:node="replace"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" tools:node="replace"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="replace"/>
+    <uses-permission android:name="android.permission.INTERNET" tools:node="replace"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:node="replace"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" tools:node="replace"/>
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:node="replace"/>
 
     <application
         android:allowBackup="false"
@@ -21,30 +25,34 @@
         tools:ignore="LockedOrientationActivity"
         tools:targetApi="32">
         <activity
+            android:name=".activities.listaFavoritas.ListaFavoritasView"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activities.filtrar.FiltrarView"
-            android:windowSoftInputMode="stateHidden"
+            android:exported="false"
             android:screenOrientation="portrait"
-            android:exported="false" />
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.info.InfoView"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.filtrosPermanentes.FiltroPermanenteView"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:name=".activities.filtroPermanente.FiltroPermanenteView"
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.detail.GasolineraDetailView"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.main.MainView"
-            android:screenOrientation="portrait"
-            android:exported="false"/>
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.menuPrincipal.MenuPrincipalView"
-            android:screenOrientation="portrait"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

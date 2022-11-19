@@ -46,7 +46,7 @@ public class GasolinerasArrayAdapter extends ArrayAdapter<Gasolinera> {
         // address
         setAddress(gasolinera, convertView);
 
-        if (prefs.getString(TIPOGASOLINA).equals("")) {
+        if (prefs.getString(TIPOGASOLINA).equals("") || prefs.getString("favoritas").equals("si")) {
             // 95 octanes price
             TextView tvLabel = convertView.findViewById(R.id.tv95Label);
             String label = getContext().getResources().getString(R.string.gasolina95label);

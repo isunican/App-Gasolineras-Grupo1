@@ -4,10 +4,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
+
+import java.util.Objects;
 
 /**
  * Class that represents a Gas Station, with the attributes defined in the following REST API
@@ -22,30 +25,31 @@ import com.google.gson.annotations.SerializedName;
 public class Gasolinera implements Parcelable {
 
     @SerializedName("IDEESS") @NonNull @PrimaryKey  private String id;
+    @SerializedName("IDMunicipio")  private String idMun;
 
-    @SerializedName("Rótulo")                               private String rotulo;
-    @SerializedName("C.P.")                                 private String cp;
-    @SerializedName("Dirección")                            private String direccion;
-    @SerializedName("Municipio")                            private String municipio;
-    @SerializedName("Horario")                              private String horario;
-    @SerializedName("Precio Biodiesel")                     private String biodiesel;
-    @SerializedName("Precio Bioetanol")                     private String bioetanol;
-    @SerializedName("Precio Gas Natural Comprimido")        private String gasNatComp;
-    @SerializedName("Precio Gas Natural Licuado")           private String gasNatLic;
-    @SerializedName("Precio Gases licuados del petróleo")   private String gasLicPet;
-    @SerializedName("Precio Gasoleo A")                     private String dieselA;
-    @SerializedName("Precio Gasoleo B")                     private String dieselB;
-    @SerializedName("Precio Gasoleo Premium")               private String dieselPrem;
-    @SerializedName("Precio Gasolina 95 E10")               private String gasolina95E10;
-    @SerializedName("Precio Gasolina 95 E5")                private String normal95;
-    @SerializedName("Precio Gasolina 95 E5 Premium")        private String normal95Prem;
-    @SerializedName("Precio Gasolina 98 E10")               private String gasolina98E10;
-    @SerializedName("Precio Gasolina 98 E5")                private String gasolina98E5;
-    @SerializedName("Precio Hidrogeno")                     private String hidrogeno;
+    @SerializedName("Rótulo") @ColumnInfo(name = "rotulo")  private String rotulo;
+    @SerializedName("C.P.")   @ColumnInfo(name = "cp")  private String cp;
+    @SerializedName("Dirección")  @ColumnInfo(name = "direccion") private String direccion;
+    @SerializedName("Municipio")   @ColumnInfo(name = "municipio") private String municipio;
+    @SerializedName("Horario") @ColumnInfo(name = "horario") private String horario;
+    @SerializedName("Precio Biodiesel") @ColumnInfo(name = "biodiesel") private String biodiesel;
+    @SerializedName("Precio Bioetanol")   @ColumnInfo(name = "bioetanol")                  private String bioetanol;
+    @SerializedName("Precio Gas Natural Comprimido")   @ColumnInfo(name = "gasNatComp")      private String gasNatComp;
+    @SerializedName("Precio Gas Natural Licuado")      @ColumnInfo(name = "gasNatLic")      private String gasNatLic;
+    @SerializedName("Precio Gases licuados del petróleo")  @ColumnInfo(name = "gasLicPet")  private String gasLicPet;
+    @SerializedName("Precio Gasoleo A")  @ColumnInfo(name = "dieselA")                     private String dieselA;
+    @SerializedName("Precio Gasoleo B")   @ColumnInfo(name = "dieselB")                private String dieselB;
+    @SerializedName("Precio Gasoleo Premium")  @ColumnInfo(name = "dieselPrem")            private String dieselPrem;
+    @SerializedName("Precio Gasolina 95 E10")  @ColumnInfo(name = "gasolina95E10")              private String gasolina95E10;
+    @SerializedName("Precio Gasolina 95 E5")     @ColumnInfo(name = "normal95")            private String normal95;
+    @SerializedName("Precio Gasolina 95 E5 Premium")   @ColumnInfo(name = "normal95Prem")      private String normal95Prem;
+    @SerializedName("Precio Gasolina 98 E10")   @ColumnInfo(name = "gasolina98E10")            private String gasolina98E10;
+    @SerializedName("Precio Gasolina 98 E5")     @ColumnInfo(name = "gasolina98E5")         private String gasolina98E5;
+    @SerializedName("Precio Hidrogeno")           @ColumnInfo(name = "hidrogeno")         private String hidrogeno;
 
-    @SerializedName("IDCCAA")                               private String IDCCAA;
-    @SerializedName("Latitud")                              private String latitud;
-    @SerializedName("Longitud (WGS84)")                     private String longitud;
+    @SerializedName("IDCCAA")      @ColumnInfo(name = "IDCAA")                          private String IDCCAA;
+    @SerializedName("Latitud")  @ColumnInfo(name = "latitud")                             private String latitud;
+    @SerializedName("Longitud (WGS84)")      @ColumnInfo(name = "longitud")                private String longitud;
 
     public Gasolinera() {
         this.id = "";
@@ -56,9 +60,16 @@ public class Gasolinera implements Parcelable {
         return id;
     }
 
-
     public void setId(@NonNull String id) {
         this.id = id;
+    }
+
+    public String getIdMun() {
+        return idMun;
+    }
+
+    public void setIdMun(String idMun) {
+        this.idMun = idMun;
     }
 
     public String getRotulo() {
@@ -231,6 +242,8 @@ public class Gasolinera implements Parcelable {
 
     protected Gasolinera(Parcel in) {
         id = in.readString();
+        idMun = in.readString();
+        IDCCAA = in.readString();
         rotulo = in.readString();
         cp = in.readString();
         direccion = in.readString();
@@ -274,6 +287,8 @@ public class Gasolinera implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
+        dest.writeString(idMun);
+        dest.writeString(IDCCAA);
         dest.writeString(rotulo);
         dest.writeString(cp);
         dest.writeString(direccion);
@@ -295,5 +310,18 @@ public class Gasolinera implements Parcelable {
         dest.writeString(biodiesel);
         dest.writeString(latitud);
         dest.writeString(longitud);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Gasolinera that = (Gasolinera) o;
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

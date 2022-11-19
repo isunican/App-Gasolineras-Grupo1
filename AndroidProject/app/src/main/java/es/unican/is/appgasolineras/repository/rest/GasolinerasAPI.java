@@ -17,5 +17,8 @@ public interface GasolinerasAPI {
     @GET("EstacionesTerrestres")
     Call<GasolinerasResponse> todasGasolineras();
 
+    @GET("EstacionesTerrestres/FiltroMunicipio/{IDMunicipio}")
+    Call<GasolinerasResponse> gasolinerasMunicipio(@Path("IDMunicipio") String idMunicipio);
+
 
 }

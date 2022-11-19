@@ -88,6 +88,7 @@ dependencies {
     androidTestImplementation 'androidx.test:rules:1.4.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test:rules:1.4.0'
 
     // GSON for json serialization/deserialization
     implementation 'com.google.code.gson:gson:2.9.0'
@@ -103,4 +104,44 @@ dependencies {
 
     // picasso (for image loading from URL)
     implementation 'com.squareup.picasso:picasso:2.8'
+}
+
+/*
+    Additional gradle tasks to handle the extraction of screenshots from the emulator to the host
+ */
+
+def reportsDirectory = "$buildDir/reports/androidTests/connected"
+
+def clearScreenshotsTask = task('clearScreenshots', type: Exec) {
+    executable "${android.getAdbExe().toString()}"
+    args 'shell', 'rm', '-r', '/sdcard/Pictures/screenshots'
+}
+
+def createScreenshotDirectoryTask = task('createScreenshotDirectory', type: Exec, group: 'reporting') {
+    executable "${android.getAdbExe().toString()}"
+    args 'shell', 'mkdir', '-p', '/sdcard/Pictures/screenshots'
+}
+
+def fetchScreenshotsTask = task('fetchScreenshots', type: Exec, group: 'reporting') {
+    executable "${android.getAdbExe().toString()}"
+    args 'pull', '/sdcard/Pictures/screenshots/.', reportsDirectory
+    finalizedBy {
+        clearScreenshotsTask
+    }
+
+    dependsOn {
+        createScreenshotDirectoryTask
+    }
+
+    doFirst {
+        new File(reportsDirectory).mkdirs()
+    }
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name == 'connectedDebugAndroidTest') {
+        task.finalizedBy {
+            fetchScreenshotsTask
+        }
+    }
 }

@@ -29,6 +29,12 @@ import es.unican.is.appgasolineras.common.prefs.IPrefs;
 import es.unican.is.appgasolineras.model.Gasolinera;
 import es.unican.is.appgasolineras.repository.IGasolinerasRepository;
 
+/**
+ * IMPORTANTE
+ * Aunque el uso de este test es incorrecto puesto que no se realiza integración como tal,
+ * por falta de tiempo y para no tener que estar adaptando los dos test lo cuál requeriría de
+ * bastante trabajo y tiempo se dejará así momentáneamente.
+ */
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = {Build.VERSION_CODES.O_MR1})
 public class FiltersITest {

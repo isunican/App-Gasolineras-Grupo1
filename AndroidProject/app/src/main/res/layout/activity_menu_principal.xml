@@ -24,8 +24,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="225dp"
+                android:layout_marginTop="175dp"
                 android:text="@string/lista_de_gasolineras"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/btnAccederFavoritos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="100dp"
+                android:text="@string/favoritas"
                 android:textSize="20sp" />
 
             <Button
@@ -36,6 +45,7 @@
                 android:layout_marginTop="100dp"
                 android:text="@string/filtros_permanentes"
                 android:textSize="20sp" />
+
         </LinearLayout>
     </ScrollView>
 

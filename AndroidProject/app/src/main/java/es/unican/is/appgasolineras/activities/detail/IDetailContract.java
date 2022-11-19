@@ -13,6 +13,7 @@ public interface IDetailContract {
          */
         String calcula();
 
+        void anhadeADb();
     }
     public interface View {
         /**
@@ -27,6 +28,16 @@ public interface IDetailContract {
          */
         void setInfo(String municipio, String rotulo, String horario, String normal95,
                      String dieselA, String media, String direccion);
+
+        /**
+         * This method shows a toast to indicate that the gas station has been added
+         */
+        void showAnhadido();
+
+        /**
+         * This method shows a toast to indicate that the gas station had been already added
+         */
+        void showNoAnhadido();
     }
 }
 

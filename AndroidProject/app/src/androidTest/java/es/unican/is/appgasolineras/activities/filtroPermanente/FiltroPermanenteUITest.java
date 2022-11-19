@@ -60,4 +60,5 @@ public class FiltroPermanenteUITest {
         onView(withId(R.id.spinner_CCAA)).check(matches(withSpinnerText("Todas")));
         onView(withId(R.id.checkBoxNo)).perform(scrollTo(), click());
     }
+
 }
