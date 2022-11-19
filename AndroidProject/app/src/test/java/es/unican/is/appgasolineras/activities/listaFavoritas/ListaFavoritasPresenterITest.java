@@ -68,6 +68,9 @@ public class ListaFavoritasPresenterITest {
         GasolinerasServiceConstants.setMinecoURL();
     }
 
+    /**
+     * Test implementado por Roberto Hernando
+     */
     @Test
     public void initListaFavoritasIntegracionTest() {
         ArgumentCaptor<List<Gasolinera>> listaDevuelta = ArgumentCaptor.forClass(List.class);
@@ -167,6 +170,9 @@ public class ListaFavoritasPresenterITest {
         gasDao.deleteAll();
     }
 
+    /**
+     * Test implementado por Jesus Revuelta
+     */
     @Test
     public void conseguirGasolinerasActualizadasTest() {
         GasolineraDao dao = db.gasolineraDao();
