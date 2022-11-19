@@ -196,6 +196,9 @@ public class ListaFavoritasPresenterTest {
         gDao.deleteAll();
     }
 
+    /**
+     * Test implementado por Jesus Revuelta
+     */
     @Test
     public void conseguirGasolinerasActualizadasTest() {
         List<Gasolinera> lista = new ArrayList<>();

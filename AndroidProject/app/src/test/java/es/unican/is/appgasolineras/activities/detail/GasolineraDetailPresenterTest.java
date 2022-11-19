@@ -11,7 +11,6 @@ import org.junit.Test;
 import es.unican.is.appgasolineras.model.Gasolinera;
 import es.unican.is.appgasolineras.repository.db.GasolineraDatabase;
 
-
 public class GasolineraDetailPresenterTest {
 
     private static IDetailContract.Presenter presenter;
