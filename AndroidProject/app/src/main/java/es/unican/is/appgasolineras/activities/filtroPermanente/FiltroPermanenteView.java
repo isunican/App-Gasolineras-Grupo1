@@ -60,7 +60,6 @@ public class FiltroPermanenteView extends AppCompatActivity implements IPermanen
         spnCCAA.setAdapter(adapterCCAA);
         int comunidadGuardada = mapper.getCCAAIndex(prefs.getString("idComunidadName"));
         spnCCAA.setSelection(comunidadGuardada);
-        Log.d("DEBUG", "1");
 
         spnCombustible = findViewById(R.id.spinner_combustible);
         //Configuracion del spinner de los combustibles
@@ -70,7 +69,6 @@ public class FiltroPermanenteView extends AppCompatActivity implements IPermanen
         spnCombustible.setAdapter(adapterCombustibles);
         int combustibleGuardado = mapper.getCombustibleIndex(prefs.getString("tipoGasolina"));
         spnCombustible.setSelection(combustibleGuardado);
-        Log.d("DEBUG", "2");
 
         checkSi = findViewById(R.id.checkBoxSi);
         checkSi.setOnClickListener(view -> {
@@ -83,7 +81,6 @@ public class FiltroPermanenteView extends AppCompatActivity implements IPermanen
                 ActivityCompat.requestPermissions(this, permisos, 0);
             }
         });
-        Log.d("DEBUG", "3");
 
         checkNo = findViewById(R.id.checkBoxNo);
         checkNo.setOnClickListener(view -> {
@@ -92,7 +89,6 @@ public class FiltroPermanenteView extends AppCompatActivity implements IPermanen
             }
             checkNo.setChecked(true);
         });
-        Log.d("DEBUG", "4");
 
 
         if (prefs.getString("ubicacion").equals("si")) {
@@ -102,19 +98,16 @@ public class FiltroPermanenteView extends AppCompatActivity implements IPermanen
             checkNo.setChecked(true);
             checkSi.setChecked(false);
         }
-        Log.d("DEBUG", "5");
         Button btnGuardarPermanentes = findViewById(R.id.btnGuardarPermanentes);
         btnGuardarPermanentes.setOnClickListener(view -> {
             presenter.guardaFiltroPermanente(spnCCAA.getSelectedItemPosition(), spnCombustible.getSelectedItemPosition(), checkSi.isChecked());
             openMainView();
         });
-        Log.d("DEBUG", "6");
         Button btnResetPermanentes = findViewById(R.id.btnResetearPermanentes);
         btnResetPermanentes.setOnClickListener(view -> {
             presenter.reseteaFiltroPermanente();
             this.init();
         });
-        Log.d("DEBUG", "7");
     }
 
     @Override
