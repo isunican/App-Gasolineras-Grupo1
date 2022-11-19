@@ -19,6 +19,19 @@ public interface IListaFavoritasContract {
          */
         void doSyncInitFavoritas();
 
+        /**
+         * This method calls the view to open detail view
+         * @param index index in the list
+         */
+        void onGasolineraClicked(int index);
+
+        /**
+         * This method to actualize the prices of the favourites gas stations
+         * @param masDeUnaComunidad una o mas comunidades
+         * @param lista lista de favoritas
+         * @param idComunidad id comunidad
+         * @return lista con valores actualizados
+         */
         List<Gasolinera> conseguirGasolinerasActualizadas(boolean masDeUnaComunidad, List<Gasolinera> lista, String idComunidad);
     }
 
@@ -63,6 +76,12 @@ public interface IListaFavoritasContract {
          * network
          */
         void showLoadErrorRed();
+
+        /**
+         * This open the detail view of the gas station
+         * @param gasolinera gas station to open detail
+         */
+        void openGasolineraDetails(Gasolinera gasolinera);
 
         /**
          * The View is requested to open the Menu Principal View

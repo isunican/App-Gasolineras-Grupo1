@@ -113,4 +113,12 @@ public class ListaFavoritasPresenter implements IListaFavoritasContract.Presente
         return todasGasolineras;
     }
 
+    @Override
+    public void onGasolineraClicked(int index) {
+        if (shownGasolineras != null && index < shownGasolineras.size()) {
+            Gasolinera gasolinera = shownGasolineras.get(index);
+            view.openGasolineraDetails(gasolinera);
+        }
+    }
+
 }
