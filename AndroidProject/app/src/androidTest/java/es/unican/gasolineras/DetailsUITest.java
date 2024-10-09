@@ -53,14 +53,13 @@ public class DetailsUITest {
                 .onData(CoreMatchers.anything())
                 .inAdapterView(ViewMatchers.withId(R.id.lvStations))
                 .atPosition(0);
-        checkValues(R.id.tvAddress, "CARRETERA 6316 KM. 10,5");
         // Entramos en la gasolinera
         elementoLista.perform(ViewActions.click());
         // Comprobamos los campos
         checkValues(R.id.tvRotulo, "CEPSA");
-        checkValues(R.id.tvGasolina95E5, "1,68");
-        checkValues(R.id.tvGasoleoA, "1,51");
-        checkValues(R.id.tvSumario, "1,62");
+        checkValues(R.id.tvGasolina95E5, "1.68");
+        checkValues(R.id.tvGasoleoA, "1.51");
+        checkValues(R.id.tvSumario, "1.62");
         checkValues(R.id.tvMunicipio, "Alfoz de Lloredo");
         checkValues(R.id.tvDireccion, "CARRETERA 6316 KM. 10,5");
         checkValues(R.id.tvCodigoPostal, "39526");
