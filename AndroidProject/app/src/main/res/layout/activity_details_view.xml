@@ -33,21 +33,125 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
-        tools:text="Rotulo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivRotulo" />
+        app:layout_constraintTop_toBottomOf="@+id/ivRotulo"
+        tools:text="Rotulo" />
+
+    <TextView
+        android:id="@+id/lbGasoleos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvRotulo"
+        tools:text="Gasoleos:" />
+
+    <TextView
+        android:id="@+id/lbGasolina95E5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/tvGasolina95E5"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lbGasoleos"
+        tools:text="Gasolina 95" />
+
+    <TextView
+        android:id="@+id/tvGasolina95E5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:textStyle="normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintStart_toEndOf="@+id/lbGasolina95E5"
+        app:layout_constraintTop_toBottomOf="@id/lbGasoleos"
+        tools:text="0.0" />
+
+    <TextView
+        android:id="@+id/lbGasoleoA"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/lbGasolina95E5"
+        app:layout_constraintTop_toBottomOf="@id/lbGasolina95E5"
+        tools:text="Diesel" />
+
+    <TextView
+        android:id="@+id/tvGasoleoA"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textStyle="normal"
+        app:layout_constraintEnd_toEndOf="@id/tvGasolina95E5"
+        app:layout_constraintTop_toBottomOf="@id/lbGasolina95E5"
+        tools:text="0.0" />
+
+    <TextView
+        android:id="@+id/lbSumario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/lbGasoleoA"
+        app:layout_constraintTop_toBottomOf="@id/lbGasoleoA"
+        tools:text="Precio Sumario" />
+
+    <TextView
+        android:id="@+id/tvSumario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textStyle="normal"
+        app:layout_constraintEnd_toEndOf="@id/tvGasoleoA"
+        app:layout_constraintTop_toBottomOf="@id/lbGasoleoA"
+        tools:text="0.0" />
 
     <TextView
         android:id="@+id/tvMunicipio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
-        tools:text="Municipio"
         app:layout_constraintEnd_toEndOf="@+id/tvRotulo"
         app:layout_constraintStart_toStartOf="@+id/tvRotulo"
-        app:layout_constraintTop_toBottomOf="@+id/tvRotulo" />
+        app:layout_constraintTop_toBottomOf="@id/lbSumario"
+        tools:text="Municipio" />
 
+    <TextView
+        android:id="@+id/tvDireccion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="@+id/tvRotulo"
+        app:layout_constraintStart_toStartOf="@+id/tvRotulo"
+        app:layout_constraintTop_toBottomOf="@id/tvMunicipio"
+        tools:text="Direccion" />
+
+    <TextView
+        android:id="@+id/tvCodigoPostal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="@+id/tvRotulo"
+        app:layout_constraintStart_toStartOf="@+id/tvRotulo"
+        app:layout_constraintTop_toBottomOf="@id/tvDireccion"
+        tools:text="Codigo Postal" />
+
+    <TextView
+        android:id="@+id/tvHorario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        app:layout_constraintEnd_toEndOf="@+id/tvRotulo"
+        app:layout_constraintStart_toStartOf="@+id/tvRotulo"
+        app:layout_constraintTop_toBottomOf="@id/tvCodigoPostal"
+        tools:text="Horario" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
