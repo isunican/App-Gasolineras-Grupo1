@@ -71,7 +71,8 @@ public class DetailsView extends AppCompatActivity {
         tvMunicipio.setText(gasolinera.getMunicipio());
         tvGasolina95E5.setText(String.valueOf(Math.round(gasolinera.getGasolina95E5() * 100.0)/100.0));
         tvGasoleoA.setText(String.valueOf(Math.round(gasolinera.getGasoleoA() * 100.0)/100.0));
-        tvSumario.setText(String.valueOf(Math.round(gasolinera.getPrecioGasolina() * 100.0)/100.0));
+        Double precioGasolina = Math.round(gasolinera.getPrecioGasolina() * 100.0)/100.0;
+        tvSumario.setText(precioGasolina == 0 ? "-" : String.valueOf(precioGasolina));
         tvDireccion.setText(gasolinera.getDireccion());
         tvCodigoPostal.setText(gasolinera.getCp());
         tvHorario.setText(gasolinera.getHorario());
