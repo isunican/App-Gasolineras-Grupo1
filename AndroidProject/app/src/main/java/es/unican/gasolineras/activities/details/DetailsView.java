@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import org.parceler.Parcels;
+import org.w3c.dom.Text;
 
 import es.unican.gasolineras.R;
 import es.unican.gasolineras.model.Gasolinera;
@@ -50,6 +51,12 @@ public class DetailsView extends AppCompatActivity {
         ImageView ivRotulo = findViewById(R.id.ivRotulo);
         TextView tvRotulo = findViewById(R.id.tvRotulo);
         TextView tvMunicipio = findViewById(R.id.tvMunicipio);
+        TextView tvGasolina95E5 = findViewById(R.id.tvGasolina95E5);
+        TextView tvGasoleoA = findViewById(R.id.tvGasoleoA);
+        TextView tvSumario = findViewById(R.id.tvSumario);
+        TextView tvDireccion = findViewById(R.id.tvDireccion);
+        TextView tvCodigoPostal = findViewById(R.id.tvCodigoPostal);
+        TextView tvHorario = findViewById(R.id.tvHorario);
 
         // Get Gas Station from the intent that triggered this activity
         Gasolinera gasolinera = Parcels.unwrap(getIntent().getExtras().getParcelable(INTENT_STATION));
@@ -62,6 +69,16 @@ public class DetailsView extends AppCompatActivity {
         // Set Texts
         tvRotulo.setText(gasolinera.getRotulo());
         tvMunicipio.setText(gasolinera.getMunicipio());
+        tvGasolina95E5.setText(String.valueOf(Math.round(gasolinera.getGasolina95E5() * 100.0)/100.0));
+        tvGasoleoA.setText(String.valueOf(Math.round(gasolinera.getGasoleoA() * 100.0)/100.0));
+        Double precioGasolina = Math.round(gasolinera.getPrecioGasolina() * 100.0)/100.0;
+        tvSumario.setText(precioGasolina == 0 ? "-" : String.valueOf(precioGasolina));
+        tvDireccion.setText(gasolinera.getDireccion());
+        tvCodigoPostal.setText(gasolinera.getCp());
+        tvHorario.setText(gasolinera.getHorario());
+
+
+
     }
 
     /**
