@@ -47,15 +47,20 @@ public class Gasolinera {
         double gasolineWeight = 0;
         double dieselWeight = 0;
         double summaryPrice = 0;
-        if (gasolina95E5 > 0) {
-            gasolinePrice = gasolina95E5;
-            gasolineWeight = 2;
+
+        if (gasolina95E5 > 0 || gasoleoA > 0) {
+
+            if (gasolina95E5 > 0) {
+                gasolinePrice = gasolina95E5;
+                gasolineWeight = 2;
+            }
+            if (gasoleoA > 0) {
+                dieselPrice = gasoleoA;
+                dieselWeight = 1;
+            }
+
+            summaryPrice = (gasolinePrice * gasolineWeight + dieselPrice * dieselWeight) / (gasolineWeight + dieselWeight);
         }
-        if (gasoleoA > 0) {
-            dieselPrice = gasoleoA;
-            dieselWeight = 1;
-        }
-        summaryPrice = (gasolinePrice * gasolineWeight + dieselPrice * dieselWeight) / (gasolineWeight + dieselWeight);
         return summaryPrice;
     }
 }
