@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
+import es.unican.gasolineras.common.FuelTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -62,5 +63,13 @@ public class Gasolinera {
             summaryPrice = (gasolinePrice * gasolineWeight + dieselPrice * dieselWeight) / (gasolineWeight + dieselWeight);
         }
         return summaryPrice;
+    }
+
+    public double getPrecioPorTipo(FuelTypeEnum t) {
+        switch (t) {
+            case GASOLEO_A: return this.gasoleoA;
+            case GASOLINA_95E5: return this.gasolina95E5;
+            default: return -1;
+        }
     }
 }
