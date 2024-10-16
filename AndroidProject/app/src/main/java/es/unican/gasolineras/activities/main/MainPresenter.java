@@ -84,7 +84,7 @@ public class MainPresenter implements IMainContract.Presenter {
         - 2 selecciones: El texto de las selecciones separados por una coma
         - 3 o mas: Varias (el numero de selecciones)
          */
-        view.showFiltersPopUp("Todos");
+        view.showFiltersPopUp("Todos", "Todos");
     }
 
     /**
@@ -97,6 +97,22 @@ public class MainPresenter implements IMainContract.Presenter {
         click en el tipo de combustible
          */
         view.showFiltersPopUpFuelTypesSelector(Arrays.asList(
+                new Selection("Todos", true),
+                new Selection("Gasolina", false),
+                new Selection("Diesel", false)
+        ));
+    }
+
+    /**
+     * @see IMainContract.Presenter#onFiltersPopUpBrandsSelected()
+     */
+    @Override
+    public void onFiltersPopUpBrandsSelected() {
+        /*
+        Debe de pasar una lista con las selecciones que muestrara cuando se haga
+        click en el tipo de combustible
+         */
+        view.showFiltersPopUpBrandSelector(Arrays.asList(
                 new Selection("Todos", true),
                 new Selection("Gasolina", false),
                 new Selection("Diesel", false)
@@ -139,11 +155,54 @@ public class MainPresenter implements IMainContract.Presenter {
     }
 
     /**
+     * @see IMainContract.Presenter#onFiltersPopUpBrandsOneSelected(int, boolean)
+     */
+    @Override
+    public void onFiltersPopUpBrandsOneSelected(int index, boolean value) {
+        /*
+        La funcion que es llamada cuando se seleeciona una funcion, se debe comprobar:
+        - Si esta marcado "todos" y se marca otra, se quita la de "todos"
+        - Si hay marcadas varias, y se selecciona todos, solo debe de estar marcado "todos"
+        - Si se intenta desmarcar y dejar ninguna, o que no te deje o que se marque "todos" solo
+        - Si marcas todas menos "todos", se deberian de desmarcar todas y marcar solo "todos"
+
+        Se puede cambiar el valor llamando a view.updateFiltersPopUpBrandsSelection(index, valor)
+         */
+        // Ejemplo que me dio chatgpt, no funciona en todos los casos pero es una base
+        boolean[] seleccionadas = {false, true, false};
+        seleccionadas[index] = value;
+        if (index == 0) {
+            // Si se selecciona "Todos", desmarcar todas las demas opciones
+            if (value) {
+                for (int i = 1; i < seleccionadas.length; i++) {
+                    seleccionadas[i] = false;
+                    view.updateFiltersPopUpBrandsSelection(i, false);
+                }
+            }
+        } else {
+            // Si se selecciona una opcion distinta de "Todos", desmarcar "Todos"
+            if (value) {
+                seleccionadas[0] = false;
+                view.updateFiltersPopUpBrandsSelection(0, false);
+            }
+        }
+        seleccionadas[index] = value;
+    }
+
+    /**
      * @see IMainContract.Presenter#onFiltersPopUpFuelTypesAccepted()
      */
     @Override
     public void onFiltersPopUpFuelTypesAccepted() {
-        view.updateFiltersPopupTextViews("Todos");
+        view.updateFiltersPopupTextViews("Todos", null);
+    }
+
+    /**
+     * @see IMainContract.Presenter#onFiltersPopUpBrandsAccepted()
+     */
+    @Override
+    public void onFiltersPopUpBrandsAccepted() {
+        view.updateFiltersPopupTextViews(null, "Todos");
     }
 
     /**

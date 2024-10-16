@@ -176,10 +176,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
-     * @see IMainContract.View#showFiltersPopUp(String)  
+     * @see IMainContract.View#showFiltersPopUp(String, String)
      */
     @Override
-    public void showFiltersPopUp(String fuelTypes) {
+    public void showFiltersPopUp(String fuelTypes, String fuelBrands) {
         // Crear el layout del Popup
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         popupView = inflater.inflate(R.layout.activity_filters_layout, null);
@@ -192,11 +192,21 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         ConstraintLayout rootLayout = findViewById(R.id.main);
         popupWindow.showAtLocation(rootLayout, Gravity.CENTER, 0, 0);
 
+
+
         // Fijar valores al TextView del tipo de combustible
         TextView typeSpinner = popupView.findViewById(R.id.typeSpinner);
         typeSpinner.setText(fuelTypes);
         typeSpinner.setOnClickListener(v -> {
             presenter.onFiltersPopUpFuelTypesSelected();
+        });
+
+
+        // Fijar valores al TextView de la marca de gasolineras
+        TextView brandSpinner = popupView.findViewById(R.id.brandSpinner);
+        brandSpinner.setText(fuelBrands);
+        brandSpinner.setOnClickListener(v -> {
+            presenter.onFiltersPopUpBrandsSelected();
         });
 
         // Fijar boton de limpiar filtros
@@ -219,14 +229,20 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
-     * @see IMainContract.View#updateFiltersPopupTextViews(String)
+     * @see IMainContract.View#updateFiltersPopupTextViews(String, String)
      */
     @Override
-    public void updateFiltersPopupTextViews(String fuelTypes) {
+    public void updateFiltersPopupTextViews(String fuelTypes, String fuelBrands) {
         if (fuelTypes != null) {
             TextView typeSpinner = popupView.findViewById(R.id.typeSpinner);
             typeSpinner.setText(fuelTypes);
         }
+
+        if (fuelBrands != null) {
+            TextView brandSpinner = popupView.findViewById(R.id.brandSpinner);
+            brandSpinner.setText(fuelBrands);
+        }
+
     }
 
     /**
@@ -234,6 +250,14 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
      */
     @Override
     public void updateFiltersPopUpFuelTypesSelection(int position, boolean value) {
+        alertDialog.getListView().setItemChecked(position, value);
+    }
+
+    /**
+     * @see IMainContract.View#updateFiltersPopUpBrandsSelection(int, boolean)
+     */
+    @Override
+    public void updateFiltersPopUpBrandsSelection(int position, boolean value) {
         alertDialog.getListView().setItemChecked(position, value);
     }
 
@@ -269,6 +293,49 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         alertDialog = builder.create();
         alertDialog.show();
     }
+
+
+
+
+    /**
+     * @see IMainContract.View#showFiltersPopUpBrandSelector(List)
+     */
+    @Override
+    public void showFiltersPopUpBrandSelector(List<Selection> selections) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainView.this);
+        builder.setTitle("Seleccione opciones");
+
+        String[] opciones = new String[selections.size()];
+        boolean[] seleccionadas = new boolean[selections.size()];
+        for (int i = 0; i < selections.size(); i++) {
+            opciones[i] = selections.get(i).getValue();
+            seleccionadas[i] = selections.get(i).isSelected();
+        }
+
+        // Actualizar el estado de selección en el array
+        builder.setMultiChoiceItems(opciones, seleccionadas, (dialog, which, isChecked) -> {
+            presenter.onFiltersPopUpBrandsOneSelected(which, isChecked);
+
+        });
+
+        // Botón "OK"
+        builder.setPositiveButton("OK", (dialog, which) ->
+                presenter.onFiltersPopUpBrandsAccepted()
+        );
+
+        // Botón "Cancelar"
+        builder.setNegativeButton("Cancelar", null);
+
+        // Mostrar el diálogo
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+
+
+
+
+
 
     public void closeFiltersPopUp() {
         popupWindow.dismiss();
