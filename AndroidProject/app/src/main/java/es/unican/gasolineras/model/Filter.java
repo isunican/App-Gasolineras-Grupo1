@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,7 +21,7 @@ public class Filter implements IFilter {
     private Double maxPrice;
 
     public Filter() {
-        fuelTypes = null;
+        fuelTypes = Arrays.asList(FuelTypeEnum.values());
         gasBrands = null;
         maxPrice = null;
     }
@@ -68,7 +69,7 @@ public class Filter implements IFilter {
     }
 
     public void clear() {
-        fuelTypes = null;
+        fuelTypes = Arrays.asList(FuelTypeEnum.values());
         gasBrands = null;
         maxPrice = null;
     }
