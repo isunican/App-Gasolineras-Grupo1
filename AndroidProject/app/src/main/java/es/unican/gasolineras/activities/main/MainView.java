@@ -41,6 +41,7 @@ import es.unican.gasolineras.repository.IGasolinerasRepository;
 public class MainView extends AppCompatActivity implements IMainContract.View {
 
     private View popupView;
+    PopupWindow popupWindow;
     private AlertDialog alertDialog;
 
     /** The presenter of this view */
@@ -55,6 +56,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         super.onCreate(savedInstanceState);
         popupView = null;
         alertDialog = null;
+        popupWindow = null;
         setContentView(R.layout.activity_main);
 
         // The default theme does not include a toolbar.
@@ -181,7 +183,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         int width = ViewGroup.LayoutParams.MATCH_PARENT;
         int height = ViewGroup.LayoutParams.MATCH_PARENT;
         boolean focusable = true; // Permite al usuario interactuar con los elementos del popup
-        PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+        popupWindow = new PopupWindow(popupView, width, height, focusable);
 
         // Muestra el PopupWindow en el centro de la pantalla
         ConstraintLayout rootLayout = findViewById(R.id.main);
@@ -263,5 +265,12 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         // Mostrar el diálogo
         alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    public void closeFiltersPopUp() {
+        popupWindow.dismiss();
+        popupView = null;
+        alertDialog = null;
+        popupWindow = null;
     }
 }
