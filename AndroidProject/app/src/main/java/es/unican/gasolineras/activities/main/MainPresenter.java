@@ -182,18 +182,14 @@ public class MainPresenter implements IMainContract.Presenter {
             @Override
             public void onSuccess(List<Gasolinera> stations) {
 
-                //De momento así hasta que se implemente el filtro por precio máximo
-
-                IFilter f = new Filter().setMaxPrice(1.5);
-                stations = f.toFilter(stations);
-
+                
                 if(stations.isEmpty()){
                     view.showLoadError();
                 }
-
-                view.showStations(stations);
-                view.showLoadCorrect(stations.size());
-
+                else {
+                    view.showStations(stations);
+                    view.showLoadCorrect(stations.size());
+                }
 
             }
 
