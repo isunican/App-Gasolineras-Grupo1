@@ -1,16 +1,25 @@
 package es.unican.gasolineras.activities.main;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import org.parceler.Parcels;
 
@@ -31,6 +40,9 @@ import es.unican.gasolineras.repository.IGasolinerasRepository;
 @AndroidEntryPoint
 public class MainView extends AppCompatActivity implements IMainContract.View {
 
+    private View popupView;
+    private AlertDialog alertDialog;
+
     /** The presenter of this view */
     private MainPresenter presenter;
 
@@ -41,6 +53,8 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        popupView = null;
+        alertDialog = null;
         setContentView(R.layout.activity_main);
 
         // The default theme does not include a toolbar.
@@ -78,6 +92,9 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         int itemId = item.getItemId();
         if (itemId == R.id.menuItemInfo) {
             presenter.onMenuInfoClicked();
+            return true;
+        } if (itemId == R.id.menuFilterButton) {
+            presenter.onFiltersClicked();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -151,5 +168,83 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     public void showInfoActivity() {
         Intent intent = new Intent(this, InfoView.class);
         startActivity(intent);
+    }
+
+    /**
+     * @see IMainContract.View#showFiltersPopUp(String)  
+     */
+    @Override
+    public void showFiltersPopUp(String fuelTypes) {
+        // Crear el layout del Popup
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        popupView = inflater.inflate(R.layout.activity_filters_layout, null);
+        int width = ViewGroup.LayoutParams.MATCH_PARENT;
+        int height = ViewGroup.LayoutParams.MATCH_PARENT;
+        boolean focusable = true; // Permite al usuario interactuar con los elementos del popup
+        PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        // Muestra el PopupWindow en el centro de la pantalla
+        ConstraintLayout rootLayout = findViewById(R.id.main);
+        popupWindow.showAtLocation(rootLayout, Gravity.CENTER, 0, 0);
+
+
+        // Fijar valores al TextView del tipo de combustible
+        TextView typeSpinner = popupView.findViewById(R.id.typeSpinner);
+        typeSpinner.setText(fuelTypes);
+        typeSpinner.setOnClickListener((View v) -> {
+            presenter.onFiltersPopUpFuelTypesSelected();
+        });
+    }
+
+    /**
+     * @see IMainContract.View#updateFiltersPopupFuelTypesTextView(String) 
+     */
+    @Override
+    public void updateFiltersPopupFuelTypesTextView(String fuelTypes) {
+        if (fuelTypes != null) {
+            TextView typeSpinner = popupView.findViewById(R.id.typeSpinner);
+            typeSpinner.setText(fuelTypes);
+        }
+    }
+
+    /**
+     * @see IMainContract.View#updateFiltersPopUpFuelTypesSelection(int, boolean)
+     */
+    @Override
+    public void updateFiltersPopUpFuelTypesSelection(int position, boolean value) {
+        alertDialog.getListView().setItemChecked(position, value);
+    }
+
+    /**
+     * @see IMainContract.View#showFiltersPopUpFuelTypesSelector(List)
+     */
+    @Override
+    public void showFiltersPopUpFuelTypesSelector(List<Selection> selections) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainView.this);
+        builder.setTitle("Seleccione opciones");
+
+        String[] opciones = new String[selections.size()];
+        boolean[] seleccionadas = new boolean[selections.size()];
+        for (int i = 0; i < selections.size(); i++) {
+            opciones[i] = selections.get(i).getValue();
+            seleccionadas[i] = selections.get(i).isSelected();
+        }
+
+        // Actualizar el estado de selección en el array
+        builder.setMultiChoiceItems(opciones, seleccionadas, (dialog, which, isChecked) -> {
+            presenter.onFiltersPopUpFuelTypesOneSelecionated(which, isChecked);
+        });
+
+        // Botón "OK"
+        builder.setPositiveButton("OK", (dialog, which) ->
+            presenter.onFiltersPopUpFuelTypesAccepted()
+        );
+
+        // Botón "Cancelar"
+        builder.setNegativeButton("Cancelar", null);
+
+        // Mostrar el diálogo
+        alertDialog = builder.create();
+        alertDialog.show();
     }
 }
