@@ -3,10 +3,13 @@ package es.unican.gasolineras.model;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.IFilter;
@@ -19,7 +22,7 @@ public class Filter implements IFilter {
     private Double maxPrice;
 
     public Filter() {
-        fuelTypes = null;
+        fuelTypes = Arrays.asList(FuelTypeEnum.values());
         gasBrands = null;
         maxPrice = null;
     }
@@ -59,17 +62,15 @@ public class Filter implements IFilter {
     }
 
     public List<Gasolinera> toFilter(List<Gasolinera> g) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-            return null;
         return g.stream()
                 .filter(this::typeFilter)
                 .filter(this::brandsFilter)
                 .filter(this::priceFilter)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public void clear() {
-        fuelTypes = null;
+        fuelTypes = Arrays.asList(FuelTypeEnum.values());
         gasBrands = null;
         maxPrice = null;
     }

@@ -55,7 +55,7 @@ public class MainPresenter implements IMainContract.Presenter {
 
     [Metodo que tenia hecho para fijar texto segun las selecciones (List<Selection>)]
 
-    selections = selections.stream().filter(Selection::isSelected).toList();
+    selections = selections.stream().filter(Selection::isSelected).collect(Collectors.toList());
     String text = "ERROR";
     switch (selections.size()) {
         case 1:
@@ -64,7 +64,7 @@ public class MainPresenter implements IMainContract.Presenter {
         case 2:
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 text = String.join(", ", selections
-                        .stream().map(Selection::getValue).toList());
+                        .stream().map(Selection::getValue).collect(Collectors.toList()));
             }
             break;
         default:
@@ -151,6 +151,7 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     public void onFiltersPopUpCancelClicked() {
         Log.d("DEBUGGING", "Pulsado 'cancel'");
+        view.closeFiltersPopUp();
     }
 
     /**
@@ -158,6 +159,7 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     public void onFiltersPopUpAcceptClicked() {
         Log.d("DEBUGGING", "Pulsado 'accept'");
+        view.closeFiltersPopUp();
     }
 
     /**
