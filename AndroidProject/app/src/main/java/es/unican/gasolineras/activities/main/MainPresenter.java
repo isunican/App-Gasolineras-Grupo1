@@ -2,9 +2,12 @@ package es.unican.gasolineras.activities.main;
 
 import android.util.Log;
 
+import java.sql.ClientInfoStatus;
 import java.util.Arrays;
 import java.util.List;
 
+import es.unican.gasolineras.common.IFilter;
+import es.unican.gasolineras.model.Filter;
 import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.model.IDCCAAs;
 import es.unican.gasolineras.repository.ICallBack;
@@ -176,9 +179,22 @@ public class MainPresenter implements IMainContract.Presenter {
 
             @Override
             public void onSuccess(List<Gasolinera> stations) {
+
+                //De momento así hasta que se implemente el filtro por precio máximo
+
+                IFilter f = new Filter().setMaxPrice(1.5);
+                stations = f.toFilter(stations);
+
+                if(stations.isEmpty()){
+                    view.showLoadError();
+                }
+
                 view.showStations(stations);
                 view.showLoadCorrect(stations.size());
+
+
             }
+
 
             @Override
             public void onFailure(Throwable e) {

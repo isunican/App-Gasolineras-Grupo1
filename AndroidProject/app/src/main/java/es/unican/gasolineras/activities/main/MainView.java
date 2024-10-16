@@ -150,6 +150,9 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         Toast.makeText(this, "Error cargando las gasolineras", Toast.LENGTH_SHORT).show();
     }
 
+
+
+
     /**
      * @see IMainContract.View#showStationDetails(Gasolinera)
      * @param station the charging station

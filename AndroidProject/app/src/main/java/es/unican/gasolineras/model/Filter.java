@@ -10,6 +10,7 @@ import java.util.List;
 
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.IFilter;
+import kotlin.collections.EmptyList;
 
 public class Filter implements IFilter {
 
