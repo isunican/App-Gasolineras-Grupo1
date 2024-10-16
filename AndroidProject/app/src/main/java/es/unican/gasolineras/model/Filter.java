@@ -39,6 +39,7 @@ public class Filter implements IFilter {
 
     @NonNull
     private Boolean priceFilter(Gasolinera g) {
+        if (g == null) return false;
         for (FuelTypeEnum t : this.fuelTypes) {
             if (this.maxPrice < g.getPrecioPorTipo(t))
                 return false;
