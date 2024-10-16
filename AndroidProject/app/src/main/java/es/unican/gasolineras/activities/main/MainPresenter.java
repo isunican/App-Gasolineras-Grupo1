@@ -2,9 +2,12 @@ package es.unican.gasolineras.activities.main;
 
 import android.util.Log;
 
+import java.sql.ClientInfoStatus;
 import java.util.Arrays;
 import java.util.List;
 
+import es.unican.gasolineras.common.IFilter;
+import es.unican.gasolineras.model.Filter;
 import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.model.IDCCAAs;
 import es.unican.gasolineras.repository.ICallBack;
@@ -52,7 +55,7 @@ public class MainPresenter implements IMainContract.Presenter {
 
     [Metodo que tenia hecho para fijar texto segun las selecciones (List<Selection>)]
 
-    selections = selections.stream().filter(Selection::isSelected).toList();
+    selections = selections.stream().filter(Selection::isSelected).collect(Collectors.toList());
     String text = "ERROR";
     switch (selections.size()) {
         case 1:
@@ -61,7 +64,7 @@ public class MainPresenter implements IMainContract.Presenter {
         case 2:
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 text = String.join(", ", selections
-                        .stream().map(Selection::getValue).toList());
+                        .stream().map(Selection::getValue).collect(Collectors.toList()));
             }
             break;
         default:
@@ -178,9 +181,18 @@ public class MainPresenter implements IMainContract.Presenter {
 
             @Override
             public void onSuccess(List<Gasolinera> stations) {
-                view.showStations(stations);
-                view.showLoadCorrect(stations.size());
+
+                
+                if(stations.isEmpty()){
+                    view.showLoadError();
+                }
+                else {
+                    view.showStations(stations);
+                    view.showLoadCorrect(stations.size());
+                }
+
             }
+
 
             @Override
             public void onFailure(Throwable e) {
