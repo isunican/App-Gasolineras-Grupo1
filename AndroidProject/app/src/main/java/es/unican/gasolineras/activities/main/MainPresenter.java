@@ -1,5 +1,7 @@
 package es.unican.gasolineras.activities.main;
 
+import android.util.Log;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -99,10 +101,10 @@ public class MainPresenter implements IMainContract.Presenter {
     }
 
     /**
-     * @see IMainContract.Presenter#onFiltersPopUpFuelTypesOneSelecionated(int, boolean)
+     * @see IMainContract.Presenter#onFiltersPopUpFuelTypesOneSelected(int, boolean)
      */
     @Override
-    public void onFiltersPopUpFuelTypesOneSelecionated(int index, boolean value) {
+    public void onFiltersPopUpFuelTypesOneSelected(int index, boolean value) {
         /*
         La funcion que es llamada cuando se seleeciona una funcion, se debe comprobar:
         - Si esta marcado "todos" y se marca otra, se quita la de "todos"
@@ -138,8 +140,30 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onFiltersPopUpFuelTypesAccepted() {
-        view.updateFiltersPopupFuelTypesTextView("Todos");
+        view.updateFiltersPopupTextViews("Todos");
     }
+
+    /**
+     * @see IMainContract.Presenter#onFiltersPopUpCancelClicked()
+     */
+    public void onFiltersPopUpCancelClicked() {
+        Log.d("DEBUGGING", "Pulsado 'cancel'");
+    }
+
+    /**
+     * @see IMainContract.Presenter#onFiltersPopUpAcceptClicked()
+     */
+    public void onFiltersPopUpAcceptClicked() {
+        Log.d("DEBUGGING", "Pulsado 'accept'");
+    }
+
+    /**
+     * @see IMainContract.Presenter#onFiltersPopUpClearFiltersClicked()
+     */
+    public void onFiltersPopUpClearFiltersClicked() {
+        Log.d("DEBUGGING", "Pulsado 'clear filters'");
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////
 
     /**

@@ -1,7 +1,6 @@
 package es.unican.gasolineras.activities.main;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -10,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -187,20 +187,37 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         ConstraintLayout rootLayout = findViewById(R.id.main);
         popupWindow.showAtLocation(rootLayout, Gravity.CENTER, 0, 0);
 
-
         // Fijar valores al TextView del tipo de combustible
         TextView typeSpinner = popupView.findViewById(R.id.typeSpinner);
         typeSpinner.setText(fuelTypes);
-        typeSpinner.setOnClickListener((View v) -> {
+        typeSpinner.setOnClickListener(v -> {
             presenter.onFiltersPopUpFuelTypesSelected();
+        });
+
+        // Fijar boton de limpiar filtros
+        ImageButton filterClear = popupView.findViewById(R.id.clear_filters_bt);
+        filterClear.setOnClickListener(v -> {
+            presenter.onFiltersPopUpClearFiltersClicked();
+        });
+
+        // Fijar el boton de cancelar
+        ImageButton cancelButton = popupView.findViewById(R.id.filters_cancel_button);
+        cancelButton.setOnClickListener(v -> {
+            presenter.onFiltersPopUpCancelClicked();
+        });
+
+        // Fijar el boton de aceptar
+        ImageButton accpetlButton = popupView.findViewById(R.id.filters_accpet_button);
+        accpetlButton.setOnClickListener(v -> {
+            presenter.onFiltersPopUpAcceptClicked();
         });
     }
 
     /**
-     * @see IMainContract.View#updateFiltersPopupFuelTypesTextView(String) 
+     * @see IMainContract.View#updateFiltersPopupTextViews(String)
      */
     @Override
-    public void updateFiltersPopupFuelTypesTextView(String fuelTypes) {
+    public void updateFiltersPopupTextViews(String fuelTypes) {
         if (fuelTypes != null) {
             TextView typeSpinner = popupView.findViewById(R.id.typeSpinner);
             typeSpinner.setText(fuelTypes);
@@ -232,7 +249,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
         // Actualizar el estado de selección en el array
         builder.setMultiChoiceItems(opciones, seleccionadas, (dialog, which, isChecked) -> {
-            presenter.onFiltersPopUpFuelTypesOneSelecionated(which, isChecked);
+            presenter.onFiltersPopUpFuelTypesOneSelected(which, isChecked);
         });
 
         // Botón "OK"

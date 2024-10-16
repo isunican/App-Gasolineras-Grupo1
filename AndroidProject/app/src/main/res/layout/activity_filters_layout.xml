@@ -39,6 +39,7 @@
                 android:textSize="25sp" />
 
             <ImageButton
+                android:id="@+id/clear_filters_bt"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center"
@@ -87,6 +88,7 @@
             android:orientation="horizontal">
 
             <ImageButton
+                android:id="@+id/filters_cancel_button"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
@@ -99,6 +101,7 @@
                 app:tint="@android:color/holo_red_dark" />
 
             <ImageButton
+                android:id="@+id/filters_accpet_button"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:layout_gravity="center"

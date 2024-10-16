@@ -53,13 +53,31 @@ public interface IMainContract {
          * The presenter is informed that one of fuel type item in the fuel type filter popup has been clicked
          * Only the View should call this method
          */
-        public void onFiltersPopUpFuelTypesOneSelecionated(int index, boolean value);
+        public void onFiltersPopUpFuelTypesOneSelected(int index, boolean value);
 
         /**
          * The presenter is informed that the fuel type in the filter popup has been clicked in accept
          * Only the View should call this method
          */
         public void onFiltersPopUpFuelTypesAccepted();
+
+        /**
+         * The presenter is informed that the cancel button in the filter popup has been clicked
+         * Only the View should call this method
+         */
+        public void onFiltersPopUpCancelClicked();
+
+        /**
+         * The presenter is informed that the accept button in the filter popup has been clicked
+         * Only the View should call this method
+         */
+        public void onFiltersPopUpAcceptClicked();
+
+        /**
+         * The presenter is informed that the clear filters button in the filter popup has been clicked
+         * Only the View should call this method
+         */
+        public void onFiltersPopUpClearFiltersClicked();
     }
 
     /**
@@ -136,11 +154,11 @@ public interface IMainContract {
         public void showFiltersPopUpFuelTypesSelector(List<Selection> selections);
 
         /**
-         * The view is requested to to update the filters fuel type textfield.
+         * The view is requested to to update the filters textviews.
          * Only the Presenter and View should call this method
-         * @param selections list of the selections of the fuel types
+         * @param fuelTypes the string to update the textView fuel type
          */
-        public void updateFiltersPopupFuelTypesTextView(String fuelTypes);
+        public void updateFiltersPopupTextViews(String fuelTypes);
 
         /**
          * The view is requested to to update the selection of a fuel type selector.
