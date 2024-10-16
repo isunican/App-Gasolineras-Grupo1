@@ -148,6 +148,7 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     public void onFiltersPopUpCancelClicked() {
         Log.d("DEBUGGING", "Pulsado 'cancel'");
+        view.closeFiltersPopUp();
     }
 
     /**
@@ -155,6 +156,7 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     public void onFiltersPopUpAcceptClicked() {
         Log.d("DEBUGGING", "Pulsado 'accept'");
+        view.closeFiltersPopUp();
     }
 
     /**

@@ -168,5 +168,11 @@ public interface IMainContract {
          */
         public void updateFiltersPopUpFuelTypesSelection(int position, boolean value);
 
+        /**
+         * The view is requested to close the filters popup.
+         * Only the Presenter should call this method
+         */
+        public void closeFiltersPopUp();
+
     }
 }
