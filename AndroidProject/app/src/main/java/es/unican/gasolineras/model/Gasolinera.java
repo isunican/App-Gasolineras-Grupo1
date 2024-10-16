@@ -46,7 +46,8 @@ public class Gasolinera {
         double gasolinePriceWeighted = gasolina95E5 > 0 ? gasolina95E5 * 2 : 0;
         double dieselPriceWeighted = gasoleoA > 0 ? gasoleoA : 0;
 
-        return  (gasolinePriceWeighted + dieselPriceWeighted) / 3;
+        int weight = (gasolina95E5 > 0 ? 2 : 0) + (gasoleoA > 0 ? 1 : 0);
+        return  (gasolinePriceWeighted + dieselPriceWeighted) / weight==0 ? 1 : weight;
     }
 
     public double getPrecioPorTipo(FuelTypeEnum t) {
