@@ -42,27 +42,12 @@ public class Gasolinera {
      *
      * @return the summary price of a gas station.
      */
-    public double getPrecioGasolina() {
-        double gasolinePrice = 0;
-        double dieselPrice = 0;
-        double gasolineWeight = 0;
-        double dieselWeight = 0;
-        double summaryPrice = 0;
+    public double getAverageGasPrice() {
+        double gasolinePriceWeighted = gasolina95E5 > 0 ? gasolina95E5 * 2 : 0;
+        double dieselPriceWeighted = gasoleoA > 0 ? gasoleoA : 0;
 
-        if (gasolina95E5 > 0 || gasoleoA > 0) {
-
-            if (gasolina95E5 > 0) {
-                gasolinePrice = gasolina95E5;
-                gasolineWeight = 2;
-            }
-            if (gasoleoA > 0) {
-                dieselPrice = gasoleoA;
-                dieselWeight = 1;
-            }
-
-            summaryPrice = (gasolinePrice * gasolineWeight + dieselPrice * dieselWeight) / (gasolineWeight + dieselWeight);
-        }
-        return summaryPrice;
+        int weight = (gasolina95E5 > 0 ? 2 : 0) + (gasoleoA > 0 ? 1 : 0);
+        return  (gasolinePriceWeighted + dieselPriceWeighted) / (weight==0 ? 1 : weight);
     }
 
     public double getPrecioPorTipo(FuelTypeEnum t) {
