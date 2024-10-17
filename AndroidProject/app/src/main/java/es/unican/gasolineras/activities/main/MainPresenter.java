@@ -90,10 +90,13 @@ public class MainPresenter implements IMainContract.Presenter {
     ///////////////////////////////////////////////////////////////////////////////////
 
     private void setFiltersPopUpValues() {
-        // Obtener la lista de selecciones
+        // Obtener la lista de selecciones de fuelTypes
         String fuelTypes = getStringOfSelections(
                 getFuelTypesSelections(tempFilter));
-        view.updateFiltersPopupTextViews(fuelTypes);
+        // Obtener la lista de selecciones de fuelBrands
+        // TODO
+        String fuelBrands = "TODOS";
+        view.updateFiltersPopupTextViews(fuelTypes ,fuelBrands);
     }
 
     /**
@@ -116,6 +119,19 @@ public class MainPresenter implements IMainContract.Presenter {
     public void onFiltersPopUpFuelTypesSelected() {
         tempListSelection = getFuelTypesSelections(tempFilter);
         view.showFiltersPopUpFuelTypesSelector(tempListSelection);
+    }
+
+    /**
+     * @see IMainContract.Presenter#onFiltersPopUpBrandsSelected()
+     */
+    @Override
+    public void onFiltersPopUpBrandsSelected() {
+        // TODO
+        view.showFiltersPopUpBrandSelector(Arrays.asList(
+                new Selection("Todos", true),
+                new Selection("Gasolina", false),
+                new Selection("Diesel", false)
+        ));
     }
 
     /**
@@ -164,6 +180,32 @@ public class MainPresenter implements IMainContract.Presenter {
     }
 
     /**
+     * @see IMainContract.Presenter#onFiltersPopUpBrandsOneSelected(int, boolean)
+     */
+    @Override
+    public void onFiltersPopUpBrandsOneSelected(int index, boolean value) {
+        // TODO: Se puede refactorizar lo de arriba y hacerlo facil
+        boolean[] seleccionadas = {false, true, false};
+        seleccionadas[index] = value;
+        if (index == 0) {
+            // Si se selecciona "Todos", desmarcar todas las demas opciones
+            if (value) {
+                for (int i = 1; i < seleccionadas.length; i++) {
+                    seleccionadas[i] = false;
+                    view.updateFiltersPopUpBrandsSelection(i, false);
+                }
+            }
+        } else {
+            // Si se selecciona una opcion distinta de "Todos", desmarcar "Todos"
+            if (value) {
+                seleccionadas[0] = false;
+                view.updateFiltersPopUpBrandsSelection(0, false);
+            }
+        }
+        seleccionadas[index] = value;
+    }
+
+    /**
      * @see IMainContract.Presenter#onFiltersPopUpFuelTypesAccepted()
      */
     @Override
@@ -178,7 +220,16 @@ public class MainPresenter implements IMainContract.Presenter {
                             .collect(Collectors.toList())
             );
         }
-        view.updateFiltersPopupTextViews(getStringOfSelections(tempListSelection));
+        view.updateFiltersPopupTextViews(getStringOfSelections(tempListSelection), null);
+    }
+
+    /**
+     * @see IMainContract.Presenter#onFiltersPopUpBrandsAccepted()
+     */
+    @Override
+    public void onFiltersPopUpBrandsAccepted() {
+        // TODO
+        view.updateFiltersPopupTextViews(null, "Todos");
     }
 
     /**
@@ -206,7 +257,6 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     public void onFiltersPopUpClearFiltersClicked() {
         tempFilter.clear();
-        List<Selection> typesSelection = getFuelTypesSelections(tempFilter);
         setFiltersPopUpValues();
         view.showInfoMessage("Se han limpiado los filtros");
     }

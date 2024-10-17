@@ -49,17 +49,45 @@ public interface IMainContract {
          */
         public void onFiltersPopUpFuelTypesSelected();
 
+
+
+        /**
+         * The presenter is informed that the fuel brand item in the filter popup has been clicked
+         * Only the View should call this method
+         */
+        public void onFiltersPopUpBrandsSelected();
+
+
+
+
         /**
          * The presenter is informed that one of fuel type item in the fuel type filter popup has been clicked
          * Only the View should call this method
          */
         public void onFiltersPopUpFuelTypesOneSelected(int index, boolean value);
 
+
+        /**
+         * The presenter is informed that one of fuel type item in the fuel type filter popup has been clicked
+         * Only the View should call this method
+         */
+        public void onFiltersPopUpBrandsOneSelected(int index, boolean value);
+
+
+
         /**
          * The presenter is informed that the fuel type in the filter popup has been clicked in accept
          * Only the View should call this method
          */
         public void onFiltersPopUpFuelTypesAccepted();
+
+        /**
+         * The presenter is informed that the brand in the filter popup has been clicked in accept
+         * Only the View should call this method
+         */
+        public void onFiltersPopUpBrandsAccepted();
+
+
 
         /**
          * The presenter is informed that the cancel button in the filter popup has been clicked
@@ -158,12 +186,23 @@ public interface IMainContract {
          */
         public void showFiltersPopUpFuelTypesSelector(List<Selection> selections);
 
+
+        /**
+         * The view is requested to to open the filters brand type selector.
+         * Only the Presenter should call this method
+         * @param selections list of the selections of the brands
+         */
+        public void showFiltersPopUpBrandSelector(List<Selection> selections);
+
+
+
+
         /**
          * The view is requested to to update the filters textviews.
          * Only the Presenter and View should call this method
          * @param fuelTypes the string to update the textView fuel type
          */
-        public void updateFiltersPopupTextViews(String fuelTypes);
+        public void updateFiltersPopupTextViews(String fuelTypes, String fuelBrands);
 
         /**
          * The view is requested to to update the selection of a fuel type selector.
@@ -172,6 +211,17 @@ public interface IMainContract {
          * @param value the new value
          */
         public void updateFiltersPopUpFuelTypesSelection(int position, boolean value);
+
+
+        /**
+         * The view is requested to to update the selection of a fuel type selector.
+         * Only the Presenter should call this method
+         * @param position the position of the selection
+         * @param value the new value
+         */
+        public void updateFiltersPopUpBrandsSelection(int position, boolean value);
+
+
 
         /**
          * The view is requested to close the filters popup.
