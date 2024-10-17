@@ -69,7 +69,7 @@ public class Gasolinera {
         switch (t) {
             case GASOLEO_A: return this.gasoleoA;
             case GASOLINA_95E5: return this.gasolina95E5;
-            default: return -1;
+            default: return -1.0;
         }
     }
 }

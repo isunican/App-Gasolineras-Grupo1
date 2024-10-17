@@ -3,9 +3,12 @@ package es.unican.gasolineras.activities.main;
 import android.util.Log;
 
 import java.sql.ClientInfoStatus;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.IFilter;
 import es.unican.gasolineras.model.Filter;
 import es.unican.gasolineras.model.Gasolinera;
@@ -20,6 +23,9 @@ public class MainPresenter implements IMainContract.Presenter {
 
     /** The view that is controlled by this presenter */
     private IMainContract.View view;
+    private IFilter filter;
+    private IFilter tempFilter;
+    private List<Selection> tempListSelection;
 
     /**
      * @see IMainContract.Presenter#init(IMainContract.View)
@@ -29,6 +35,9 @@ public class MainPresenter implements IMainContract.Presenter {
     public void init(IMainContract.View view) {
         this.view = view;
         this.view.init();
+        this.filter = new Filter();
+        this.tempFilter = null;
+        this.tempListSelection = null;
         load();
     }
 
@@ -49,42 +58,55 @@ public class MainPresenter implements IMainContract.Presenter {
         view.showInfoActivity();
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////
-
-    /*
-
-    [Metodo que tenia hecho para fijar texto segun las selecciones (List<Selection>)]
-
-    selections = selections.stream().filter(Selection::isSelected).collect(Collectors.toList());
-    String text = "ERROR";
-    switch (selections.size()) {
-        case 1:
-            text = selections.get(0).getValue();
-            break;
-        case 2:
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                text = String.join(", ", selections
-                        .stream().map(Selection::getValue).collect(Collectors.toList()));
-            }
-            break;
-        default:
-            text = "Varias (" + selections.size() + ")";
-            break;
+    private List<Selection> getFuelTypesSelections(IFilter f) {
+        List<Selection> s = new ArrayList<>();
+        boolean allSelected = f.getFuelTypes().size() == FuelTypeEnum.values().length;
+        s.add(new Selection("Todos", allSelected));
+        for (FuelTypeEnum t: FuelTypeEnum.values()) {
+            s.add(
+                    new Selection(t.toString(), !allSelected && f.getFuelTypes().contains(t))
+            );
+        }
+        return s;
     }
 
-     */
+    private String getStringOfSelections(List<Selection> s) {
+        s = s.stream().filter(Selection::isSelected).collect(Collectors.toList());
+        String text = "ERROR";
+        switch (s.size()) {
+            case 1:
+                text = s.get(0).getValue();
+                break;
+            case 2:
+                text = s.stream().map(Selection::getValue).collect(Collectors.joining(", "));
+                break;
+            default:
+                text = "Varias (" + s.size() + ")";
+                break;
+        }
+        return text;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////
+
+    private void setFiltersPopUpValues() {
+        // Obtener la lista de selecciones
+        String fuelTypes = getStringOfSelections(
+                getFuelTypesSelections(tempFilter));
+        view.updateFiltersPopupTextViews(fuelTypes);
+    }
+
     /**
      * @see IMainContract.Presenter#onFiltersClicked()
      */
     @Override
     public void onFiltersClicked() {
-        /*
-        Debe de pasar en texto que tiene seleccionado, pasaria lo siguiente:
-        - 1 seleccon: El texto de la seleecion
-        - 2 selecciones: El texto de las selecciones separados por una coma
-        - 3 o mas: Varias (el numero de selecciones)
-         */
-        view.showFiltersPopUp("Todos");
+        // Crear el filtro temporal
+        tempFilter = filter.toCopy();
+        // Generar la ventana
+        view.showFiltersPopUp();
+        // Actualizar los datos
+        setFiltersPopUpValues();
     }
 
     /**
@@ -92,15 +114,8 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onFiltersPopUpFuelTypesSelected() {
-        /*
-        Debe de pasar una lista con las selecciones que muestrara cuando se haga
-        click en el tipo de combustible
-         */
-        view.showFiltersPopUpFuelTypesSelector(Arrays.asList(
-                new Selection("Todos", true),
-                new Selection("Gasolina", false),
-                new Selection("Diesel", false)
-        ));
+        tempListSelection = getFuelTypesSelections(tempFilter);
+        view.showFiltersPopUpFuelTypesSelector(tempListSelection);
     }
 
     /**
@@ -108,34 +123,44 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onFiltersPopUpFuelTypesOneSelected(int index, boolean value) {
-        /*
-        La funcion que es llamada cuando se seleeciona una funcion, se debe comprobar:
-        - Si esta marcado "todos" y se marca otra, se quita la de "todos"
-        - Si hay marcadas varias, y se selecciona todos, solo debe de estar marcado "todos"
-        - Si se intenta desmarcar y dejar ninguna, o que no te deje o que se marque "todos" solo
-        - Si marcas todas menos "todos", se deberian de desmarcar todas y marcar solo "todos"
-
-        Se puede cambiar el valor llamando a view.updateFiltersPopUpFuelTypesSelection(index, valor)
-         */
-        // Ejemplo que me dio chatgpt, no funciona en todos los casos pero es una base
-        boolean[] seleccionadas = {false, true, false};
-        seleccionadas[index] = value;
+        boolean update = true;
         if (index == 0) {
             // Si se selecciona "Todos", desmarcar todas las demas opciones
             if (value) {
-                for (int i = 1; i < seleccionadas.length; i++) {
-                    seleccionadas[i] = false;
+                for (int i = 1; i < tempListSelection.size(); i++) {
+                    tempListSelection.get(i).setSelected(false);
                     view.updateFiltersPopUpFuelTypesSelection(i, false);
                 }
+            // No se puede desmarcar todos
+            } else {
+                update = false;
+                view.updateFiltersPopUpFuelTypesSelection(0, true);
             }
         } else {
-            // Si se selecciona una opcion distinta de "Todos", desmarcar "Todos"
-            if (value) {
-                seleccionadas[0] = false;
+            int numActivated = (int) tempListSelection.stream()
+                    .skip(1)
+                    .filter(Selection::isSelected)
+                    .count();
+            if (value && numActivated < FuelTypeEnum.values().length - 1) {
+                // Si se selecciona una opcion distinta de "Todos", y no esta marcando todas
+                tempListSelection.get(0).setSelected(false);
                 view.updateFiltersPopUpFuelTypesSelection(0, false);
+            } else if (value && numActivated == FuelTypeEnum.values().length - 1) {
+                // Si se selecciona una opcion distinta de "Todos" y se marcan todas
+                tempListSelection.get(0).setSelected(true);
+                view.updateFiltersPopUpFuelTypesSelection(0, true);
+                for (int i = 1; i < tempListSelection.size(); i++) {
+                    tempListSelection.get(i).setSelected(false);
+                    view.updateFiltersPopUpFuelTypesSelection(i, false);
+                }
+                update = false;
+            } else if (!value && numActivated == 1) {
+                tempListSelection.get(0).setSelected(true);
+                view.updateFiltersPopUpFuelTypesSelection(0, true);
             }
         }
-        seleccionadas[index] = value;
+        if (update)
+            tempListSelection.get(index).setSelected(value);
     }
 
     /**
@@ -143,14 +168,25 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onFiltersPopUpFuelTypesAccepted() {
-        view.updateFiltersPopupTextViews("Todos");
+        if (tempListSelection.get(0).isSelected()) {
+            tempFilter.setFuelTypes(Arrays.asList(FuelTypeEnum.values()));
+        } else {
+            tempFilter.setFuelTypes(
+                    tempListSelection.stream()
+                            .filter(Selection::isSelected)
+                            .map(e -> FuelTypeEnum.fromString(e.getValue()))
+                            .collect(Collectors.toList())
+            );
+        }
+        view.updateFiltersPopupTextViews(getStringOfSelections(tempListSelection));
     }
 
     /**
      * @see IMainContract.Presenter#onFiltersPopUpCancelClicked()
      */
     public void onFiltersPopUpCancelClicked() {
-        Log.d("DEBUGGING", "Pulsado 'cancel'");
+        tempFilter = null;
+        tempListSelection = null;
         view.closeFiltersPopUp();
     }
 
@@ -158,15 +194,21 @@ public class MainPresenter implements IMainContract.Presenter {
      * @see IMainContract.Presenter#onFiltersPopUpAcceptClicked()
      */
     public void onFiltersPopUpAcceptClicked() {
-        Log.d("DEBUGGING", "Pulsado 'accept'");
+        filter = tempFilter;
+        tempFilter = null;
+        tempListSelection = null;
         view.closeFiltersPopUp();
+        load();
     }
 
     /**
      * @see IMainContract.Presenter#onFiltersPopUpClearFiltersClicked()
      */
     public void onFiltersPopUpClearFiltersClicked() {
-        Log.d("DEBUGGING", "Pulsado 'clear filters'");
+        tempFilter.clear();
+        List<Selection> typesSelection = getFuelTypesSelections(tempFilter);
+        setFiltersPopUpValues();
+        view.showInfoMessage("Se han limpiado los filtros");
     }
 
     ///////////////////////////////////////////////////////////////////////////////////
@@ -181,14 +223,13 @@ public class MainPresenter implements IMainContract.Presenter {
 
             @Override
             public void onSuccess(List<Gasolinera> stations) {
-
-                
-                if(stations.isEmpty()){
+                List<Gasolinera> filtered = filter.toFilter(stations);
+                if(filtered.isEmpty()){
                     view.showLoadError();
                 }
                 else {
-                    view.showStations(stations);
-                    view.showLoadCorrect(stations.size());
+                    view.showStations(filtered);
+                    view.showLoadCorrect(filtered.size());
                 }
 
             }

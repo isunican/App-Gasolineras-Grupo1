@@ -1,6 +1,7 @@
 package es.unican.gasolineras.model;
 
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -13,8 +14,9 @@ import java.util.stream.Collectors;
 
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.IFilter;
-import kotlin.collections.EmptyList;
+import lombok.Getter;
 
+@Getter
 public class Filter implements IFilter {
 
     private List<FuelTypeEnum> fuelTypes;
@@ -24,7 +26,7 @@ public class Filter implements IFilter {
     public Filter() {
         fuelTypes = Arrays.asList(FuelTypeEnum.values());
         gasBrands = null;
-        maxPrice = null;
+        maxPrice = Double.MAX_VALUE;
     }
 
     private Boolean typeFilter(Gasolinera g) {
@@ -73,6 +75,13 @@ public class Filter implements IFilter {
     public void clear() {
         fuelTypes = Arrays.asList(FuelTypeEnum.values());
         gasBrands = null;
-        maxPrice = null;
+        maxPrice = Double.MAX_VALUE;
+    }
+
+    public IFilter toCopy() {
+        return new Filter()
+                .setFuelTypes(fuelTypes)
+                .setMaxPrice(maxPrice)
+                .setGasBrands(gasBrands);
     }
 }

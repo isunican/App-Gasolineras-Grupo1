@@ -43,6 +43,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     private View popupView;
     PopupWindow popupWindow;
     private AlertDialog alertDialog;
+    boolean[] selectcionArray;
 
     /** The presenter of this view */
     private MainPresenter presenter;
@@ -152,8 +153,12 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         Toast.makeText(this, "Error cargando las gasolineras", Toast.LENGTH_SHORT).show();
     }
 
-
-
+    /**
+     * @see IMainContract.View#showInfoMessage(String)
+     */
+    public void showInfoMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
 
     /**
      * @see IMainContract.View#showStationDetails(Gasolinera)
@@ -175,14 +180,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         startActivity(intent);
     }
 
-    /**
-     * @see IMainContract.View#showFiltersPopUp(String)  
-     */
-    @Override
-    public void showFiltersPopUp(String fuelTypes) {
+    private void createPopUp(int layoutId) {
         // Crear el layout del Popup
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        popupView = inflater.inflate(R.layout.activity_filters_layout, null);
+        popupView = inflater.inflate(layoutId, null);
         int width = ViewGroup.LayoutParams.MATCH_PARENT;
         int height = ViewGroup.LayoutParams.MATCH_PARENT;
         boolean focusable = true; // Permite al usuario interactuar con los elementos del popup
@@ -191,10 +192,18 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         // Muestra el PopupWindow en el centro de la pantalla
         ConstraintLayout rootLayout = findViewById(R.id.main);
         popupWindow.showAtLocation(rootLayout, Gravity.CENTER, 0, 0);
+    }
+
+    /**
+     * @see IMainContract.View#showFiltersPopUp()
+     */
+    @Override
+    public void showFiltersPopUp() {
+        // Crea el popup
+        createPopUp(R.layout.activity_filters_layout);
 
         // Fijar valores al TextView del tipo de combustible
         TextView typeSpinner = popupView.findViewById(R.id.typeSpinner);
-        typeSpinner.setText(fuelTypes);
         typeSpinner.setOnClickListener(v -> {
             presenter.onFiltersPopUpFuelTypesSelected();
         });
@@ -234,6 +243,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
      */
     @Override
     public void updateFiltersPopUpFuelTypesSelection(int position, boolean value) {
+        selectcionArray[position] = value;
         alertDialog.getListView().setItemChecked(position, value);
     }
 
@@ -245,15 +255,15 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainView.this);
         builder.setTitle("Seleccione opciones");
 
-        String[] opciones = new String[selections.size()];
-        boolean[] seleccionadas = new boolean[selections.size()];
+        String[] options = new String[selections.size()];
+        selectcionArray = new boolean[selections.size()];
         for (int i = 0; i < selections.size(); i++) {
-            opciones[i] = selections.get(i).getValue();
-            seleccionadas[i] = selections.get(i).isSelected();
+            options[i] = selections.get(i).getValue();
+            selectcionArray[i] = selections.get(i).isSelected();
         }
 
         // Actualizar el estado de selección en el array
-        builder.setMultiChoiceItems(opciones, seleccionadas, (dialog, which, isChecked) -> {
+        builder.setMultiChoiceItems(options, selectcionArray, (dialog, which, isChecked) -> {
             presenter.onFiltersPopUpFuelTypesOneSelected(which, isChecked);
         });
 
