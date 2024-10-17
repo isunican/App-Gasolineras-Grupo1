@@ -12,8 +12,16 @@ public interface IFilter {
 
     public IFilter setMaxPrice(Double maxPrice);
 
+    public List<FuelTypeEnum> getFuelTypes();
+
+    public List<String> getGasBrands();
+
+    public Double getMaxPrice();
+
     public List<Gasolinera> toFilter(List<Gasolinera> g);
 
     public void clear();
+
+    public IFilter toCopy();
 
 }

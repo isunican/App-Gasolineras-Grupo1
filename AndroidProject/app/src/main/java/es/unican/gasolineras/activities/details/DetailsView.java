@@ -6,16 +6,11 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import org.parceler.Parcels;
-import org.w3c.dom.Text;
 
 import es.unican.gasolineras.R;
 import es.unican.gasolineras.model.Gasolinera;
@@ -71,7 +66,7 @@ public class DetailsView extends AppCompatActivity {
         tvMunicipio.setText(gasolinera.getMunicipio());
         tvGasolina95E5.setText(String.valueOf(Math.round(gasolinera.getGasolina95E5() * 100.0)/100.0));
         tvGasoleoA.setText(String.valueOf(Math.round(gasolinera.getGasoleoA() * 100.0)/100.0));
-        Double precioGasolina = Math.round(gasolinera.getPrecioGasolina() * 100.0)/100.0;
+        Double precioGasolina = Math.round(gasolinera.getAverageGasPrice() * 100.0)/100.0;
         tvSumario.setText(precioGasolina == 0 ? "-" : String.valueOf(precioGasolina));
         tvDireccion.setText(gasolinera.getDireccion());
         tvCodigoPostal.setText(gasolinera.getCp());

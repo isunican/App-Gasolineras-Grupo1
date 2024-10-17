@@ -127,6 +127,12 @@ public interface IMainContract {
         public void showLoadError();
 
         /**
+         * The view is requested to display a notificacion indicating a message.
+         * Only the Presenter should call this method
+         */
+        public void showInfoMessage(String message);
+
+        /**
          * The view is requested to display the detailed view of the given gas station.
          * Only the Presenter should call this method
          * @param station the charging station
@@ -142,9 +148,8 @@ public interface IMainContract {
         /**
          * The view is requested to open the filters popup.
          * Only the Presenter should call this method
-         * @param fuelTypes the active selections of the fuel types
          */
-        public void showFiltersPopUp(String fuelTypes);
+        public void showFiltersPopUp();
 
         /**
          * The view is requested to to open the filters fuel type selector.
