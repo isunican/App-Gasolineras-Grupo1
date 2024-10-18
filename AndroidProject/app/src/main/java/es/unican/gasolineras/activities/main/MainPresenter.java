@@ -1,18 +1,25 @@
 package es.unican.gasolineras.activities.main;
 
-import android.util.Log;
 
-import java.sql.ClientInfoStatus;
+
+import static es.unican.gasolineras.common.OrderMethodsEnum.Ascending;
+import static es.unican.gasolineras.common.OrderMethodsEnum.Descending;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.IFilter;
+import es.unican.gasolineras.common.OrderMethodsEnum;
+import es.unican.gasolineras.common.OrderTypeEnum;
+
 import es.unican.gasolineras.model.Filter;
 import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.model.IDCCAAs;
+import es.unican.gasolineras.model.OrderByPrice;
 import es.unican.gasolineras.repository.ICallBack;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 
@@ -26,6 +33,10 @@ public class MainPresenter implements IMainContract.Presenter {
     private IFilter filter;
     private IFilter tempFilter;
     private List<Selection> tempListSelection;
+
+    // Orden by price:
+    private OrderByPrice orderByPrice = new OrderByPrice();
+    private OrderTypeEnum orderType;
 
     /**
      * @see IMainContract.Presenter#init(IMainContract.View)
@@ -274,16 +285,20 @@ public class MainPresenter implements IMainContract.Presenter {
             @Override
             public void onSuccess(List<Gasolinera> stations) {
                 List<Gasolinera> filtered = filter.toFilter(stations);
+
                 if(filtered.isEmpty()){
                     view.showLoadError();
                 }
                 else {
                     view.showStations(filtered);
                     view.showLoadCorrect(filtered.size());
+                    // Llamamos al metodo de ordenar
+                    // TODO: Implementar el tipo de orden NONE.
+                    Collections.sort(filtered, orderByPrice);
+
                 }
 
             }
-
 
             @Override
             public void onFailure(Throwable e) {
@@ -293,6 +308,58 @@ public class MainPresenter implements IMainContract.Presenter {
         };
 
         repository.requestGasolineras(callBack, IDCCAAs.CANTABRIA.id);
+    }
+
+    // Methods for Ordering story user
+
+    public void onOrderClicked() {
+        view.showOrderPopUp();
+    }
+
+    // Definir el tipo de gasolina que se ha seleccionado
+    public void onTipoGasolinaSelected(FuelTypeEnum type) {
+        orderByPrice.setFuelType(type);
+    }
+
+
+    // Definir el tipo que se ha seleccionado.
+    public void onTypeOrderSelected(OrderTypeEnum selectedTypeOrder) {
+        orderType = selectedTypeOrder;
+    }
+
+
+    // Definir el orden que se ha seleccionado.
+    public void onMethodOrderSelected(OrderMethodsEnum orderMethod) {
+        switch (orderMethod) {
+            case Ascending:
+                orderByPrice.setAscending(true);  // Asigna directamente si es ascendente
+                break;
+            case Descending:
+                orderByPrice.setAscending(false); // Asigna directamente si es descendente
+                break;
+            default:
+                orderByPrice.setAscending(null); // Manejo de "sin orden"
+                break;
+        }
+    }
+
+    @Override
+    public void onOrderPopUpAcceptClicked() {
+
+        if (orderByPrice.getFuelType() != null && orderByPrice.getAscending() != null) {
+            // Llamar al método de carga que ya maneja la filtración y la ordenación
+            load(); // Este método filtrará y ordenará según los criterios establecidos
+            view.closeOrderPopUp();
+        } else {
+            view.closeOrderPopUp();
+        }
+
+    }
+
+    @Override
+    public void onOrderPopUpCancelClicked() {
+    view.closeOrderPopUp();
+
     }
 
 }
