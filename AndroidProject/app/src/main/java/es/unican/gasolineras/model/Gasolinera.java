@@ -37,14 +37,17 @@ public class Gasolinera {
     @SerializedName("Precio Gasolina 95 E5")        protected double gasolina95E5;
 
 
-    protected BrandsEnum brand;
 
 
-    public Gasolinera (){
 
-        defineBrand();
+    public BrandsEnum getBrand(){
+        return BrandsEnum.fromString(rotulo);
 
     }
+
+
+
+
 
     
     /**
@@ -71,52 +74,6 @@ public class Gasolinera {
     }
 
 
-    private void defineBrand (){
 
-        switch (rotulo) {
-            case "Repsol":
-                brand = BrandsEnum.REPSOL;
-                break;
-
-            case "Cepsa":
-                brand = BrandsEnum.CEPSA;
-                break;
-
-            case "Petronor":
-                brand = BrandsEnum.PETRONOR;
-                break;
-
-            case "Campsa":
-                brand = BrandsEnum.CAMPSA;
-                break;
-
-            case "Galp":
-                brand = BrandsEnum.GALP;
-                break;
-
-            case "Shell":
-                brand = BrandsEnum.SHELL;
-                break;
-            case "Ballenoil":
-                brand = BrandsEnum.BALLENOIL;
-                break;
-            case "Carrefour":
-                brand = BrandsEnum.CARREFOUR;
-                break;
-            case "Eroski":
-                brand = BrandsEnum.EROSKI;
-                break;
-
-            case "Avia":
-                brand = BrandsEnum.AVIA;
-                break;
-
-            default :
-
-                brand = BrandsEnum.OTROS;
-        }
-
-
-    }
 
 }

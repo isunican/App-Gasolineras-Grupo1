@@ -144,11 +144,7 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onFiltersPopUpBrandsSelected() {
-        //view.showFiltersPopUpBrandSelector(Arrays.asList(
-          //      new Selection("Todos", true),
-           //     new Selection("Gasolina", false),
-             //   new Selection("Diesel", false)
-        //));
+
         tempListSelection = getBrandsSelections(tempFilter);
         view.showFiltersPopUpBrandSelector(tempListSelection);
 
