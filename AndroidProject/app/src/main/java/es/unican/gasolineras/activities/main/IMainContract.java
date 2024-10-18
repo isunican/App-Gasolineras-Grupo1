@@ -3,6 +3,9 @@ package es.unican.gasolineras.activities.main;
 import java.util.List;
 
 import es.unican.gasolineras.common.IFilter;
+import es.unican.gasolineras.common.FuelTypeEnum;
+import es.unican.gasolineras.common.OrderMethodsEnum;
+import es.unican.gasolineras.common.OrderTypeEnum;
 import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 
@@ -113,6 +116,43 @@ public interface IMainContract {
          * Only the View should call this method
          */
         public void onFiltersPopUpClearFiltersClicked();
+
+        // Methods for Ordering story user
+
+        /**
+         * The presenter is informed that the order item in the toolbar has been clicked
+         * Only the view should call this method
+         */
+        public void onOrderClicked();
+
+        /**
+         * The presenter is informed that the fuel type item in the order popup has been selected
+         * Only the View should call this method
+         */
+        public void onTipoGasolinaSelected(FuelTypeEnum type);
+
+        /**
+         * The presenter is informed that the order type item in the order popup has been selected
+         */
+        public void onTypeOrderSelected(OrderTypeEnum selectedTypeOrder);
+
+        /**
+         * The presenter is informed that the order method  item in the order popup has been selected
+         * Only the View should call this method
+         */
+        public void onMethodOrderSelected(OrderMethodsEnum orderMethod);
+
+        /**
+         * The presenter is informed that the accept button in the order popup has been clicked
+         * Only the View should call this method
+         */
+        public void onOrderPopUpAcceptClicked();
+
+        /**
+         * The presenter is informed that the cancel button in the order popup has been clicked
+         * Only the View should call this method
+         */
+        public void onOrderPopUpCancelClicked();
 
         public void setTempFilter(IFilter f);
 
@@ -250,6 +290,22 @@ public interface IMainContract {
          * Only the Presenter should call this method
          */
         public void closeFiltersPopUp();
+
+
+        // Methods for the Ordering story user
+        /**
+         * The view is requested to open the filters popup.
+         * Only the Presenter should call this method
+         */
+
+        public void showOrderPopUp();
+
+        /**
+         * The view is requested to close the filters popup
+         * Only the Presenter should call this method.
+         */
+
+        public void closeOrderPopUp();
 
         public String getConstantString(int id);
 
