@@ -117,6 +117,72 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_weight="1">
+
+            <!-- lbMaxPrice ocupa una línea completa -->
+            <TextView
+                android:id="@+id/lbMaxPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/filters_max_price"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:gravity="center" />
+
+            <!-- Espacio entre lbMaxPrice y SeekBar -->
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="8dp" />
+
+            <!-- LinearLayout con SeekBar y textos Min/Max centrados -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical|center_horizontal">
+
+                <!-- Texto Min -->
+                <TextView
+                    android:id="@+id/minPriceLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Min"
+                    android:textColor="#000000"
+                    android:textSize="14sp"
+                    android:gravity="center" />
+
+                <!-- SeekBar -->
+                <SeekBar
+                    android:id="@+id/MaxPriceSeekBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:background="#AAF6DDFF"
+                    android:paddingHorizontal="5dp" />
+
+                <!-- Texto Max -->
+                <TextView
+                    android:id="@+id/maxPriceLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Max"
+                    android:textColor="#000000"
+                    android:textSize="14sp"
+                    android:gravity="center" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <ImageButton

@@ -10,6 +10,7 @@
     <string name="filters_title">Filtros</string>
     <string name="filters_type">Tipo:</string>
     <string name="filters_brand">Marca:</string>
+    <string name="filters_max_price">Precio máximo:</string>
     <string name="filters_type_selection">Seleccione ▼</string>
     <string name="filters_brand_selection">Seleccione ▼</string>
     <string name="filters_cross_description">Cancelar</string>
