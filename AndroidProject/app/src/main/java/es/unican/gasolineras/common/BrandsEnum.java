@@ -29,14 +29,18 @@ public enum BrandsEnum {
         return displayName;
     }
 
-    public static BrandsEnum fromString(String displayName) {
+    public static BrandsEnum fromString(String rotulo) {
         // Recorre todos los valores del enum
-        for (BrandsEnum brands : BrandsEnum.values()) {
-            // Compara el displayName con el string proporcionado
-            if (brands.displayName.equalsIgnoreCase(displayName)) {
-                return brands;
+        if (rotulo == null){
+            return OTROS;
+        }
+
+        for (BrandsEnum brand : BrandsEnum.values()) {
+            // Compara el rótulo con el string proporcionado
+            if (brand.displayName.toLowerCase().contains(rotulo.toLowerCase())) {
+                return brand;
             }
         }
-        return null;
+        return OTROS;
     }
 }

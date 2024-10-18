@@ -38,8 +38,8 @@ public class Filter implements IFilter {
     }
 
     private Boolean brandsFilter(Gasolinera g) {
-        // TODO
-        return true;
+        return brands.contains(g.getBrand());
+        //return true;
     }
 
     @NonNull
