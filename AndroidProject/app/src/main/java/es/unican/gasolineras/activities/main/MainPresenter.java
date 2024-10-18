@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import es.unican.gasolineras.common.BrandsEnum;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.IFilter;
 import es.unican.gasolineras.model.Filter;
@@ -70,6 +71,22 @@ public class MainPresenter implements IMainContract.Presenter {
         return s;
     }
 
+
+
+    private List<Selection> getBrandsSelections(IFilter f) {
+        List<Selection> s = new ArrayList<>();
+        boolean allSelected = f.getBrands().size() == BrandsEnum.values().length;
+        s.add(new Selection("Todos", allSelected));
+        for (BrandsEnum t: BrandsEnum.values()) {
+            s.add(
+                    new Selection(t.toString(), !allSelected && f.getBrands().contains(t))
+            );
+        }
+        return s;
+    }
+
+
+
     private String getStringOfSelections(List<Selection> s) {
         s = s.stream().filter(Selection::isSelected).collect(Collectors.toList());
         String text = "ERROR";
@@ -94,8 +111,9 @@ public class MainPresenter implements IMainContract.Presenter {
         String fuelTypes = getStringOfSelections(
                 getFuelTypesSelections(tempFilter));
         // Obtener la lista de selecciones de fuelBrands
-        // TODO
-        String fuelBrands = "TODOS";
+        String fuelBrands = getStringOfSelections(
+                getBrandsSelections(tempFilter));;
+
         view.updateFiltersPopupTextViews(fuelTypes ,fuelBrands);
     }
 
@@ -126,12 +144,14 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onFiltersPopUpBrandsSelected() {
-        // TODO
-        view.showFiltersPopUpBrandSelector(Arrays.asList(
-                new Selection("Todos", true),
-                new Selection("Gasolina", false),
-                new Selection("Diesel", false)
-        ));
+        //view.showFiltersPopUpBrandSelector(Arrays.asList(
+          //      new Selection("Todos", true),
+           //     new Selection("Gasolina", false),
+             //   new Selection("Diesel", false)
+        //));
+        tempListSelection = getBrandsSelections(tempFilter);
+        view.showFiltersPopUpBrandSelector(tempListSelection);
+
     }
 
     /**
@@ -184,25 +204,44 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onFiltersPopUpBrandsOneSelected(int index, boolean value) {
-        // TODO: Se puede refactorizar lo de arriba y hacerlo facil
-        boolean[] seleccionadas = {false, true, false};
-        seleccionadas[index] = value;
+        boolean update = true;
         if (index == 0) {
             // Si se selecciona "Todos", desmarcar todas las demas opciones
             if (value) {
-                for (int i = 1; i < seleccionadas.length; i++) {
-                    seleccionadas[i] = false;
+                for (int i = 1; i < tempListSelection.size(); i++) {
+                    tempListSelection.get(i).setSelected(false);
                     view.updateFiltersPopUpBrandsSelection(i, false);
                 }
+                // No se puede desmarcar todos
+            } else {
+                update = false;
+                view.updateFiltersPopUpBrandsSelection(0, true);
             }
         } else {
-            // Si se selecciona una opcion distinta de "Todos", desmarcar "Todos"
-            if (value) {
-                seleccionadas[0] = false;
+            int numActivated = (int) tempListSelection.stream()
+                    .skip(1)
+                    .filter(Selection::isSelected)
+                    .count();
+            if (value && numActivated < BrandsEnum.values().length - 1) {
+                // Si se selecciona una opcion distinta de "Todos", y no esta marcando todas
+                tempListSelection.get(0).setSelected(false);
                 view.updateFiltersPopUpBrandsSelection(0, false);
+            } else if (value && numActivated == BrandsEnum.values().length - 1) {
+                // Si se selecciona una opcion distinta de "Todos" y se marcan todas
+                tempListSelection.get(0).setSelected(true);
+                view.updateFiltersPopUpBrandsSelection(0, true);
+                for (int i = 1; i < tempListSelection.size(); i++) {
+                    tempListSelection.get(i).setSelected(false);
+                    view.updateFiltersPopUpBrandsSelection(i, false);
+                }
+                update = false;
+            } else if (!value && numActivated == 1) {
+                tempListSelection.get(0).setSelected(true);
+                view.updateFiltersPopUpBrandsSelection(0, true);
             }
         }
-        seleccionadas[index] = value;
+        if (update)
+            tempListSelection.get(index).setSelected(value);
     }
 
     /**
@@ -228,8 +267,19 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onFiltersPopUpBrandsAccepted() {
-        // TODO
-        view.updateFiltersPopupTextViews(null, "Todos");
+        //view.updateFiltersPopupTextViews(null, "Todos");
+        if (tempListSelection.get(0).isSelected()) {
+            tempFilter.setBrands(Arrays.asList(BrandsEnum.values()));
+        } else {
+            tempFilter.setBrands(
+                    tempListSelection.stream()
+                            .filter(Selection::isSelected)
+                            .map(e -> BrandsEnum.fromString(e.getValue()))
+                            .collect(Collectors.toList())
+            );
+        }
+        view.updateFiltersPopupTextViews(null, getStringOfSelections(tempListSelection));
+
     }
 
     /**

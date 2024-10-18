@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import es.unican.gasolineras.common.BrandsEnum;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.IFilter;
 import lombok.Getter;
@@ -20,11 +21,13 @@ import lombok.Getter;
 public class Filter implements IFilter {
 
     private List<FuelTypeEnum> fuelTypes;
+    private List<BrandsEnum> brands;
     private List<String> gasBrands;
     private Double maxPrice;
 
     public Filter() {
         fuelTypes = Arrays.asList(FuelTypeEnum.values());
+        brands = Arrays.asList(BrandsEnum.values());
         gasBrands = null;
         maxPrice = Double.MAX_VALUE;
     }
@@ -53,6 +56,10 @@ public class Filter implements IFilter {
         this.fuelTypes = fuelTypes;
         return this;
     }
+    public IFilter setBrands(List<BrandsEnum> brands) {
+        this.brands = brands;
+        return this;
+    }
 
     public IFilter setGasBrands(List<String> gasBrands) {
         this.gasBrands = gasBrands;
@@ -74,6 +81,7 @@ public class Filter implements IFilter {
 
     public void clear() {
         fuelTypes = Arrays.asList(FuelTypeEnum.values());
+        brands = Arrays.asList(BrandsEnum.values());
         gasBrands = null;
         maxPrice = Double.MAX_VALUE;
     }
@@ -82,6 +90,8 @@ public class Filter implements IFilter {
         return new Filter()
                 .setFuelTypes(fuelTypes)
                 .setMaxPrice(maxPrice)
+                .setBrands(brands)
                 .setGasBrands(gasBrands);
+
     }
 }
