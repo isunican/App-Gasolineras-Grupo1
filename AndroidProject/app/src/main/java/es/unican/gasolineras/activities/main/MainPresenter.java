@@ -2,10 +2,14 @@ package es.unican.gasolineras.activities.main;
 
 import android.util.Log;
 
+import androidx.appcompat.app.AlertDialog;
+
 import java.sql.ClientInfoStatus;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import es.unican.gasolineras.common.BrandsEnum;
@@ -147,14 +151,9 @@ public class MainPresenter implements IMainContract.Presenter {
 
         tempListSelection = getBrandsSelections(tempFilter);
         view.showFiltersPopUpBrandSelector(tempListSelection);
-
     }
 
-    /**
-     * @see IMainContract.Presenter#onFiltersPopUpFuelTypesOneSelected(int, boolean)
-     */
-    @Override
-    public void onFiltersPopUpFuelTypesOneSelected(int index, boolean value) {
+    private void filtersAlertDialogControler(int index, boolean value, int length) {
         boolean update = true;
         if (index == 0) {
             // Si se selecciona "Todos", desmarcar todas las demas opciones
@@ -163,7 +162,7 @@ public class MainPresenter implements IMainContract.Presenter {
                     tempListSelection.get(i).setSelected(false);
                     view.updateFiltersPopUpFuelTypesSelection(i, false);
                 }
-            // No se puede desmarcar todos
+                // No se puede desmarcar todos
             } else {
                 update = false;
                 view.updateFiltersPopUpFuelTypesSelection(0, true);
@@ -173,11 +172,11 @@ public class MainPresenter implements IMainContract.Presenter {
                     .skip(1)
                     .filter(Selection::isSelected)
                     .count();
-            if (value && numActivated < FuelTypeEnum.values().length - 1) {
+            if (value && numActivated < length - 1) {
                 // Si se selecciona una opcion distinta de "Todos", y no esta marcando todas
                 tempListSelection.get(0).setSelected(false);
                 view.updateFiltersPopUpFuelTypesSelection(0, false);
-            } else if (value && numActivated == FuelTypeEnum.values().length - 1) {
+            } else if (value && numActivated == length - 1) {
                 // Si se selecciona una opcion distinta de "Todos" y se marcan todas
                 tempListSelection.get(0).setSelected(true);
                 view.updateFiltersPopUpFuelTypesSelection(0, true);
@@ -193,6 +192,14 @@ public class MainPresenter implements IMainContract.Presenter {
         }
         if (update)
             tempListSelection.get(index).setSelected(value);
+    }
+
+    /**
+     * @see IMainContract.Presenter#onFiltersPopUpFuelTypesOneSelected(int, boolean)
+     */
+    @Override
+    public void onFiltersPopUpFuelTypesOneSelected(int index, boolean value) {
+        filtersAlertDialogControler(index, value, FuelTypeEnum.values().length);
     }
 
     /**
@@ -240,22 +247,31 @@ public class MainPresenter implements IMainContract.Presenter {
             tempListSelection.get(index).setSelected(value);
     }
 
+    private <T> void updateSelectionToFilter(List<T> allElements,
+                                         Consumer<List<T>> setter,
+                                         Function<Selection, T> transformer) {
+        if (tempListSelection.get(0).isSelected()) {
+            setter.accept(allElements);
+        } else {
+            setter.accept(
+                    tempListSelection.stream()
+                            .filter(Selection::isSelected)
+                            .map(transformer)
+                            .collect(Collectors.toList())
+            );
+        }
+    }
+
     /**
      * @see IMainContract.Presenter#onFiltersPopUpFuelTypesAccepted()
      */
     @Override
     public void onFiltersPopUpFuelTypesAccepted() {
-        if (tempListSelection.get(0).isSelected()) {
-            tempFilter.setFuelTypes(Arrays.asList(FuelTypeEnum.values()));
-        } else {
-            tempFilter.setFuelTypes(
-                    tempListSelection.stream()
-                            .filter(Selection::isSelected)
-                            .map(e -> FuelTypeEnum.fromString(e.getValue()))
-                            .collect(Collectors.toList())
-            );
-        }
-        view.updateFiltersPopupTextViews(getStringOfSelections(tempListSelection), null);
+        updateSelectionToFilter(
+                Arrays.asList(FuelTypeEnum.values()),
+                tempFilter::setFuelTypes,
+                e -> FuelTypeEnum.fromString(e.getValue()));
+        view.updateFiltersPopupTextViews(getStringOfSelections(tempListSelection),null);
     }
 
     /**
