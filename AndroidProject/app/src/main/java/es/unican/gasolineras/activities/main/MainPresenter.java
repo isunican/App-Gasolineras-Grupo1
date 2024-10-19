@@ -294,7 +294,9 @@ public class MainPresenter implements IMainContract.Presenter {
                     view.showLoadCorrect(filtered.size());
                     // Llamamos al metodo de ordenar
                     // TODO: Implementar el tipo de orden NONE.
-                    Collections.sort(filtered, orderByPrice);
+                    if (orderByPrice.getFuelType() != null) {
+                        Collections.sort(filtered, orderByPrice);
+                    }
 
                 }
 
@@ -345,7 +347,7 @@ public class MainPresenter implements IMainContract.Presenter {
 
     @Override
     public void onOrderPopUpAcceptClicked() {
-
+        //
         if (orderByPrice.getFuelType() != null && orderByPrice.getAscending() != null) {
             // Llamar al método de carga que ya maneja la filtración y la ordenación
             load(); // Este método filtrará y ordenará según los criterios establecidos
