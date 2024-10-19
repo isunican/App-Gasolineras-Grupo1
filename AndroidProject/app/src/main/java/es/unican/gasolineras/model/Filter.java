@@ -23,13 +23,13 @@ public class Filter implements IFilter {
     private List<FuelTypeEnum> fuelTypes;
     private List<BrandsEnum> brands;
     private List<String> gasBrands;
-    private Double maxPrice;
+    private Float maxPrice;
 
     public Filter() {
         fuelTypes = Arrays.asList(FuelTypeEnum.values());
         brands = Arrays.asList(BrandsEnum.values());
         gasBrands = null;
-        maxPrice = Double.MAX_VALUE;
+        maxPrice = Float.MAX_VALUE;
     }
 
     private Boolean typeFilter(Gasolinera g) {
@@ -66,7 +66,7 @@ public class Filter implements IFilter {
         return this;
     }
 
-    public IFilter setMaxPrice(Double maxPrice) {
+    public IFilter setMaxPrice(Float maxPrice) {
         this.maxPrice = maxPrice;
         return this;
     }
@@ -83,7 +83,7 @@ public class Filter implements IFilter {
         fuelTypes = Arrays.asList(FuelTypeEnum.values());
         brands = Arrays.asList(BrandsEnum.values());
         gasBrands = null;
-        maxPrice = Double.MAX_VALUE;
+        maxPrice = Float.MAX_VALUE;
     }
 
     public IFilter toCopy() {

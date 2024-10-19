@@ -1,10 +1,5 @@
 package es.unican.gasolineras.activities.main;
 
-import android.util.Log;
-
-import androidx.appcompat.app.AlertDialog;
-
-import java.sql.ClientInfoStatus;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -89,8 +84,6 @@ public class MainPresenter implements IMainContract.Presenter {
         return s;
     }
 
-
-
     private String getStringOfSelections(List<Selection> s) {
         s = s.stream().filter(Selection::isSelected).collect(Collectors.toList());
         String text = "ERROR";
@@ -110,15 +103,15 @@ public class MainPresenter implements IMainContract.Presenter {
 
     ///////////////////////////////////////////////////////////////////////////////////
 
-    private void setFiltersPopUpValues() {
+    private void setFiltersPopupTextViewsSelections() {
         // Obtener la lista de selecciones de fuelTypes
         String fuelTypes = getStringOfSelections(
                 getFuelTypesSelections(tempFilter));
         // Obtener la lista de selecciones de fuelBrands
         String fuelBrands = getStringOfSelections(
-                getBrandsSelections(tempFilter));;
+                getBrandsSelections(tempFilter));
 
-        view.updateFiltersPopupTextViews(fuelTypes ,fuelBrands);
+        view.updateFiltersPopupTextViewsSelections(fuelTypes, fuelBrands);
     }
 
     /**
@@ -130,8 +123,10 @@ public class MainPresenter implements IMainContract.Presenter {
         tempFilter = filter.toCopy();
         // Generar la ventana
         view.showFiltersPopUp();
-        // Actualizar los datos
-        setFiltersPopUpValues();
+        // Actualizar los datos de seleccion
+        setFiltersPopupTextViewsSelections();
+        // Actualiza los datos del precio maximo
+        view.updateFiltersPopupTextViewsMaxPrice(tempFilter.getMaxPrice());
     }
 
     /**
@@ -271,7 +266,7 @@ public class MainPresenter implements IMainContract.Presenter {
                 Arrays.asList(FuelTypeEnum.values()),
                 tempFilter::setFuelTypes,
                 e -> FuelTypeEnum.fromString(e.getValue()));
-        view.updateFiltersPopupTextViews(getStringOfSelections(tempListSelection),null);
+        view.updateFiltersPopupTextViewsSelections(getStringOfSelections(tempListSelection),null);
     }
 
     /**
@@ -290,8 +285,17 @@ public class MainPresenter implements IMainContract.Presenter {
                             .collect(Collectors.toList())
             );
         }
-        view.updateFiltersPopupTextViews(null, getStringOfSelections(tempListSelection));
+        view.updateFiltersPopupTextViewsSelections(null, getStringOfSelections(tempListSelection));
 
+    }
+
+    /**
+     * @see IMainContract.Presenter#onFiltersPopUpMaxPriceAccepted(float)
+     */
+    @Override
+    public void onFiltersPopUpMaxPriceAccepted(float maxPrice) {
+        tempFilter.setMaxPrice(maxPrice);
+        view.updateFiltersPopupTextViewsMaxPrice(maxPrice);
     }
 
     /**
@@ -319,7 +323,7 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     public void onFiltersPopUpClearFiltersClicked() {
         tempFilter.clear();
-        setFiltersPopUpValues();
+        setFiltersPopupTextViewsSelections();
         view.showInfoMessage("Se han limpiado los filtros");
     }
 

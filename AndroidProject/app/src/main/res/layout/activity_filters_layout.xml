@@ -150,11 +150,10 @@
                     android:id="@+id/minPriceLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Min"
+                    android:layout_weight="0.2"
                     android:textColor="#000000"
                     android:textSize="14sp"
-                    android:gravity="center" />
+                    android:gravity="left" />
 
                 <!-- SeekBar -->
                 <SeekBar
@@ -170,13 +169,23 @@
                     android:id="@+id/maxPriceLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Max"
+                    android:layout_weight="0.2"
                     android:textColor="#000000"
                     android:textSize="14sp"
-                    android:gravity="center" />
+                    android:gravity="right" />
 
             </LinearLayout>
+
+            <!-- lbSelectedMaxPrice ocupa una línea completa -->
+            <TextView
+                android:id="@+id/lbSelectedMaxPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:text="@string/filters_max_price_selection"
+                android:gravity="center" />
 
         </LinearLayout>
 

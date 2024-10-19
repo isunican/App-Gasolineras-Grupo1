@@ -49,8 +49,6 @@ public interface IMainContract {
          */
         public void onFiltersPopUpFuelTypesSelected();
 
-
-
         /**
          * The presenter is informed that the fuel brand item in the filter popup has been clicked
          * Only the View should call this method
@@ -87,7 +85,11 @@ public interface IMainContract {
          */
         public void onFiltersPopUpBrandsAccepted();
 
-
+        /**
+         * The presenter is informed that the max price in the filter popup has been accepted
+         * @param maxPrice the selected max price
+         */
+        public void onFiltersPopUpMaxPriceAccepted(float maxPrice);
 
         /**
          * The presenter is informed that the cancel button in the filter popup has been clicked
@@ -198,11 +200,19 @@ public interface IMainContract {
 
 
         /**
-         * The view is requested to to update the filters textviews.
+         * The view is requested to to update the filters textviews of selections.
          * Only the Presenter and View should call this method
          * @param fuelTypes the string to update the textView fuel type
+         * @param fuelBrands the string to update the textView fuel brand
          */
-        public void updateFiltersPopupTextViews(String fuelTypes, String fuelBrands);
+        public void updateFiltersPopupTextViewsSelections(String fuelTypes, String fuelBrands);
+
+        /**
+         * The view is requested to to update the filters textviews of the max price.
+         * Only the Presenter and View should call this method
+         * @param maxPrice the max price value to update the textView
+         */
+        public void updateFiltersPopupTextViewsMaxPrice(float maxPrice);
 
         /**
          * The view is requested to to update the selection of a fuel type selector.
