@@ -23,7 +23,7 @@ public class OrderByPrice implements Comparator<Gasolinera> {
         double priceG2 = g2.getPrecioPorTipo(fuelType);
 
         // Mover gasolineras con precio 0.0 al final
-        if (priceG1G1 == 0.0 && priceG2 == 0.0) {
+        if (priceG1 == 0.0 && priceG2 == 0.0) {
             return 0;
         } else if (priceG1 == 0.0) {
             return 1;
@@ -31,7 +31,7 @@ public class OrderByPrice implements Comparator<Gasolinera> {
             return -1;
         } else if (priceG1 < priceG2) {
             return ascending ? -1 : 1;
-        } else if (precioG1 > priceG2) {
+        } else if (priceG1 > priceG2) {
             return ascending ? 1 : -1;
         } else {
             return 0;
