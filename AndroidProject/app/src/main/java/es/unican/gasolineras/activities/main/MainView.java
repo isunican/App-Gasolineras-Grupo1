@@ -36,7 +36,6 @@ import es.unican.gasolineras.activities.info.InfoView;
 import es.unican.gasolineras.activities.details.DetailsView;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.OrderMethodsEnum;
-import es.unican.gasolineras.common.OrderTypeEnum;
 import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 
@@ -356,7 +355,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         createPopUp(R.layout.activity_sort_layout);
         // Configurar los Spinners
         Spinner typeOrderSpinner = popupView.findViewById(R.id.typeOrderSpinner);
-        Spinner orderTypeSpinner = popupView.findViewById(R.id.priceOrderSpinner);
+
         Spinner orderMethodSpinner = popupView.findViewById(R.id.priceMethodSpinner);
 
         // Llenar los spinners con valores del enumerado
@@ -368,17 +367,6 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         typeFuelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typeOrderSpinner.setAdapter(typeFuelAdapter);
         typeOrderSpinner.setSelection(typeIndex);
-
-        // Llenamos los spinners con los valores del enumerado.
-
-        ArrayAdapter<OrderTypeEnum> orderTypeAdapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                OrderTypeEnum.values()
-        );
-        orderTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        orderTypeSpinner.setAdapter(orderTypeAdapter);
-        orderTypeSpinner.setSelection(1);
 
         ArrayAdapter<OrderMethodsEnum> orderMethodAdapter = new ArrayAdapter<>(
                 this,
@@ -399,26 +387,12 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 FuelTypeEnum selectedType = (FuelTypeEnum) parent.getItemAtPosition(position);
                 // Notificar al presentador sobre la selección
-                presenter.onTipoGasolinaSelected(selectedType);
+                presenter.onFuelTypeSelected(selectedType);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 // TODO: ver que hacer cuando no se selecciona nada.
-            }
-        });
-
-        orderTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                OrderTypeEnum selectedTypeOrder = (OrderTypeEnum) parent.getItemAtPosition(position);
-                // Notificar al presentador sobre la selección
-                presenter.onTypeOrderSelected(selectedTypeOrder);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // TODO: ver que hacer cuando no se selecciona nada
             }
         });
 
@@ -435,7 +409,6 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
             }
         });
 
-
         // Manejo de los botones de aceptar y cancelar
         ImageButton acceptButton = popupView.findViewById(R.id.order_accept_button);
         acceptButton.setOnClickListener (v -> { presenter.onOrderPopUpAcceptClicked();
@@ -446,6 +419,9 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         });
 
         // TODO: Hacer el clear de los filtros.
+        ImageButton clearButton = popupView.findViewById(R.id.bt_clear_order);
+        clearButton.setOnClickListener(v -> { presenter.onOrderPopUpClearClicked();
+        });
 
     }
 

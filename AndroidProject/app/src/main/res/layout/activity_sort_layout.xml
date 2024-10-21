@@ -82,36 +82,6 @@
         </LinearLayout>
 
         <!-- Ordenar por precio    -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/lbPriceOrder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:text="@string/order_price"
-                android:textColor="#000000"
-                android:textSize="14sp" />
-
-            <Spinner
-                android:id="@+id/priceOrderSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:background="#AAF6DDFF"
-                android:paddingHorizontal="5dp"
-                android:text="@string/order_price_selection"
-                android:textAlignment="center"
-                android:textColor="#000000"
-                android:textSize="14sp" />
-
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -129,7 +99,7 @@
 
             <Spinner
                 android:id="@+id/priceMethodSpinner"
-                android:layout_width="65dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
