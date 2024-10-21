@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
+import es.unican.gasolineras.common.BrandsEnum;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,6 +35,20 @@ public class Gasolinera {
 
     @SerializedName("Precio Gasoleo A")             protected double gasoleoA;
     @SerializedName("Precio Gasolina 95 E5")        protected double gasolina95E5;
+
+
+
+
+
+    public BrandsEnum getBrand(){
+        return BrandsEnum.fromString(rotulo);
+
+    }
+
+
+
+
+
     
     /**
      * Returns the summary price of a gas station.
@@ -57,4 +72,8 @@ public class Gasolinera {
             default: return -1.0;
         }
     }
+
+
+
+
 }

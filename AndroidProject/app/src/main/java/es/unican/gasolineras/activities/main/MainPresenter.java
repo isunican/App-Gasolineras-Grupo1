@@ -1,10 +1,5 @@
 package es.unican.gasolineras.activities.main;
 
-import android.util.Log;
-
-import androidx.appcompat.app.AlertDialog;
-
-import java.sql.ClientInfoStatus;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +7,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import es.unican.gasolineras.common.BrandsEnum;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.IFilter;
 import es.unican.gasolineras.model.Filter;
@@ -74,6 +70,20 @@ public class MainPresenter implements IMainContract.Presenter {
         return s;
     }
 
+
+
+    private List<Selection> getBrandsSelections(IFilter f) {
+        List<Selection> s = new ArrayList<>();
+        boolean allSelected = f.getBrands().size() == BrandsEnum.values().length;
+        s.add(new Selection("Todos", allSelected));
+        for (BrandsEnum t: BrandsEnum.values()) {
+            s.add(
+                    new Selection(t.toString(), !allSelected && f.getBrands().contains(t))
+            );
+        }
+        return s;
+    }
+
     private String getStringOfSelections(List<Selection> s) {
         s = s.stream().filter(Selection::isSelected).collect(Collectors.toList());
         String text = "ERROR";
@@ -93,11 +103,15 @@ public class MainPresenter implements IMainContract.Presenter {
 
     ///////////////////////////////////////////////////////////////////////////////////
 
-    private void setFiltersPopUpValues() {
-        // Obtener la lista de selecciones
+    private void setFiltersPopupTextViewsSelections() {
+        // Obtener la lista de selecciones de fuelTypes
         String fuelTypes = getStringOfSelections(
                 getFuelTypesSelections(tempFilter));
-        view.updateFiltersPopupTextViews(fuelTypes);
+        // Obtener la lista de selecciones de fuelBrands
+        String fuelBrands = getStringOfSelections(
+                getBrandsSelections(tempFilter));
+
+        view.updateFiltersPopupTextViewsSelections(fuelTypes, fuelBrands);
     }
 
     /**
@@ -109,8 +123,10 @@ public class MainPresenter implements IMainContract.Presenter {
         tempFilter = filter.toCopy();
         // Generar la ventana
         view.showFiltersPopUp();
-        // Actualizar los datos
-        setFiltersPopUpValues();
+        // Actualizar los datos de seleccion
+        setFiltersPopupTextViewsSelections();
+        // Actualiza los datos del precio maximo
+        view.updateFiltersPopupTextViewsMaxPrice(tempFilter.getMaxPrice());
     }
 
     /**
@@ -120,6 +136,16 @@ public class MainPresenter implements IMainContract.Presenter {
     public void onFiltersPopUpFuelTypesSelected() {
         tempListSelection = getFuelTypesSelections(tempFilter);
         view.showFiltersPopUpFuelTypesSelector(tempListSelection);
+    }
+
+    /**
+     * @see IMainContract.Presenter#onFiltersPopUpBrandsSelected()
+     */
+    @Override
+    public void onFiltersPopUpBrandsSelected() {
+
+        tempListSelection = getBrandsSelections(tempFilter);
+        view.showFiltersPopUpBrandSelector(tempListSelection);
     }
 
     private void filtersAlertDialogControler(int index, boolean value, int length) {
@@ -171,6 +197,51 @@ public class MainPresenter implements IMainContract.Presenter {
         filtersAlertDialogControler(index, value, FuelTypeEnum.values().length);
     }
 
+    /**
+     * @see IMainContract.Presenter#onFiltersPopUpBrandsOneSelected(int, boolean)
+     */
+    @Override
+    public void onFiltersPopUpBrandsOneSelected(int index, boolean value) {
+        boolean update = true;
+        if (index == 0) {
+            // Si se selecciona "Todos", desmarcar todas las demas opciones
+            if (value) {
+                for (int i = 1; i < tempListSelection.size(); i++) {
+                    tempListSelection.get(i).setSelected(false);
+                    view.updateFiltersPopUpBrandsSelection(i, false);
+                }
+                // No se puede desmarcar todos
+            } else {
+                update = false;
+                view.updateFiltersPopUpBrandsSelection(0, true);
+            }
+        } else {
+            int numActivated = (int) tempListSelection.stream()
+                    .skip(1)
+                    .filter(Selection::isSelected)
+                    .count();
+            if (value && numActivated < BrandsEnum.values().length - 1) {
+                // Si se selecciona una opcion distinta de "Todos", y no esta marcando todas
+                tempListSelection.get(0).setSelected(false);
+                view.updateFiltersPopUpBrandsSelection(0, false);
+            } else if (value && numActivated == BrandsEnum.values().length - 1) {
+                // Si se selecciona una opcion distinta de "Todos" y se marcan todas
+                tempListSelection.get(0).setSelected(true);
+                view.updateFiltersPopUpBrandsSelection(0, true);
+                for (int i = 1; i < tempListSelection.size(); i++) {
+                    tempListSelection.get(i).setSelected(false);
+                    view.updateFiltersPopUpBrandsSelection(i, false);
+                }
+                update = false;
+            } else if (!value && numActivated == 1) {
+                tempListSelection.get(0).setSelected(true);
+                view.updateFiltersPopUpBrandsSelection(0, true);
+            }
+        }
+        if (update)
+            tempListSelection.get(index).setSelected(value);
+    }
+
     private <T> void updateSelectionToFilter(List<T> allElements,
                                          Consumer<List<T>> setter,
                                          Function<Selection, T> transformer) {
@@ -195,7 +266,36 @@ public class MainPresenter implements IMainContract.Presenter {
                 Arrays.asList(FuelTypeEnum.values()),
                 tempFilter::setFuelTypes,
                 e -> FuelTypeEnum.fromString(e.getValue()));
-        view.updateFiltersPopupTextViews(getStringOfSelections(tempListSelection));
+        view.updateFiltersPopupTextViewsSelections(getStringOfSelections(tempListSelection),null);
+    }
+
+    /**
+     * @see IMainContract.Presenter#onFiltersPopUpBrandsAccepted()
+     */
+    @Override
+    public void onFiltersPopUpBrandsAccepted() {
+        //view.updateFiltersPopupTextViews(null, "Todos");
+        if (tempListSelection.get(0).isSelected()) {
+            tempFilter.setBrands(Arrays.asList(BrandsEnum.values()));
+        } else {
+            tempFilter.setBrands(
+                    tempListSelection.stream()
+                            .filter(Selection::isSelected)
+                            .map(e -> BrandsEnum.fromString(e.getValue()))
+                            .collect(Collectors.toList())
+            );
+        }
+        view.updateFiltersPopupTextViewsSelections(null, getStringOfSelections(tempListSelection));
+
+    }
+
+    /**
+     * @see IMainContract.Presenter#onFiltersPopUpMaxPriceAccepted(float)
+     */
+    @Override
+    public void onFiltersPopUpMaxPriceAccepted(float maxPrice) {
+        tempFilter.setMaxPrice(maxPrice);
+        view.updateFiltersPopupTextViewsMaxPrice(maxPrice);
     }
 
     /**
@@ -223,8 +323,7 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     public void onFiltersPopUpClearFiltersClicked() {
         tempFilter.clear();
-        List<Selection> typesSelection = getFuelTypesSelections(tempFilter);
-        setFiltersPopUpValues();
+        setFiltersPopupTextViewsSelections();
         view.showInfoMessage("Se han limpiado los filtros");
     }
 

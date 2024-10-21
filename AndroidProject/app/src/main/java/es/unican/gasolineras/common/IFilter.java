@@ -8,15 +8,17 @@ public interface IFilter {
 
     public IFilter setFuelTypes(List<FuelTypeEnum> fuelTypes);
 
+    public IFilter setBrands(List<BrandsEnum> brands);
+
     public IFilter setGasBrands(List<String> gasBrands);
 
-    public IFilter setMaxPrice(Double maxPrice);
+    public IFilter setMaxPrice(Float maxPrice);
 
     public List<FuelTypeEnum> getFuelTypes();
 
-    public List<String> getGasBrands();
+    public List<BrandsEnum> getBrands();
 
-    public Double getMaxPrice();
+    public Float getMaxPrice();
 
     public List<Gasolinera> toFilter(List<Gasolinera> g);
 

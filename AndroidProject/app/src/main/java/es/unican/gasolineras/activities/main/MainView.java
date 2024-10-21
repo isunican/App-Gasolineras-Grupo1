@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 import es.unican.gasolineras.R;
 import es.unican.gasolineras.activities.info.InfoView;
 import es.unican.gasolineras.activities.details.DetailsView;
+import es.unican.gasolineras.common.LimitPricesEnum;
 import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 
@@ -189,6 +191,30 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         boolean focusable = true; // Permite al usuario interactuar con los elementos del popup
         popupWindow = new PopupWindow(popupView, width, height, focusable);
 
+
+        /*
+         * Actualizamos los valores maximos y minimos del SeekBar para que sean float,
+         * aunque la implementación orginal solo permita valores int.
+         */
+        // Buscar el SeekBar en el layout
+        SeekBar maxPriceSeekBar = popupView.findViewById(R.id.MaxPriceSeekBar);
+
+        // get values from LimitePricesEnum converted to float and integer
+        float minValue = Float.parseFloat(LimitPricesEnum.MIN_PRICE.toString());
+        float maxValue = Float.parseFloat(LimitPricesEnum.MAX_PRICE.toString());
+        int scalingFactor = Integer.parseInt(LimitPricesEnum.SCALING_FACTOR.toString());
+
+        // Configurar el rango del SeekBar
+        int max = (int) ((maxValue - minValue) * scalingFactor);
+        maxPriceSeekBar.setMax(max);
+
+        // Ajusta el texto de los TextView minPriceLabel y maxPriceLabel
+        TextView minPriceLabel = popupView.findViewById(R.id.minPriceLabel);
+        TextView maxPriceLabel = popupView.findViewById(R.id.maxPriceLabel);
+        minPriceLabel.setText(String.valueOf(minValue));
+        maxPriceLabel.setText(String.valueOf(maxValue));
+
+
         // Muestra el PopupWindow en el centro de la pantalla
         ConstraintLayout rootLayout = findViewById(R.id.main);
         popupWindow.showAtLocation(rootLayout, Gravity.CENTER, 0, 0);
@@ -202,25 +228,53 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         // Crea el popup
         createPopUp(R.layout.activity_filters_layout);
 
-        // Fijar valores al TextView del tipo de combustible
+        // Fijar listener al TextView del tipo de combustible
         TextView typeSpinner = popupView.findViewById(R.id.typeSpinner);
         typeSpinner.setOnClickListener(v -> {
             presenter.onFiltersPopUpFuelTypesSelected();
         });
 
-        // Fijar boton de limpiar filtros
+        // Fijar listener al TextView de la marca de gasolineras
+        TextView brandSpinner = popupView.findViewById(R.id.brandSpinner);
+        brandSpinner.setOnClickListener(v -> {
+            presenter.onFiltersPopUpBrandsSelected();
+        });
+
+        // Fija listener al SeekBar del precio maximo de gasolineras para obtener el valor decimal
+        SeekBar maxPriceSeekBar = popupView.findViewById(R.id.MaxPriceSeekBar);
+        maxPriceSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // get values from LimitePricesEnum converted to float and integer
+                float minValue = Float.parseFloat(LimitPricesEnum.MIN_PRICE.toString());
+                int scalingFactor = Integer.parseInt(LimitPricesEnum.SCALING_FACTOR.toString());
+
+                // Calcular el valor decimal 'decimalValue' del progress tipo int
+                float decimalValue = minValue + (progress / (float) scalingFactor);
+
+                presenter.onFiltersPopUpMaxPriceAccepted(decimalValue);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+
+        // Fijar listener al boton de limpiar filtros
         ImageButton filterClear = popupView.findViewById(R.id.clear_filters_bt);
         filterClear.setOnClickListener(v -> {
             presenter.onFiltersPopUpClearFiltersClicked();
         });
 
-        // Fijar el boton de cancelar
+        // Fijar listener al boton de cancelar
         ImageButton cancelButton = popupView.findViewById(R.id.filters_cancel_button);
         cancelButton.setOnClickListener(v -> {
             presenter.onFiltersPopUpCancelClicked();
         });
 
-        // Fijar el boton de aceptar
+        // Fijar listener al boton de aceptar
         ImageButton accpetlButton = popupView.findViewById(R.id.filters_accpet_button);
         accpetlButton.setOnClickListener(v -> {
             presenter.onFiltersPopUpAcceptClicked();
@@ -228,14 +282,44 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
-     * @see IMainContract.View#updateFiltersPopupTextViews(String)
+     * @see IMainContract.View#updateFiltersPopupTextViewsSelections(String, String)
      */
     @Override
-    public void updateFiltersPopupTextViews(String fuelTypes) {
+    public void updateFiltersPopupTextViewsSelections(String fuelTypes, String fuelBrands) {
         if (fuelTypes != null) {
             TextView typeSpinner = popupView.findViewById(R.id.typeSpinner);
             typeSpinner.setText(fuelTypes);
         }
+
+        if (fuelBrands != null) {
+            TextView brandSpinner = popupView.findViewById(R.id.brandSpinner);
+            brandSpinner.setText(fuelBrands);
+        }
+
+    }
+
+    /**
+     * @see IMainContract.View#updateFiltersPopupTextViewsMaxPrice(float)
+     */
+    @Override
+    public void updateFiltersPopupTextViewsMaxPrice(float maxPrice) {
+        // Actualizamos el label que muestra el valor maximo actual
+        TextView lbSelectedMaxPrice = popupView.findViewById(R.id.lbSelectedMaxPrice);
+        // Solo se muestran dos decimales
+        float truncatedMaxPrice = (float) Math.round(maxPrice * 100) / 100;
+        lbSelectedMaxPrice.setText(String.valueOf(truncatedMaxPrice));
+
+        // Actualizamos el progress del SeekBar con el valor maximo actual
+        SeekBar maxPriceSeekBar = popupView.findViewById(R.id.MaxPriceSeekBar);
+        // Una regla de tres para obtener el porcentaje del valor maximo actual
+        float maxPriceLimit = Float.parseFloat(LimitPricesEnum.MAX_PRICE.toString());
+        float limitPercent = 100;
+        float result = (maxPrice * limitPercent) / maxPriceLimit;
+        // conver the float to int
+        int progress = (int) result;
+        // FIXME Al no encontrar ninguna gasolinera se muestra un mensaje confuso
+        // FIXME Se queda la barra de progreso bloqueada
+        //maxPriceSeekBar.setProgress(progress);
     }
 
     /**
@@ -243,6 +327,15 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
      */
     @Override
     public void updateFiltersPopUpFuelTypesSelection(int position, boolean value) {
+        selectcionArray[position] = value;
+        alertDialog.getListView().setItemChecked(position, value);
+    }
+
+    /**
+     * @see IMainContract.View#updateFiltersPopUpBrandsSelection(int, boolean)
+     */
+    @Override
+    public void updateFiltersPopUpBrandsSelection(int position, boolean value) {
         selectcionArray[position] = value;
         alertDialog.getListView().setItemChecked(position, value);
     }
@@ -270,6 +363,40 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         // Botón "OK"
         builder.setPositiveButton("OK", (dialog, which) ->
             presenter.onFiltersPopUpFuelTypesAccepted()
+        );
+
+        // Botón "Cancelar"
+        builder.setNegativeButton("Cancelar", null);
+
+        // Mostrar el diálogo
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    /**
+     * @see IMainContract.View#showFiltersPopUpBrandSelector(List)
+     */
+    @Override
+    public void showFiltersPopUpBrandSelector(List<Selection> selections) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainView.this);
+        builder.setTitle("Seleccione opciones");
+
+        String[] options = new String[selections.size()];
+        selectcionArray = new boolean[selections.size()];
+        for (int i = 0; i < selections.size(); i++) {
+            options[i] = selections.get(i).getValue();
+            selectcionArray[i] = selections.get(i).isSelected();
+        }
+
+        // Actualizar el estado de selección en el array
+        builder.setMultiChoiceItems(options, selectcionArray, (dialog, which, isChecked) -> {
+            presenter.onFiltersPopUpBrandsOneSelected(which, isChecked);
+
+        });
+
+        // Botón "OK"
+        builder.setPositiveButton("OK", (dialog, which) ->
+                presenter.onFiltersPopUpBrandsAccepted()
         );
 
         // Botón "Cancelar"
