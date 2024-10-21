@@ -153,6 +153,7 @@
                     android:layout_weight="0.2"
                     android:textColor="#000000"
                     android:textSize="14sp"
+                    android:text="X.X"
                     android:gravity="left" />
 
                 <!-- SeekBar -->
@@ -162,6 +163,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:background="#AAF6DDFF"
+                    android:max="150"
                     android:paddingHorizontal="5dp" />
 
                 <!-- Texto Max -->
@@ -172,6 +174,7 @@
                     android:layout_weight="0.2"
                     android:textColor="#000000"
                     android:textSize="14sp"
+                    android:text="Y.Y"
                     android:gravity="right" />
 
             </LinearLayout>

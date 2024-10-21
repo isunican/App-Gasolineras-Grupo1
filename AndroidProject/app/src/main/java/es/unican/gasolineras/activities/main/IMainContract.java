@@ -86,10 +86,17 @@ public interface IMainContract {
         public void onFiltersPopUpBrandsAccepted();
 
         /**
-         * The presenter is informed that the max price in the filter popup has been accepted
+         * The presenter is informed that the max price in the filter popup seekbar has been changed
          * @param maxPrice the selected max price
+         * Only the View should call this method
          */
-        public void onFiltersPopUpMaxPriceAccepted(float maxPrice);
+        public void onFiltersPopUpMaxPriceSeekBarChanged(float maxPrice);
+
+        /**
+         * The presenter is informed that the seekbar in the filter popup has been loaded
+         * Only the View should call this method
+         */
+        public void onFiltersPopUpMaxPriceSeekBarLoaded();
 
         /**
          * The presenter is informed that the cancel button in the filter popup has been clicked
@@ -213,6 +220,12 @@ public interface IMainContract {
          * @param maxPrice the max price value to update the textView
          */
         public void updateFiltersPopupTextViewsMaxPrice(float maxPrice);
+
+        /**
+         * The view is requested to to update the filters seekbar progress.
+         * Only the Presenter and View should call this method
+         */
+        public void updateFiltersPopupSeekBarProgressMaxPrice(int progress);
 
         /**
          * The view is requested to to update the selection of a fuel type selector.

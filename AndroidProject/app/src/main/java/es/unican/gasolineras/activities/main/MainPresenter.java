@@ -1,5 +1,7 @@
 package es.unican.gasolineras.activities.main;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.stream.Collectors;
 import es.unican.gasolineras.common.BrandsEnum;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.IFilter;
+import es.unican.gasolineras.common.LimitPricesEnum;
 import es.unican.gasolineras.model.Filter;
 import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.model.IDCCAAs;
@@ -290,12 +293,25 @@ public class MainPresenter implements IMainContract.Presenter {
     }
 
     /**
-     * @see IMainContract.Presenter#onFiltersPopUpMaxPriceAccepted(float)
+     * @see IMainContract.Presenter#onFiltersPopUpMaxPriceSeekBarChanged(float)
      */
     @Override
-    public void onFiltersPopUpMaxPriceAccepted(float maxPrice) {
+    public void onFiltersPopUpMaxPriceSeekBarChanged(float maxPrice) {
         tempFilter.setMaxPrice(maxPrice);
         view.updateFiltersPopupTextViewsMaxPrice(maxPrice);
+    }
+
+    /**
+     * @see IMainContract.Presenter#onFiltersPopUpMaxPriceSeekBarLoaded()
+     */
+    public void onFiltersPopUpMaxPriceSeekBarLoaded() {
+        // Una regla de tres para obtener el porcentaje del valor maximo actual
+        float maxPriceLimit = Float.parseFloat(LimitPricesEnum.MAX_PRICE.toString());
+        float limitPercent = 100;
+        float result = (tempFilter.getMaxPrice() * limitPercent) / maxPriceLimit;
+        // conver the float to int
+        int progress = (int) result;
+        view.updateFiltersPopupSeekBarProgressMaxPrice(progress);
     }
 
     /**

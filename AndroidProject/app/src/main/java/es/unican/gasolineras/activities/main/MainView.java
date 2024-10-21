@@ -2,6 +2,7 @@ package es.unican.gasolineras.activities.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -214,6 +215,8 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         minPriceLabel.setText(String.valueOf(minValue));
         maxPriceLabel.setText(String.valueOf(maxValue));
 
+        // Establece la barra de progreso del precio maximo con el valor almacenado en el filtro
+        presenter.onFiltersPopUpMaxPriceSeekBarLoaded();
 
         // Muestra el PopupWindow en el centro de la pantalla
         ConstraintLayout rootLayout = findViewById(R.id.main);
@@ -252,7 +255,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
                 // Calcular el valor decimal 'decimalValue' del progress tipo int
                 float decimalValue = minValue + (progress / (float) scalingFactor);
 
-                presenter.onFiltersPopUpMaxPriceAccepted(decimalValue);
+                presenter.onFiltersPopUpMaxPriceSeekBarChanged(decimalValue);
             }
 
             @Override
@@ -308,18 +311,19 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         // Solo se muestran dos decimales
         float truncatedMaxPrice = (float) Math.round(maxPrice * 100) / 100;
         lbSelectedMaxPrice.setText(String.valueOf(truncatedMaxPrice));
+    }
 
+    /**
+     * @see IMainContract.View#updateFiltersPopupSeekBarProgressMaxPrice(int)
+     */
+    @Override
+    public void updateFiltersPopupSeekBarProgressMaxPrice(int progress) {
         // Actualizamos el progress del SeekBar con el valor maximo actual
         SeekBar maxPriceSeekBar = popupView.findViewById(R.id.MaxPriceSeekBar);
-        // Una regla de tres para obtener el porcentaje del valor maximo actual
-        float maxPriceLimit = Float.parseFloat(LimitPricesEnum.MAX_PRICE.toString());
-        float limitPercent = 100;
-        float result = (maxPrice * limitPercent) / maxPriceLimit;
-        // conver the float to int
-        int progress = (int) result;
-        // FIXME Al no encontrar ninguna gasolinera se muestra un mensaje confuso
-        // FIXME Se queda la barra de progreso bloqueada
-        //maxPriceSeekBar.setProgress(progress);
+        // Para solucionar la conversión necesaria de float a int en el seekbar
+        // FIXME En sucesivas invocaciones, el progreso no se pone donde debería
+        progress = (progress * maxPriceSeekBar.getMax()) / 100;
+        maxPriceSeekBar.setProgress(progress);
     }
 
     /**
