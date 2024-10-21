@@ -2,12 +2,10 @@ package es.unican.gasolineras.activities.main;
 
 
 
-import static es.unican.gasolineras.common.OrderMethodsEnum.Ascending;
-import static es.unican.gasolineras.common.OrderMethodsEnum.Descending;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -19,7 +17,6 @@ import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.IFilter;
 import es.unican.gasolineras.common.LimitPricesEnum;
 import es.unican.gasolineras.common.OrderMethodsEnum;
-import es.unican.gasolineras.common.OrderTypeEnum;
 
 import es.unican.gasolineras.model.Filter;
 import es.unican.gasolineras.model.Gasolinera;
@@ -50,8 +47,7 @@ public class MainPresenter implements IMainContract.Presenter {
 
     // Orden by price:
     private OrderByPrice orderByPrice = new OrderByPrice();
-    private OrderTypeEnum orderType;
-
+    private boolean restoreOrder = false;
     /**
      * @see IMainContract.Presenter#init(IMainContract.View)
      * @param view the view to control
@@ -380,15 +376,31 @@ public class MainPresenter implements IMainContract.Presenter {
 
             @Override
             public void onSuccess(List<Gasolinera> stations) {
-                List<Gasolinera> filtered = filter.toFilter(stations);
+                List<Gasolinera> filtered = null;
+                List<Gasolinera> originalFiltered = null;
+                try {
+                    filtered = filter.toFilter(stations);
+                    originalFiltered = new ArrayList<>(filtered);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                } finally {
+                }
 
                 if(filtered.isEmpty()){
                     view.showLoadError();
                 }
                 else {
-                    Collections.sort(filtered, orderByPrice);
-                    view.showStations(filtered);
-                    view.showLoadCorrect(filtered.size());
+                    if (restoreOrder) {
+                        view.showStations(originalFiltered);
+                        view.showLoadCorrect(originalFiltered.size());
+                    }
+                    else {
+                        Collections.sort(filtered,orderByPrice );
+                        view.showStations(filtered);
+                        view.showLoadCorrect(filtered.size());
+                    }
+
+
                     // Llamamos al metodo de ordenar
                     // TODO: Implementar el tipo de orden NONE.
 
@@ -411,7 +423,6 @@ public class MainPresenter implements IMainContract.Presenter {
     public void onOrderClicked() {
         if (orderByPrice.getFuelType() == null) {
             view.showOrderPopUp(0, 0);
-
         } else {
         view.showOrderPopUp((orderByPrice.getFuelType()).ordinal(), orderByPrice.getAscending() ? 0 : 1  );
 
@@ -419,16 +430,9 @@ public class MainPresenter implements IMainContract.Presenter {
     }
 
     // Definir el tipo de gasolina que se ha seleccionado
-    public void onTipoGasolinaSelected(FuelTypeEnum type) {
+    public void onFuelTypeSelected(FuelTypeEnum type) {
         orderByPrice.setFuelType(type);
     }
-
-
-    // Definir el tipo que se ha seleccionado.
-    public void onTypeOrderSelected(OrderTypeEnum selectedTypeOrder) {
-        orderType = selectedTypeOrder;
-    }
-
 
     // Definir el orden que se ha seleccionado.
     public void onMethodOrderSelected(OrderMethodsEnum orderMethod) {
@@ -454,6 +458,7 @@ public class MainPresenter implements IMainContract.Presenter {
             view.showInfoMessage("Conflicto con filtro de Combustible, se ha restablecido el filtro.");
         }
         // Este método filtrará y ordenará según los criterios establecidos
+        restoreOrder = false;
         load();
         view.closeOrderPopUp();
     }
@@ -463,6 +468,14 @@ public class MainPresenter implements IMainContract.Presenter {
     view.closeOrderPopUp();
 
     }
+
+    @Override
+    public void onOrderPopUpClearClicked() {
+        restoreOrder = true;
+        load();
+        view.closeOrderPopUp();
+    }
+
     // Comprobar los conflictos de ordenación
     private boolean checkConflicts(IFilter filter, OrderByPrice orderByPrice ) {
         FuelTypeEnum fuelType = orderByPrice.getFuelType();

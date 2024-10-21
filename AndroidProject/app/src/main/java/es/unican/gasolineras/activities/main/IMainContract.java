@@ -5,7 +5,6 @@ import java.util.List;
 import es.unican.gasolineras.common.IFilter;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.OrderMethodsEnum;
-import es.unican.gasolineras.common.OrderTypeEnum;
 import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 
@@ -129,12 +128,7 @@ public interface IMainContract {
          * The presenter is informed that the fuel type item in the order popup has been selected
          * Only the View should call this method
          */
-        public void onTipoGasolinaSelected(FuelTypeEnum type);
-
-        /**
-         * The presenter is informed that the order type item in the order popup has been selected
-         */
-        public void onTypeOrderSelected(OrderTypeEnum selectedTypeOrder);
+        public void onFuelTypeSelected(FuelTypeEnum type);
 
         /**
          * The presenter is informed that the order method  item in the order popup has been selected
@@ -153,6 +147,12 @@ public interface IMainContract {
          * Only the View should call this method
          */
         public void onOrderPopUpCancelClicked();
+
+        /**
+         * The presenter is informed that the clear button in the order popup has been clicked
+         * Only the View should call this method
+         */
+        public void onOrderPopUpClearClicked();
 
         public void setTempFilter(IFilter f);
 
