@@ -290,13 +290,11 @@ public class MainPresenter implements IMainContract.Presenter {
                     view.showLoadError();
                 }
                 else {
+                    Collections.sort(filtered, orderByPrice);
                     view.showStations(filtered);
                     view.showLoadCorrect(filtered.size());
                     // Llamamos al metodo de ordenar
                     // TODO: Implementar el tipo de orden NONE.
-                    if (orderByPrice.getFuelType() != null) {
-                        Collections.sort(filtered, orderByPrice);
-                    }
 
                 }
 
@@ -315,7 +313,13 @@ public class MainPresenter implements IMainContract.Presenter {
     // Methods for Ordering story user
 
     public void onOrderClicked() {
-        view.showOrderPopUp();
+        if (orderByPrice.getFuelType() == null) {
+            view.showOrderPopUp(0, 0);
+
+        } else {
+        view.showOrderPopUp((orderByPrice.getFuelType()).ordinal(), orderByPrice.getAscending() ? 0 : 1  );
+
+        }
     }
 
     // Definir el tipo de gasolina que se ha seleccionado
@@ -347,15 +351,15 @@ public class MainPresenter implements IMainContract.Presenter {
 
     @Override
     public void onOrderPopUpAcceptClicked() {
-        //
-        if (orderByPrice.getFuelType() != null && orderByPrice.getAscending() != null) {
-            // Llamar al método de carga que ya maneja la filtración y la ordenación
-            load(); // Este método filtrará y ordenará según los criterios establecidos
-            view.closeOrderPopUp();
-        } else {
-            view.closeOrderPopUp();
+        // Llamar al método de carga que ya maneja la filtración y la ordenación
+        if (checkConflicts(filter, orderByPrice)) {
+            // Reestablecer el filtro a todos.
+            filter.setFuelTypes(Arrays.asList(FuelTypeEnum.values()));
+            view.showInfoMessage("Conflicto con filtro de Combustible, se ha restablecido el filtro.");
         }
-
+        // Este método filtrará y ordenará según los criterios establecidos
+        load();
+        view.closeOrderPopUp();
     }
 
     @Override
@@ -363,5 +367,14 @@ public class MainPresenter implements IMainContract.Presenter {
     view.closeOrderPopUp();
 
     }
+    // Comprobar los conflictos de ordenación
+    private boolean checkConflicts(IFilter filter, OrderByPrice orderByPrice ) {
+        FuelTypeEnum fuelType = orderByPrice.getFuelType();
+        if (!filter.getFuelTypes().contains(fuelType)) {
+            return true;
+        }
+        return false;
+    }
+
 
 }
