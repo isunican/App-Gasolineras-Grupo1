@@ -298,7 +298,7 @@ public interface IMainContract {
          * Only the Presenter should call this method
          */
 
-        public void showOrderPopUp();
+        public void showOrderPopUp(int typeIndex, int methodIndex);
 
         /**
          * The view is requested to close the filters popup

@@ -408,7 +408,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         popupWindow = null;
     }
 
-    public void showOrderPopUp() {
+    public void showOrderPopUp(int typeIndex, int methodIndex) {
         createPopUp(R.layout.activity_sort_layout);
         // Configurar los Spinners
         Spinner typeOrderSpinner = popupView.findViewById(R.id.typeOrderSpinner);
@@ -423,6 +423,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         );
         typeFuelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typeOrderSpinner.setAdapter(typeFuelAdapter);
+        typeOrderSpinner.setSelection(typeIndex);
 
         // Llenamos los spinners con los valores del enumerado.
 
@@ -433,6 +434,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         );
         orderTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         orderTypeSpinner.setAdapter(orderTypeAdapter);
+        orderTypeSpinner.setSelection(1);
 
         ArrayAdapter<OrderMethodsEnum> orderMethodAdapter = new ArrayAdapter<>(
                 this,
@@ -442,6 +444,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
         orderMethodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         orderMethodSpinner.setAdapter(orderMethodAdapter);
+        orderMethodSpinner.setSelection(methodIndex);
 
 
         // Implementamos los listeners de los elementos interaccionables

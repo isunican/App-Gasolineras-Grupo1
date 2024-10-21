@@ -15,12 +15,17 @@ public class OrderByPrice implements Comparator<Gasolinera> {
 
     private FuelTypeEnum fuelType;
     private Boolean ascending;
-
+    private double priceG1;
+    private double priceG2;
 
     @Override
     public int compare(Gasolinera g1, Gasolinera g2) {
-        double priceG1 = g1.getPrecioPorTipo(fuelType);
-        double priceG2 = g2.getPrecioPorTipo(fuelType);
+
+        if (fuelType == null)  {
+            return 0;
+        }
+         priceG1 = g1.getPrecioPorTipo(fuelType);
+         priceG2 = g2.getPrecioPorTipo(fuelType);
 
         // Mover gasolineras con precio 0.0 al final
         if (priceG1 == 0.0 && priceG2 == 0.0) {
