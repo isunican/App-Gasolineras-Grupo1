@@ -4,10 +4,12 @@ import androidx.annotation.NonNull;
 
 public enum LimitPricesEnum {
 
-    MIN_PRICE("1.0f"),
-    MAX_PRICE("2.5f"),
-    // To set precision al converting from int to float (100 = 0.00)
-    SCALING_FACTOR("100");
+    MIN_PRICE("1.0"),
+    MAX_PRICE("2.5"),
+    // To set precision when converting from int to float (100 = 0.00)
+    SCALING_FACTOR("100"),
+    // Calculated seekbar progress
+    STATIC_SEEKBAR_PROGRESS(calculateSeekbarProgress());
 
     private final String displayLimitPrices;
 
@@ -30,5 +32,17 @@ public enum LimitPricesEnum {
             }
         }
         return null;
+    }
+
+    /*
+     * Actualizamos los valores máximos y mínimos del SeekBar para que sean float,
+     * aunque la implementación seekbar original solo permita valores int.
+     * Esto se consigue mediante la siguiente fórmula.
+     */
+    private static String calculateSeekbarProgress() {
+        float minPriceLimit = Float.parseFloat(MIN_PRICE.displayLimitPrices);
+        float maxPriceLimit = Float.parseFloat(MAX_PRICE.displayLimitPrices);
+        int scalingFactor = Integer.parseInt(SCALING_FACTOR.displayLimitPrices);
+        return String.valueOf((int) ((maxPriceLimit - minPriceLimit) * scalingFactor));
     }
 }

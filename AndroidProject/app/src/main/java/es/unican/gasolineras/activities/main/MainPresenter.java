@@ -1,7 +1,5 @@
 package es.unican.gasolineras.activities.main;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,6 +27,11 @@ public class MainPresenter implements IMainContract.Presenter {
     private IFilter filter;
     private IFilter tempFilter;
     private List<Selection> tempListSelection;
+    // get values from LimitePricesEnum converted to float and integer
+    float minPriceLimit = Float.parseFloat(LimitPricesEnum.MIN_PRICE.toString());
+    float maxPriceLimit = Float.parseFloat(LimitPricesEnum.MAX_PRICE.toString());
+    int scalingFactor = Integer.parseInt(LimitPricesEnum.SCALING_FACTOR.toString());
+    int staticSeekBarProgress = Integer.parseInt(LimitPricesEnum.STATIC_SEEKBAR_PROGRESS.toString());
 
     /**
      * @see IMainContract.Presenter#init(IMainContract.View)
@@ -146,7 +149,6 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onFiltersPopUpBrandsSelected() {
-
         tempListSelection = getBrandsSelections(tempFilter);
         view.showFiltersPopUpBrandSelector(tempListSelection);
     }
@@ -293,12 +295,17 @@ public class MainPresenter implements IMainContract.Presenter {
     }
 
     /**
-     * @see IMainContract.Presenter#onFiltersPopUpMaxPriceSeekBarChanged(float)
+     * @see IMainContract.Presenter#onFiltersPopUpMaxPriceSeekBarChanged(int)
      */
     @Override
-    public void onFiltersPopUpMaxPriceSeekBarChanged(float maxPrice) {
+    public void onFiltersPopUpMaxPriceSeekBarChanged(int progress) {
+        // Calcular el valor decimal del progress tipo int
+        float maxPrice = minPriceLimit + (progress / (float) scalingFactor);
+        // Establecer el valor maximo del filtro
         tempFilter.setMaxPrice(maxPrice);
-        view.updateFiltersPopupTextViewsMaxPrice(maxPrice);
+        // Solo se muestran dos decimales en la vista
+        float truncatedMaxPrice = (float) Math.round(maxPrice * 100) / 100;
+        view.updateFiltersPopupTextViewsMaxPrice(truncatedMaxPrice);
     }
 
     /**
@@ -306,9 +313,8 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     public void onFiltersPopUpMaxPriceSeekBarLoaded() {
         // Una regla de tres para obtener el porcentaje del valor maximo actual
-        float maxPriceLimit = Float.parseFloat(LimitPricesEnum.MAX_PRICE.toString());
-        float limitPercent = 100;
-        float result = (tempFilter.getMaxPrice() * limitPercent) / maxPriceLimit;
+        float limitPercent = staticSeekBarProgress;
+        float result = (tempFilter.getMaxPrice() - minPriceLimit) / (maxPriceLimit - minPriceLimit) * limitPercent;
         // conver the float to int
         int progress = (int) result;
         view.updateFiltersPopupSeekBarProgressMaxPrice(progress);

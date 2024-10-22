@@ -87,10 +87,10 @@ public interface IMainContract {
 
         /**
          * The presenter is informed that the max price in the filter popup seekbar has been changed
-         * @param maxPrice the selected max price
          * Only the View should call this method
+         * @param progress the new progress
          */
-        public void onFiltersPopUpMaxPriceSeekBarChanged(float maxPrice);
+        public void onFiltersPopUpMaxPriceSeekBarChanged(int progress);
 
         /**
          * The presenter is informed that the seekbar in the filter popup has been loaded
@@ -217,9 +217,9 @@ public interface IMainContract {
         /**
          * The view is requested to to update the filters textviews of the max price.
          * Only the Presenter and View should call this method
-         * @param maxPrice the max price value to update the textView
+         * @param truncatedMaxPrice the truncated with two decimal max price value
          */
-        public void updateFiltersPopupTextViewsMaxPrice(float maxPrice);
+        public void updateFiltersPopupTextViewsMaxPrice(float truncatedMaxPrice);
 
         /**
          * The view is requested to to update the filters seekbar progress.
