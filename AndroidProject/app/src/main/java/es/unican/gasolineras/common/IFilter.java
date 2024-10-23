@@ -17,13 +17,7 @@ public interface IFilter {
 
     public List<FuelTypeEnum> getFuelTypes();
 
-<<<<<<< HEAD
-    public Double getMaxPrice();
-=======
-    public List<BrandsEnum> getBrands();
-
     public Float getMaxPrice();
->>>>>>> feature/500865-Filtrar_por_precio_maximo
 
     public List<Gasolinera> toFilter(List<Gasolinera> g);
 
