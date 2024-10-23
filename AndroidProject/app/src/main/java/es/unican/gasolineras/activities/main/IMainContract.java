@@ -55,9 +55,6 @@ public interface IMainContract {
          */
         public void onFiltersPopUpBrandsSelected();
 
-
-
-
         /**
          * The presenter is informed that one of fuel type item in the fuel type filter popup has been clicked
          * Only the View should call this method

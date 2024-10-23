@@ -21,14 +21,32 @@ interface IMainContract#View {
     + showStations(List<Gasolinera> stations)
     + showLoadCorrect(int stations)
     + showLoadError()
+    + showInfoMessage(String message)
     + showStationDetails(Gasolinera station)
     + showInfoActivity()
+    + showFiltersPopUp()
+    + showFiltersPopUpFuelTypesSelector(List<Selection> selections)
+    + showFiltersPopUpBrandSelector(List<Selection> selections)
+    + updateFiltersPopupTextViewsSelections(String fuelTypes, String fuelBrands)
+    + updateFiltersPopupTextViewsMaxPrice(float maxPrice)
+    + updateFiltersPopUpFuelTypesSelection(int position, boolean value)
+    + updateFiltersPopUpBrandsSelection(int position, boolean value)
+    + closeFiltersPopUp()
 }
 
 interface IMainContract#Presenter {
     + init(View view)
     + onStationClicked(Gasolinera station)
     + onMenuInfoClicked()
+    + onFiltersClicked()
+    + onFiltersPopUpFuelTypesSelected()
+    + onFiltersPopUpBrandsSelected()
+    + onFiltersPopUpFuelTypesOneSelected(int index)
+    + onFiltersPopUpBrandsAccepted()
+    + onFiltersPopUpMaxPriceAccepted(float maxPrice)
+    + onFiltersPopUpCancelClicked()
+    + onFiltersPopUpAcceptClicked()
+    + onFiltersPopUpClearFiltersClicked()
 }
 
 interface IGasolinerasRepository {
