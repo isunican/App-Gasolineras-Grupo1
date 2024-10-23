@@ -38,6 +38,7 @@ import es.unican.gasolineras.activities.main.GasolinerasArrayAdapter;
 import es.unican.gasolineras.activities.main.MainView;
 import es.unican.gasolineras.activities.main.Selection;
 import es.unican.gasolineras.common.BrandsEnum;
+import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.injection.RepositoriesModule;
 import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
@@ -79,25 +80,21 @@ public class FuelTypesUITest {
         // Abrir el menú de filtros
         Espresso.onView(withId(R.id.menuFilterButton)).perform(ViewActions.click());
 
-        // Seleccionar Gasolina y Diésel
+        // Seleccionar Gasolina
         Espresso.onView(withId(R.id.typeSpinner)).perform(ViewActions.click());
-        Espresso.onView(withText("Gasolina 95")).perform(ViewActions.click());
-        Espresso.onView(withText("Diesel")).perform(ViewActions.click());
+        Espresso.onView(withText(FuelTypeEnum.GASOLINA_95E5.toString())).perform(ViewActions.click());
         Espresso.onView(withText("OK")).perform(ViewActions.click());
 
         // Aplicar filtros
         Espresso.onView(withId(R.id.filters_accept_button)).perform(ViewActions.click());
 
         // Verificar que se muestran las gasolineras correctas
-        Espresso.onView(withId(R.id.lvStations)).check(matches(withListSize(4)));
+        Espresso.onView(withId(R.id.lvStations)).check(matches(withListSize(5)));
 
 
         //Verificar que el Toast muestra el mensaje correcto
-        //Cargadas 4 gasolineras
-        Espresso.onView(withText("Cargadas 4 gasolineras")).inRoot(RootMatchers.withDecorView(not(decorView))).check(matches(isDisplayed()));
-
-
-
+        //Cargadas 5 gasolineras
+        Espresso.onView(withText("Cargadas 5 gasolineras")).inRoot(RootMatchers.withDecorView(not(decorView))).check(matches(isDisplayed()));
 
     }
 
