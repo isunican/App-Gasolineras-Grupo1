@@ -1,5 +1,6 @@
 package es.unican.gasolineras.common;
 
+import java.util.Collection;
 import java.util.List;
 
 import es.unican.gasolineras.model.Gasolinera;
@@ -8,15 +9,13 @@ public interface IFilter {
 
     public IFilter setFuelTypes(List<FuelTypeEnum> fuelTypes);
 
-    public IFilter setBrands(List<BrandsEnum> brands);
+    public IFilter setGasBrands(List<BrandsEnum> gasBrands);
 
-    public IFilter setGasBrands(List<String> gasBrands);
+    public List<BrandsEnum> getGasBrands();
 
     public IFilter setMaxPrice(Double maxPrice);
 
     public List<FuelTypeEnum> getFuelTypes();
-
-    public List<BrandsEnum> getBrands();
 
     public Double getMaxPrice();
 
