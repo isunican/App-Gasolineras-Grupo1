@@ -32,7 +32,7 @@ public class Filter implements IFilter {
         fuelTypes = Arrays.asList(FuelTypeEnum.values());
         brands = Arrays.asList(BrandsEnum.values());
         gasBrands = null;
-        maxPrice = Float.parseFloat(LimitPricesEnum.MAX_PRICE.toString());
+        maxPrice = Float.MAX_VALUE;
     }
 
     private Boolean typeFilter(Gasolinera g) {

@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import es.unican.gasolineras.R;
 import es.unican.gasolineras.common.BrandsEnum;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.IFilter;
@@ -16,6 +17,8 @@ import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.model.IDCCAAs;
 import es.unican.gasolineras.repository.ICallBack;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The presenter of the main activity of the application. It controls {@link MainView}
@@ -25,6 +28,8 @@ public class MainPresenter implements IMainContract.Presenter {
     /** The view that is controlled by this presenter */
     private IMainContract.View view;
     private IFilter filter;
+    @Getter
+    @Setter
     private IFilter tempFilter;
     private List<Selection> tempListSelection;
     // get values from LimitePricesEnum converted to float and integer
@@ -67,7 +72,7 @@ public class MainPresenter implements IMainContract.Presenter {
     private List<Selection> getFuelTypesSelections(IFilter f) {
         List<Selection> s = new ArrayList<>();
         boolean allSelected = f.getFuelTypes().size() == FuelTypeEnum.values().length;
-        s.add(new Selection("Todos", allSelected));
+        s.add(new Selection(view.getConstantString(R.string.all_selections), allSelected));
         for (FuelTypeEnum t: FuelTypeEnum.values()) {
             s.add(
                     new Selection(t.toString(), !allSelected && f.getFuelTypes().contains(t))
@@ -81,7 +86,7 @@ public class MainPresenter implements IMainContract.Presenter {
     private List<Selection> getBrandsSelections(IFilter f) {
         List<Selection> s = new ArrayList<>();
         boolean allSelected = f.getBrands().size() == BrandsEnum.values().length;
-        s.add(new Selection("Todos", allSelected));
+        s.add(new Selection(view.getConstantString(R.string.all_selections), allSelected));
         for (BrandsEnum t: BrandsEnum.values()) {
             s.add(
                     new Selection(t.toString(), !allSelected && f.getBrands().contains(t))
@@ -279,7 +284,6 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onFiltersPopUpBrandsAccepted() {
-        //view.updateFiltersPopupTextViews(null, "Todos");
         if (tempListSelection.get(0).isSelected()) {
             tempFilter.setBrands(Arrays.asList(BrandsEnum.values()));
         } else {

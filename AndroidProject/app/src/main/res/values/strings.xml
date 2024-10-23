@@ -16,4 +16,5 @@
     <string name="filters_max_price_selection">Seleccione precio máximo</string>
     <string name="filters_cross_description">Cancelar</string>
     <string name="filters_tick_description">Aceptar</string>
+    <string name="all_selections">Todos</string>
 </resources>
