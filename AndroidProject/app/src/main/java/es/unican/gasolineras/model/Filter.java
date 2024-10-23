@@ -24,25 +24,13 @@ import lombok.Getter;
 public class Filter implements IFilter {
 
     private List<FuelTypeEnum> fuelTypes;
-<<<<<<< HEAD
     private List<BrandsEnum> gasBrands;
-    private Double maxPrice;
-
-    public Filter() {
-        fuelTypes = Arrays.asList(FuelTypeEnum.values());
-        gasBrands = Arrays.asList(BrandsEnum.values());
-        maxPrice = Double.MAX_VALUE;
-=======
-    private List<BrandsEnum> brands;
-    private List<String> gasBrands;
     private Float maxPrice;
 
     public Filter() {
         fuelTypes = Arrays.asList(FuelTypeEnum.values());
-        brands = Arrays.asList(BrandsEnum.values());
-        gasBrands = null;
+        gasBrands = Arrays.asList(BrandsEnum.values());
         maxPrice = Float.parseFloat(LimitPricesEnum.MAX_PRICE.toString());
->>>>>>> feature/500865-Filtrar_por_precio_maximo
     }
 
     private Boolean typeFilter(Gasolinera g) {
@@ -96,14 +84,8 @@ public class Filter implements IFilter {
 
     public void clear() {
         fuelTypes = Arrays.asList(FuelTypeEnum.values());
-<<<<<<< HEAD
         gasBrands = Arrays.asList(BrandsEnum.values());
-        maxPrice = Double.MAX_VALUE;
-=======
-        brands = Arrays.asList(BrandsEnum.values());
-        gasBrands = null;
         maxPrice = Float.MAX_VALUE;
->>>>>>> feature/500865-Filtrar_por_precio_maximo
     }
 
     public IFilter toCopy() {
