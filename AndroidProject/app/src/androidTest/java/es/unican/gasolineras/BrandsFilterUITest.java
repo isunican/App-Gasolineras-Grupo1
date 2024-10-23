@@ -1,23 +1,29 @@
 package es.unican.gasolineras;
 
+
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static com.google.android.material.internal.ContextUtils.getActivity;
+import static org.hamcrest.CoreMatchers.not;
 import static es.unican.gasolineras.utils.Matchers.withListSize;
 import static es.unican.gasolineras.utils.MockRepositories.getTestRepository;
 
 import android.content.Context;
+import android.view.View;
 
 import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.action.ViewActions;
-import androidx.test.espresso.matcher.ViewMatchers;
+import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.Before;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +42,7 @@ import es.unican.gasolineras.repository.IGasolinerasRepository;
 @HiltAndroidTest
 public class BrandsFilterUITest {
 
+    private View decorView;
     @Rule(order = 0)  // the Hilt rule must execute first
     public HiltAndroidRule hiltRule = new HiltAndroidRule(this);
 
@@ -51,7 +58,12 @@ public class BrandsFilterUITest {
 
     private void checkValues(int idElement, String value) {
         Espresso.onView(withId(idElement))
-                .check(matches(ViewMatchers.withText(value)));
+                .check(matches(withText(value)));
+    }
+
+    @Before
+    public void setUp() {
+        activityRule.getScenario().onActivity(activity -> decorView = activity.getWindow().getDecorView());
     }
 
     @Test
@@ -66,17 +78,20 @@ public class BrandsFilterUITest {
         Espresso.onView(withId(R.id.brandSpinner))
                 .perform(ViewActions.click());
 
-        Espresso.onView(ViewMatchers.withText(BrandsEnum.REPSOL.toString()))
+        Espresso.onView(withText(BrandsEnum.REPSOL.toString()))
                 .perform(ViewActions.click());
 
-        Espresso.onView(ViewMatchers.withText("OK"))
+        Espresso.onView(withText("OK"))
                 .perform(ViewActions.click());
 
         Espresso.onView(withId(R.id.filters_accept_button))
                 .perform(ViewActions.click());
 
+        Espresso.onView(withText("Cargadas 45 gasolineras")).inRoot(RootMatchers.withDecorView(not(decorView))).check(matches(isDisplayed()));
+
         Espresso.onView(withId(R.id.lvStations))
                 .check(matches(withListSize(45)));
+
 
         for (int i = 0; i < 45; i++) {
             DataInteraction elementoLista = Espresso
@@ -87,6 +102,7 @@ public class BrandsFilterUITest {
             elementoLista.perform(ViewActions.click());
             // Comprobamos los campos
             checkValues(R.id.tvRotulo, "REPSOL");
+            Espresso.pressBack();
         }
     }
 
