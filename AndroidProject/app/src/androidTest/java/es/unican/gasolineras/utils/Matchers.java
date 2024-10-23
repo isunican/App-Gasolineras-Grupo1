@@ -18,14 +18,11 @@ public class Matchers {
                 return ((ListView) view).getCount () == size;
             }
 
+
             @Override public void describeTo (final Description description) {
                 description.appendText ("ListView should have " + size + " items");
             }
         };
     }
-
-
-
-
-
 }
+

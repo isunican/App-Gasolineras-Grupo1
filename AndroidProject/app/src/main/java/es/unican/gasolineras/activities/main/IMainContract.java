@@ -49,8 +49,6 @@ public interface IMainContract {
          */
         public void onFiltersPopUpFuelTypesSelected();
 
-
-
         /**
          * The presenter is informed that the fuel brand item in the filter popup has been clicked
          * Only the View should call this method
@@ -87,7 +85,18 @@ public interface IMainContract {
          */
         public void onFiltersPopUpBrandsAccepted();
 
+        /**
+         * The presenter is informed that the max price in the filter popup seekbar has been changed
+         * Only the View should call this method
+         * @param progress the new progress
+         */
+        public void onFiltersPopUpMaxPriceSeekBarChanged(int progress);
 
+        /**
+         * The presenter is informed that the seekbar in the filter popup has been loaded
+         * Only the View should call this method
+         */
+        public void onFiltersPopUpMaxPriceSeekBarLoaded();
 
         /**
          * The presenter is informed that the cancel button in the filter popup has been clicked
@@ -198,11 +207,25 @@ public interface IMainContract {
 
 
         /**
-         * The view is requested to to update the filters textviews.
+         * The view is requested to to update the filters textviews of selections.
          * Only the Presenter and View should call this method
          * @param fuelTypes the string to update the textView fuel type
+         * @param fuelBrands the string to update the textView fuel brand
          */
-        public void updateFiltersPopupTextViews(String fuelTypes, String fuelBrands);
+        public void updateFiltersPopupTextViewsSelections(String fuelTypes, String fuelBrands);
+
+        /**
+         * The view is requested to to update the filters textviews of the max price.
+         * Only the Presenter and View should call this method
+         * @param truncatedMaxPrice the truncated with two decimal max price value
+         */
+        public void updateFiltersPopupTextViewsMaxPrice(float truncatedMaxPrice);
+
+        /**
+         * The view is requested to to update the filters seekbar progress.
+         * Only the Presenter and View should call this method
+         */
+        public void updateFiltersPopupSeekBarProgressMaxPrice(int progress);
 
         /**
          * The view is requested to to update the selection of a fuel type selector.

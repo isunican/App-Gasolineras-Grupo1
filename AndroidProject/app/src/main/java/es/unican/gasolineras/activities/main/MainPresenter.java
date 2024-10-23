@@ -1,10 +1,5 @@
 package es.unican.gasolineras.activities.main;
 
-import android.util.Log;
-
-import androidx.appcompat.app.AlertDialog;
-
-import java.sql.ClientInfoStatus;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +10,7 @@ import java.util.stream.Collectors;
 import es.unican.gasolineras.common.BrandsEnum;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.IFilter;
+import es.unican.gasolineras.common.LimitPricesEnum;
 import es.unican.gasolineras.model.Filter;
 import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.model.IDCCAAs;
@@ -31,6 +27,11 @@ public class MainPresenter implements IMainContract.Presenter {
     private IFilter filter;
     private IFilter tempFilter;
     private List<Selection> tempListSelection;
+    // get values from LimitePricesEnum converted to float and integer
+    float minPriceLimit = Float.parseFloat(LimitPricesEnum.MIN_PRICE.toString());
+    float maxPriceLimit = Float.parseFloat(LimitPricesEnum.MAX_PRICE.toString());
+    int scalingFactor = Integer.parseInt(LimitPricesEnum.SCALING_FACTOR.toString());
+    int staticSeekBarProgress = Integer.parseInt(LimitPricesEnum.STATIC_SEEKBAR_PROGRESS.toString());
 
     /**
      * @see IMainContract.Presenter#init(IMainContract.View)
@@ -89,8 +90,6 @@ public class MainPresenter implements IMainContract.Presenter {
         return s;
     }
 
-
-
     private String getStringOfSelections(List<Selection> s) {
         s = s.stream().filter(Selection::isSelected).collect(Collectors.toList());
         String text = "ERROR";
@@ -110,15 +109,15 @@ public class MainPresenter implements IMainContract.Presenter {
 
     ///////////////////////////////////////////////////////////////////////////////////
 
-    private void setFiltersPopUpValues() {
+    private void setFiltersPopupTextViewsSelections() {
         // Obtener la lista de selecciones de fuelTypes
         String fuelTypes = getStringOfSelections(
                 getFuelTypesSelections(tempFilter));
         // Obtener la lista de selecciones de fuelBrands
         String fuelBrands = getStringOfSelections(
-                getBrandsSelections(tempFilter));;
+                getBrandsSelections(tempFilter));
 
-        view.updateFiltersPopupTextViews(fuelTypes ,fuelBrands);
+        view.updateFiltersPopupTextViewsSelections(fuelTypes, fuelBrands);
     }
 
     /**
@@ -130,8 +129,10 @@ public class MainPresenter implements IMainContract.Presenter {
         tempFilter = filter.toCopy();
         // Generar la ventana
         view.showFiltersPopUp();
-        // Actualizar los datos
-        setFiltersPopUpValues();
+        // Actualizar los datos de seleccion
+        setFiltersPopupTextViewsSelections();
+        // Actualiza los datos del precio maximo
+        view.updateFiltersPopupTextViewsMaxPrice(tempFilter.getMaxPrice());
     }
 
     /**
@@ -148,7 +149,6 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onFiltersPopUpBrandsSelected() {
-
         tempListSelection = getBrandsSelections(tempFilter);
         view.showFiltersPopUpBrandSelector(tempListSelection);
     }
@@ -271,7 +271,7 @@ public class MainPresenter implements IMainContract.Presenter {
                 Arrays.asList(FuelTypeEnum.values()),
                 tempFilter::setFuelTypes,
                 e -> FuelTypeEnum.fromString(e.getValue()));
-        view.updateFiltersPopupTextViews(getStringOfSelections(tempListSelection),null);
+        view.updateFiltersPopupTextViewsSelections(getStringOfSelections(tempListSelection),null);
     }
 
     /**
@@ -290,8 +290,34 @@ public class MainPresenter implements IMainContract.Presenter {
                             .collect(Collectors.toList())
             );
         }
-        view.updateFiltersPopupTextViews(null, getStringOfSelections(tempListSelection));
+        view.updateFiltersPopupTextViewsSelections(null, getStringOfSelections(tempListSelection));
 
+    }
+
+    /**
+     * @see IMainContract.Presenter#onFiltersPopUpMaxPriceSeekBarChanged(int)
+     */
+    @Override
+    public void onFiltersPopUpMaxPriceSeekBarChanged(int progress) {
+        // Calcular el valor decimal del progress tipo int
+        float maxPrice = minPriceLimit + (progress / (float) scalingFactor);
+        // Establecer el valor maximo del filtro
+        tempFilter.setMaxPrice(maxPrice);
+        // Solo se muestran dos decimales en la vista
+        float truncatedMaxPrice = (float) Math.round(maxPrice * 100) / 100;
+        view.updateFiltersPopupTextViewsMaxPrice(truncatedMaxPrice);
+    }
+
+    /**
+     * @see IMainContract.Presenter#onFiltersPopUpMaxPriceSeekBarLoaded()
+     */
+    public void onFiltersPopUpMaxPriceSeekBarLoaded() {
+        // Una regla de tres para obtener el porcentaje del valor maximo actual
+        float limitPercent = staticSeekBarProgress;
+        float result = (tempFilter.getMaxPrice() - minPriceLimit) / (maxPriceLimit - minPriceLimit) * limitPercent;
+        // conver the float to int
+        int progress = (int) result;
+        view.updateFiltersPopupSeekBarProgressMaxPrice(progress);
     }
 
     /**
@@ -319,7 +345,7 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     public void onFiltersPopUpClearFiltersClicked() {
         tempFilter.clear();
-        setFiltersPopUpValues();
+        setFiltersPopupTextViewsSelections();
         view.showInfoMessage("Se han limpiado los filtros");
     }
 
