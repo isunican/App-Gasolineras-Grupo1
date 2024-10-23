@@ -21,24 +21,25 @@ import lombok.Getter;
 public class Filter implements IFilter {
 
     private List<FuelTypeEnum> fuelTypes;
-    private List<BrandsEnum> brands;
-    private List<String> gasBrands;
+    private List<BrandsEnum> gasBrands;
     private Double maxPrice;
 
     public Filter() {
         fuelTypes = Arrays.asList(FuelTypeEnum.values());
-        brands = Arrays.asList(BrandsEnum.values());
-        gasBrands = null;
+        gasBrands = Arrays.asList(BrandsEnum.values());
         maxPrice = Double.MAX_VALUE;
     }
 
     private Boolean typeFilter(Gasolinera g) {
-        // TODO
+        for (FuelTypeEnum f : this.fuelTypes) {
+            if (g.getPrecioPorTipo(f) == 0.0)
+                return false;
+        }
         return true;
     }
 
     private Boolean brandsFilter(Gasolinera g) {
-        return brands.contains(g.getBrand());
+        return gasBrands.contains(g.getBrand());
         //return true;
     }
 
@@ -56,15 +57,12 @@ public class Filter implements IFilter {
         this.fuelTypes = fuelTypes;
         return this;
     }
-    public IFilter setBrands(List<BrandsEnum> brands) {
-        this.brands = brands;
+
+    public IFilter setGasBrands(List<BrandsEnum> brands) {
+        this.gasBrands = brands;
         return this;
     }
 
-    public IFilter setGasBrands(List<String> gasBrands) {
-        this.gasBrands = gasBrands;
-        return this;
-    }
 
     public IFilter setMaxPrice(Double maxPrice) {
         this.maxPrice = maxPrice;
@@ -81,8 +79,7 @@ public class Filter implements IFilter {
 
     public void clear() {
         fuelTypes = Arrays.asList(FuelTypeEnum.values());
-        brands = Arrays.asList(BrandsEnum.values());
-        gasBrands = null;
+        gasBrands = Arrays.asList(BrandsEnum.values());
         maxPrice = Double.MAX_VALUE;
     }
 
@@ -90,7 +87,6 @@ public class Filter implements IFilter {
         return new Filter()
                 .setFuelTypes(fuelTypes)
                 .setMaxPrice(maxPrice)
-                .setBrands(brands)
                 .setGasBrands(gasBrands);
 
     }
