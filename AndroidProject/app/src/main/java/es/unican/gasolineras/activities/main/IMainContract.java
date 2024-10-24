@@ -2,6 +2,7 @@ package es.unican.gasolineras.activities.main;
 
 import java.util.List;
 
+import es.unican.gasolineras.common.IFilter;
 import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 
@@ -106,6 +107,14 @@ public interface IMainContract {
          * Only the View should call this method
          */
         public void onFiltersPopUpClearFiltersClicked();
+
+        public void setTempFilter(IFilter f);
+
+        public IFilter getTempFilter();
+
+        public IFilter getFilter();
+
+        public IFilter getTempListSelection();
     }
 
     /**

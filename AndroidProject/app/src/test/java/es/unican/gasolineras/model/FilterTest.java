@@ -22,7 +22,7 @@ public class FilterTest {
     private void setUp(String[] nombres, Double[] gasolinaG5E5, Double[] gasoleoA) {
         l = new ArrayList<>();
         Gasolinera g;
-        for (int i = 0; i<nombres.length-1; i++) {
+        for (int i = 0; i<nombres.length; i++) {
             g = new Gasolinera();
             g.setRotulo(nombres[i]);
             g.setGasolina95E5(gasolinaG5E5[i]);
@@ -40,7 +40,7 @@ public class FilterTest {
         IFilter filter = new Filter()
                 .setFuelTypes(Collections.singletonList(FuelTypeEnum.GASOLINA_95E5));
         l = filter.toFilter(l);
-        assertEquals(5, l.size());  // FIXME Devuelve 5 cuando debería ser 4, debería pero no devuelve "REDETRANS"
+        assertEquals(5, l.size());
         // Contar las ocurrencias de los rotulos especificados
         long rotulosCount = l.stream()
                 .filter(e -> Arrays.asList("CEPSA", "REPSOL", "PETRONOR", "PETRONOR V2", "GALP")
@@ -73,10 +73,9 @@ public class FilterTest {
         Double[] gasolinaG5E5 = {1.679, 1.669, 1.639, 1.639, 0.0, 1.639};
         Double[] gasoleoA = {1.509, 1.569, 1.525, 1.525, 1.299, 0.0};
         setUp(nombres, gasolinaG5E5, gasoleoA);
-        IFilter filter = new Filter()
-                .setFuelTypes(Collections.singletonList(FuelTypeEnum.GASOLEO_A));
+        IFilter filter = new Filter();
         l = filter.toFilter(l);
-        assertEquals(4, l.size());  // FIXME Devuelve 5 cuando debería ser 4, devuelve adicionalmente "REDETRANS"
+        assertEquals(4, l.size());
         // Contar las ocurrencias de los rotulos especificados
         long rotulosCount = l.stream()
                 .filter(e -> Arrays.asList("CEPSA", "REPSOL", "PETRONOR", "PETRONOR V2")

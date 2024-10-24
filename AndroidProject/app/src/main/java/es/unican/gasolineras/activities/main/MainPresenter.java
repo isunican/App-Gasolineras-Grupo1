@@ -20,6 +20,8 @@ import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.model.IDCCAAs;
 import es.unican.gasolineras.repository.ICallBack;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The presenter of the main activity of the application. It controls {@link MainView}
@@ -355,6 +357,26 @@ public class MainPresenter implements IMainContract.Presenter {
         };
 
         repository.requestGasolineras(callBack, IDCCAAs.CANTABRIA.id);
+    }
+
+    @Override
+    public void setTempFilter(IFilter f) {
+        this.tempFilter = f;
+    }
+
+    @Override
+    public IFilter getTempFilter() {
+        return tempFilter;
+    }
+
+    @Override
+    public IFilter getFilter() {
+        return filter;
+    }
+
+    @Override
+    public IFilter getTempListSelection() {
+        return tempFilter;
     }
 
 }
