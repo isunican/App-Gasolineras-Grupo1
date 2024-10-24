@@ -35,6 +35,7 @@ public class Filter implements IFilter {
     }
 
     private Boolean typeFilter(Gasolinera g) {
+        if (fuelTypes.size() == FuelTypeEnum.values().length) return true;
         for (FuelTypeEnum f : this.fuelTypes) {
             if (g.getPrecioPorTipo(f) == 0.0)
                 return false;
@@ -51,6 +52,9 @@ public class Filter implements IFilter {
     @NonNull
     private Boolean priceFilter(Gasolinera g) {
         if (g == null) return false;
+        if (this.maxPrice == Float.MAX_VALUE) {
+            return true;
+        }
         double p;
         for (FuelTypeEnum t : this.fuelTypes) {
             p = (float) g.getPrecioPorTipo(t);
