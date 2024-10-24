@@ -10,6 +10,7 @@ import org.robolectric.RobolectricTestRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -24,6 +25,9 @@ import android.content.Context;
 import androidx.test.core.app.ApplicationProvider;
 
 import es.unican.gasolineras.R;
+import es.unican.gasolineras.common.BrandsEnum;
+import es.unican.gasolineras.common.IFilter;
+import es.unican.gasolineras.model.Filter;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 
 @RunWith(RobolectricTestRunner.class)
@@ -37,6 +41,11 @@ public class MainPresenterTest {
     Context context = ApplicationProvider.getApplicationContext();
     private IGasolinerasRepository repository;
 
+
+
+
+
+
     @Before
     public void setUp() {
 
@@ -49,6 +58,8 @@ public class MainPresenterTest {
 
         presenter.init(mockView);
 
+
+
         mockTempListSelection = new ArrayList<>(Arrays.asList(
                 new Selection("Todos", true),
                 new Selection("Marca1", false),
@@ -57,7 +68,6 @@ public class MainPresenterTest {
 
        //  Inicializa la lista de selecciones de marcas
         presenter.setTempListSelection(mockTempListSelection);
-
 
     }
 
@@ -151,5 +161,51 @@ public class MainPresenterTest {
     }
 
 
+
+    // Tests para onFiltersPopUpBrandsSelected()
+
+    // Caso UGIC.2a: tempList = ["Marca1"]
+    @Test
+    public void testOnFiltersPopUpBrandsSelected_UGIC_2a() {
+        IFilter f = new Filter()
+                .setBrands(Collections.singletonList(BrandsEnum.REPSOL));
+        presenter.setTempFilter(f);
+
+        presenter.onFiltersPopUpBrandsSelected();
+
+        ArgumentCaptor<List<Selection>> captor = ArgumentCaptor.forClass(List.class);
+        verify(mockView).showFiltersPopUpBrandSelector(captor.capture());
+
+        List<Selection> result = captor.getValue();
+        for (Selection s : result) {
+            if (s.getValue().equals(BrandsEnum.REPSOL.toString()))
+                assertTrue(s.isSelected());
+            else
+                assertFalse(s.isSelected());
+        }
+    }
+
+
+    // Tests para onFiltersPopUpBrandsSelected()
+
+    // Caso UGIC.2a: tempList = ["Marca1"]
+    @Test
+    public void testOnFiltersPopUpBrandsSelected_UGIC_2b() {
+        IFilter f = new Filter();
+        presenter.setTempFilter(f);
+
+        presenter.onFiltersPopUpBrandsSelected();
+
+        ArgumentCaptor<List<Selection>> captor = ArgumentCaptor.forClass(List.class);
+        verify(mockView).showFiltersPopUpBrandSelector(captor.capture());
+
+        List<Selection> result = captor.getValue();
+        for (Selection s : result) {
+            if (s.getValue().equals("Todos"))
+                assertTrue(s.isSelected());
+            else
+                assertFalse(s.isSelected());
+        }
+    }
 
 }
