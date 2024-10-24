@@ -1,4 +1,4 @@
-package es.unican.gasolineras.utils;
+package es.unican.gasolineras.activities.main;
 
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -29,9 +29,9 @@ import dagger.hilt.android.testing.HiltAndroidRule;
 import dagger.hilt.android.testing.HiltAndroidTest;
 import dagger.hilt.android.testing.UninstallModules;
 import es.unican.gasolineras.R;
-import es.unican.gasolineras.activities.main.MainView;
 import es.unican.gasolineras.injection.RepositoriesModule;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
+import es.unican.gasolineras.utils.SeekBarActions;
 
 @UninstallModules(RepositoriesModule.class)
 @HiltAndroidTest
@@ -92,7 +92,7 @@ public class MaxPriceFilterSuccessUITest {
                 .check(matches(withText("1.5")));
 
         //Press the button that accepts the filters
-        Espresso.onView(withId(R.id.filters_accpet_button))
+        Espresso.onView(withId(R.id.filters_accept_button))
                 .perform(ViewActions.click());
 
 
