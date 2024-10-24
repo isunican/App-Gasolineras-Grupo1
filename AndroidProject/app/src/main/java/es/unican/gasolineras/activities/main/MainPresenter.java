@@ -202,6 +202,7 @@ public class MainPresenter implements IMainContract.Presenter {
         filtersAlertDialogControler(index, value, FuelTypeEnum.values().length);
     }
 
+
     /**
      * @see IMainContract.Presenter#onFiltersPopUpBrandsOneSelected(int, boolean)
      */
@@ -225,11 +226,11 @@ public class MainPresenter implements IMainContract.Presenter {
                     .skip(1)
                     .filter(Selection::isSelected)
                     .count();
-            if (value && numActivated < BrandsEnum.values().length - 1) {
+            if (value && numActivated < tempListSelection.size() - 2) {
                 // Si se selecciona una opcion distinta de "Todos", y no esta marcando todas
                 tempListSelection.get(0).setSelected(false);
                 view.updateFiltersPopUpBrandsSelection(0, false);
-            } else if (value && numActivated == BrandsEnum.values().length - 1) {
+            } else if (value && numActivated == tempListSelection.size() - 2) {
                 // Si se selecciona una opcion distinta de "Todos" y se marcan todas
                 tempListSelection.get(0).setSelected(true);
                 view.updateFiltersPopUpBrandsSelection(0, true);
@@ -357,4 +358,11 @@ public class MainPresenter implements IMainContract.Presenter {
         repository.requestGasolineras(callBack, IDCCAAs.CANTABRIA.id);
     }
 
+    public void setTempListSelection(List<Selection> selections) {
+        this.tempListSelection = selections;
+    }
+
+    public List<Selection> getTempListSelection() {
+        return this.tempListSelection;
+    }
 }
