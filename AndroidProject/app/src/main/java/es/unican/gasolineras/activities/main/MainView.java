@@ -398,4 +398,8 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         alertDialog = null;
         popupWindow = null;
     }
+
+    public String getConstantString(int id) {
+        return getString(id);
+    }
 }

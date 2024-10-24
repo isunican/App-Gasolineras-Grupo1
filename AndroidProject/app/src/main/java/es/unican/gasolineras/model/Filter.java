@@ -1,5 +1,6 @@
 package es.unican.gasolineras.model;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.util.Log;
 import android.widget.SeekBar;
@@ -30,7 +31,7 @@ public class Filter implements IFilter {
     public Filter() {
         fuelTypes = Arrays.asList(FuelTypeEnum.values());
         gasBrands = Arrays.asList(BrandsEnum.values());
-        maxPrice = Float.parseFloat(LimitPricesEnum.MAX_PRICE.toString());
+        maxPrice = Float.MAX_VALUE;
     }
 
     private Boolean typeFilter(Gasolinera g) {
@@ -42,16 +43,17 @@ public class Filter implements IFilter {
     }
 
     private Boolean brandsFilter(Gasolinera g) {
+        if (g == null) return false;
         return gasBrands.contains(g.getBrand());
-        //return true;
     }
 
+    @SuppressLint("UseValueOf")
     @NonNull
     private Boolean priceFilter(Gasolinera g) {
         if (g == null) return false;
         double p;
         for (FuelTypeEnum t : this.fuelTypes) {
-            p = g.getPrecioPorTipo(t);
+            p = (float) g.getPrecioPorTipo(t);
             if (this.maxPrice < p || p == 0.0 )
                 return false;
         }

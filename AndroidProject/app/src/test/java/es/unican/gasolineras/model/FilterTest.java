@@ -36,7 +36,7 @@ public class FilterTest {
         Double[] precios = {1.8, 1.0, 1.81, 0.0};
         setUp(nombres, precios);
         IFilter filter = new Filter()
-                .setMaxPrice(1.8f)
+                .setMaxPrice(1.8F)
                 .setFuelTypes(Collections.singletonList(FuelTypeEnum.GASOLEO_A));
         l = filter.toFilter(l);
         assertEquals(l.size(), 2);
