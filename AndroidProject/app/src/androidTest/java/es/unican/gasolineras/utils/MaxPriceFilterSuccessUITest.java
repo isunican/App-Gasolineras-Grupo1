@@ -92,7 +92,7 @@ public class MaxPriceFilterSuccessUITest {
                 .check(matches(withText("1.5")));
 
         //Press the button that accepts the filters
-        Espresso.onView(withId(R.id.filters_accpet_button))
+        Espresso.onView(withId(R.id.filters_accept_button))
                 .perform(ViewActions.click());
 
 
