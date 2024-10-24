@@ -420,6 +420,9 @@ public class MainPresenter implements IMainContract.Presenter {
 
     // Methods for Ordering story user
 
+    /**
+     * @see IMainContract.Presenter#onOrderClicked()
+     */
     public void onOrderClicked() {
         if (orderByPrice.getFuelType() == null) {
             view.showOrderPopUp(0, 0);
@@ -429,12 +432,18 @@ public class MainPresenter implements IMainContract.Presenter {
         }
     }
 
-    // Definir el tipo de gasolina que se ha seleccionado
+    /**
+     * @see IMainContract.Presenter#onFuelTypeSelected(FuelTypeEnum)
+     */
+
     public void onFuelTypeSelected(FuelTypeEnum type) {
         orderByPrice.setFuelType(type);
     }
 
-    // Definir el orden que se ha seleccionado.
+    /**
+     * @see IMainContract.Presenter#onMethodOrderSelected(OrderMethodsEnum)
+     */
+
     public void onMethodOrderSelected(OrderMethodsEnum orderMethod) {
         switch (orderMethod) {
             case Ascending:
@@ -449,6 +458,9 @@ public class MainPresenter implements IMainContract.Presenter {
         }
     }
 
+    /**
+     * @see IMainContract.Presenter#onOrderPopUpAcceptClicked()
+     */
     @Override
     public void onOrderPopUpAcceptClicked() {
         // Llamar al método de carga que ya maneja la filtración y la ordenación
@@ -463,18 +475,25 @@ public class MainPresenter implements IMainContract.Presenter {
         view.closeOrderPopUp();
     }
 
+    /**
+     * @see IMainContract.Presenter#onOrderPopUpCancelClicked()
+     */
     @Override
     public void onOrderPopUpCancelClicked() {
     view.closeOrderPopUp();
 
     }
 
+    /**
+     * @see IMainContract.Presenter#onOrderPopUpClearClicked()
+     */
     @Override
     public void onOrderPopUpClearClicked() {
         restoreOrder = true;
         load();
         view.closeOrderPopUp();
     }
+
 
     // Comprobar los conflictos de ordenación
     private boolean checkConflicts(IFilter filter, OrderByPrice orderByPrice ) {

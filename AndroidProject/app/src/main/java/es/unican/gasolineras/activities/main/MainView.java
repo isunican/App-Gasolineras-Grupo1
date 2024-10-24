@@ -412,7 +412,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         // Configurar los Spinners
         Spinner typeOrderSpinner = popupView.findViewById(R.id.typeOrderSpinner);
 
-        Spinner orderMethodSpinner = popupView.findViewById(R.id.priceMethodSpinner);
+        Spinner orderMethodSpinner = popupView.findViewById(R.id.orderPriceMethodSpinner);
 
         // Llenar los spinners con valores del enumerado
         ArrayAdapter<FuelTypeEnum> typeFuelAdapter = new ArrayAdapter<>(
