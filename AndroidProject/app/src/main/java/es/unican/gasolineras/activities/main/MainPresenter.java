@@ -5,7 +5,6 @@ package es.unican.gasolineras.activities.main;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -492,6 +491,22 @@ public class MainPresenter implements IMainContract.Presenter {
         restoreOrder = true;
         load();
         view.closeOrderPopUp();
+    }
+
+    /**
+     * @see IMainContract.Presenter#setOrderByPrice(OrderByPrice o)
+     */
+    @Override
+    public void setOrderByPrice(OrderByPrice o) {
+        this.orderByPrice = o;
+    }
+
+    /**
+     * @see IMainContract.Presenter#getOrderByPrice()
+     */
+    @Override
+    public OrderByPrice getOrderByPrice() {
+        return orderByPrice;
     }
 
 

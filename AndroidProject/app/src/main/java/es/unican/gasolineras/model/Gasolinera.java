@@ -22,7 +22,7 @@ import lombok.Setter;
 @Parcel
 @Getter
 @Setter
-public class Gasolinera {
+public class Gasolinera{
 
     @SerializedName("IDEESS")                       protected String id;
 

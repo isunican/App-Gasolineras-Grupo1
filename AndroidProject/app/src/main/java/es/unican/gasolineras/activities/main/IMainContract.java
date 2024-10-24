@@ -6,6 +6,7 @@ import es.unican.gasolineras.common.IFilter;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.OrderMethodsEnum;
 import es.unican.gasolineras.model.Gasolinera;
+import es.unican.gasolineras.model.OrderByPrice;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 
 /**
@@ -157,6 +158,19 @@ public interface IMainContract {
         public void setTempFilter(IFilter f);
 
         public IFilter getTempFilter();
+
+        /**
+         * Deliver of OrderByPrice object to set order in elements.
+         * suited for Integration texts
+         */
+        public void setOrderByPrice(OrderByPrice o);
+
+        /**
+         * Obtain OrderByPrice object from presenter.
+         * suited for Integration texts
+         */
+        public OrderByPrice getOrderByPrice();
+
     }
 
     /**
