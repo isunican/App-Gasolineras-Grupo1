@@ -364,4 +364,8 @@ public class MainPresenter implements IMainContract.Presenter {
     public List<Selection> getTempListSelection() {
         return this.tempListSelection;
     }
+
+    public void setTempFilter(IFilter f) {
+        tempFilter = f;
+    }
 }
