@@ -1,5 +1,6 @@
 package es.unican.gasolineras.model;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.util.Log;
 import android.widget.SeekBar;
@@ -24,33 +25,35 @@ import lombok.Getter;
 public class Filter implements IFilter {
 
     private List<FuelTypeEnum> fuelTypes;
-    private List<BrandsEnum> brands;
-    private List<String> gasBrands;
+    private List<BrandsEnum> gasBrands;
     private Float maxPrice;
 
     public Filter() {
         fuelTypes = Arrays.asList(FuelTypeEnum.values());
-        brands = Arrays.asList(BrandsEnum.values());
-        gasBrands = null;
+        gasBrands = Arrays.asList(BrandsEnum.values());
         maxPrice = Float.MAX_VALUE;
     }
 
     private Boolean typeFilter(Gasolinera g) {
-        // TODO
+        for (FuelTypeEnum f : this.fuelTypes) {
+            if (g.getPrecioPorTipo(f) == 0.0)
+                return false;
+        }
         return true;
     }
 
     private Boolean brandsFilter(Gasolinera g) {
-        return brands.contains(g.getBrand());
-        //return true;
+        if (g == null) return false;
+        return gasBrands.contains(g.getBrand());
     }
 
+    @SuppressLint("UseValueOf")
     @NonNull
     private Boolean priceFilter(Gasolinera g) {
         if (g == null) return false;
         double p;
         for (FuelTypeEnum t : this.fuelTypes) {
-            p = g.getPrecioPorTipo(t);
+            p = (float) g.getPrecioPorTipo(t);
             if (this.maxPrice < p || p == 0.0 )
                 return false;
         }
@@ -61,15 +64,12 @@ public class Filter implements IFilter {
         this.fuelTypes = fuelTypes;
         return this;
     }
-    public IFilter setBrands(List<BrandsEnum> brands) {
-        this.brands = brands;
+
+    public IFilter setGasBrands(List<BrandsEnum> brands) {
+        this.gasBrands = brands;
         return this;
     }
 
-    public IFilter setGasBrands(List<String> gasBrands) {
-        this.gasBrands = gasBrands;
-        return this;
-    }
 
     public IFilter setMaxPrice(Float maxPrice) {
         this.maxPrice = maxPrice;
@@ -86,8 +86,7 @@ public class Filter implements IFilter {
 
     public void clear() {
         fuelTypes = Arrays.asList(FuelTypeEnum.values());
-        brands = Arrays.asList(BrandsEnum.values());
-        gasBrands = null;
+        gasBrands = Arrays.asList(BrandsEnum.values());
         maxPrice = Float.MAX_VALUE;
     }
 
@@ -95,7 +94,6 @@ public class Filter implements IFilter {
         return new Filter()
                 .setFuelTypes(fuelTypes)
                 .setMaxPrice(maxPrice)
-                .setBrands(brands)
                 .setGasBrands(gasBrands);
 
     }

@@ -264,7 +264,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         });
 
         // Fijar listener al boton de aceptar
-        ImageButton accpetlButton = popupView.findViewById(R.id.filters_accpet_button);
+        ImageButton accpetlButton = popupView.findViewById(R.id.filters_accept_button);
         accpetlButton.setOnClickListener(v -> {
             presenter.onFiltersPopUpAcceptClicked();
         });

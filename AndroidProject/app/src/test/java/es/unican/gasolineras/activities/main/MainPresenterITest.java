@@ -58,7 +58,7 @@ public class MainPresenterITest {
     public void onFiltersPopUpClearFiltersClickedNoInitializedITest() {
         sut.setTempFilter(new Filter());
         when(view.getConstantString(R.string.all_selections)).thenReturn("Todos");
-        sut.onFiltersPopUpClearFiltersClicked();                                                                                                                                                                                                                                                                                                                                                                                                  
+        sut.onFiltersPopUpClearFiltersClicked();
         verify(view).updateFiltersPopupTextViewsSelections("Todos", "Todos");
         IFilter f = sut.getTempFilter();
         Assert.assertEquals(Float.MAX_VALUE, (float) f.getMaxPrice(), 0.0);

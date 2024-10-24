@@ -211,7 +211,7 @@
                 app:tint="@android:color/holo_red_dark" />
 
             <ImageButton
-                android:id="@+id/filters_accpet_button"
+                android:id="@+id/filters_accept_button"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:layout_gravity="center"

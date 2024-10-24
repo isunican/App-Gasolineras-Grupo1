@@ -85,11 +85,11 @@ public class MainPresenter implements IMainContract.Presenter {
 
     private List<Selection> getBrandsSelections(IFilter f) {
         List<Selection> s = new ArrayList<>();
-        boolean allSelected = f.getBrands().size() == BrandsEnum.values().length;
+        boolean allSelected = f.getGasBrands().size() == BrandsEnum.values().length;
         s.add(new Selection(view.getConstantString(R.string.all_selections), allSelected));
         for (BrandsEnum t: BrandsEnum.values()) {
             s.add(
-                    new Selection(t.toString(), !allSelected && f.getBrands().contains(t))
+                    new Selection(t.toString(), !allSelected && f.getGasBrands().contains(t))
             );
         }
         return s;
@@ -285,9 +285,9 @@ public class MainPresenter implements IMainContract.Presenter {
     @Override
     public void onFiltersPopUpBrandsAccepted() {
         if (tempListSelection.get(0).isSelected()) {
-            tempFilter.setBrands(Arrays.asList(BrandsEnum.values()));
+            tempFilter.setGasBrands(Arrays.asList(BrandsEnum.values()));
         } else {
-            tempFilter.setBrands(
+            tempFilter.setGasBrands(
                     tempListSelection.stream()
                             .filter(Selection::isSelected)
                             .map(e -> BrandsEnum.fromString(e.getValue()))
