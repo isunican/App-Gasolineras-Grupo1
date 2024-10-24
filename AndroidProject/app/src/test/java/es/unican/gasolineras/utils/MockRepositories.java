@@ -1,4 +1,4 @@
-package es.unican.gasolineras.Utils;
+package es.unican.gasolineras.utils;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;

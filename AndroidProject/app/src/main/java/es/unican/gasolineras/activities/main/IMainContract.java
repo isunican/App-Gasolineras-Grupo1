@@ -3,7 +3,10 @@ package es.unican.gasolineras.activities.main;
 import java.util.List;
 
 import es.unican.gasolineras.common.IFilter;
+import es.unican.gasolineras.common.FuelTypeEnum;
+import es.unican.gasolineras.common.OrderMethodsEnum;
 import es.unican.gasolineras.model.Gasolinera;
+import es.unican.gasolineras.model.OrderByPrice;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 
 /**
@@ -114,9 +117,60 @@ public interface IMainContract {
          */
         public void onFiltersPopUpClearFiltersClicked();
 
+        // Methods for Ordering story user
+
+        /**
+         * The presenter is informed that the order item in the toolbar has been clicked
+         * Only the view should call this method
+         */
+        public void onOrderClicked();
+
+        /**
+         * The presenter is informed that the fuel type item in the order popup has been selected
+         * Only the View should call this method
+         */
+        public void onFuelTypeSelected(FuelTypeEnum type);
+
+        /**
+         * The presenter is informed that the order method  item in the order popup has been selected
+         * Only the View should call this method
+         */
+        public void onMethodOrderSelected(OrderMethodsEnum orderMethod);
+
+        /**
+         * The presenter is informed that the accept button in the order popup has been clicked
+         * Only the View should call this method
+         */
+        public void onOrderPopUpAcceptClicked();
+
+        /**
+         * The presenter is informed that the cancel button in the order popup has been clicked
+         * Only the View should call this method
+         */
+        public void onOrderPopUpCancelClicked();
+
+        /**
+         * The presenter is informed that the clear button in the order popup has been clicked
+         * Only the View should call this method
+         */
+        public void onOrderPopUpClearClicked();
+
         public void setTempFilter(IFilter f);
 
         public IFilter getTempFilter();
+
+        /**
+         * Deliver of OrderByPrice object to set order in elements.
+         * suited for Integration texts
+         */
+        public void setOrderByPrice(OrderByPrice o);
+
+        /**
+         * Obtain OrderByPrice object from presenter.
+         * suited for Integration texts
+         */
+        public OrderByPrice getOrderByPrice();
+
     }
 
     /**
@@ -250,6 +304,22 @@ public interface IMainContract {
          * Only the Presenter should call this method
          */
         public void closeFiltersPopUp();
+
+
+        // Methods for the Ordering story user
+        /**
+         * The view is requested to open the filters popup.
+         * Only the Presenter should call this method
+         */
+
+        public void showOrderPopUp(int typeIndex, int methodIndex);
+
+        /**
+         * The view is requested to close the filters popup
+         * Only the Presenter should call this method.
+         */
+
+        public void closeOrderPopUp();
 
         public String getConstantString(int id);
 

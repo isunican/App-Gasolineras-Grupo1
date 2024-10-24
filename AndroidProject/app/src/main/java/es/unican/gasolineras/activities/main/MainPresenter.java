@@ -1,7 +1,10 @@
 package es.unican.gasolineras.activities.main;
 
+
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -12,9 +15,12 @@ import es.unican.gasolineras.common.BrandsEnum;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.IFilter;
 import es.unican.gasolineras.common.LimitPricesEnum;
+import es.unican.gasolineras.common.OrderMethodsEnum;
+
 import es.unican.gasolineras.model.Filter;
 import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.model.IDCCAAs;
+import es.unican.gasolineras.model.OrderByPrice;
 import es.unican.gasolineras.repository.ICallBack;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 import lombok.Getter;
@@ -38,6 +44,9 @@ public class MainPresenter implements IMainContract.Presenter {
     int scalingFactor = Integer.parseInt(LimitPricesEnum.SCALING_FACTOR.toString());
     int staticSeekBarProgress = Integer.parseInt(LimitPricesEnum.STATIC_SEEKBAR_PROGRESS.toString());
 
+    // Orden by price:
+    private OrderByPrice orderByPrice = new OrderByPrice();
+    private boolean restoreOrder = false;
     /**
      * @see IMainContract.Presenter#init(IMainContract.View)
      * @param view the view to control
@@ -366,17 +375,37 @@ public class MainPresenter implements IMainContract.Presenter {
 
             @Override
             public void onSuccess(List<Gasolinera> stations) {
-                List<Gasolinera> filtered = filter.toFilter(stations);
+                List<Gasolinera> filtered = null;
+                List<Gasolinera> originalFiltered = null;
+                try {
+                    filtered = filter.toFilter(stations);
+                    originalFiltered = new ArrayList<>(filtered);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                } finally {
+                }
+
                 if(filtered.isEmpty()){
                     view.showLoadError();
                 }
                 else {
-                    view.showStations(filtered);
-                    view.showLoadCorrect(filtered.size());
+                    if (restoreOrder) {
+                        view.showStations(originalFiltered);
+                        view.showLoadCorrect(originalFiltered.size());
+                    }
+                    else {
+                        Collections.sort(filtered,orderByPrice );
+                        view.showStations(filtered);
+                        view.showLoadCorrect(filtered.size());
+                    }
+
+
+                    // Llamamos al metodo de ordenar
+                    // TODO: Implementar el tipo de orden NONE.
+
                 }
 
             }
-
 
             @Override
             public void onFailure(Throwable e) {
@@ -387,6 +416,109 @@ public class MainPresenter implements IMainContract.Presenter {
 
         repository.requestGasolineras(callBack, IDCCAAs.CANTABRIA.id);
     }
+
+    // Methods for Ordering story user
+
+    /**
+     * @see IMainContract.Presenter#onOrderClicked()
+     */
+    public void onOrderClicked() {
+        if (orderByPrice.getFuelType() == null) {
+            view.showOrderPopUp(0, 0);
+        } else {
+        view.showOrderPopUp((orderByPrice.getFuelType()).ordinal(), orderByPrice.getAscending() ? 0 : 1  );
+
+        }
+    }
+
+    /**
+     * @see IMainContract.Presenter#onFuelTypeSelected(FuelTypeEnum)
+     */
+
+    public void onFuelTypeSelected(FuelTypeEnum type) {
+        orderByPrice.setFuelType(type);
+    }
+
+    /**
+     * @see IMainContract.Presenter#onMethodOrderSelected(OrderMethodsEnum)
+     */
+
+    public void onMethodOrderSelected(OrderMethodsEnum orderMethod) {
+        switch (orderMethod) {
+            case Ascending:
+                orderByPrice.setAscending(true);  // Asigna directamente si es ascendente
+                break;
+            case Descending:
+                orderByPrice.setAscending(false); // Asigna directamente si es descendente
+                break;
+            default:
+                orderByPrice.setAscending(null); // Manejo de "sin orden"
+                break;
+        }
+    }
+
+    /**
+     * @see IMainContract.Presenter#onOrderPopUpAcceptClicked()
+     */
+    @Override
+    public void onOrderPopUpAcceptClicked() {
+        // Llamar al método de carga que ya maneja la filtración y la ordenación
+        if (checkConflicts(filter, orderByPrice)) {
+            // Reestablecer el filtro a todos.
+            filter.setFuelTypes(Arrays.asList(FuelTypeEnum.values()));
+            view.showInfoMessage("Conflicto con filtro de Combustible, se ha restablecido el filtro.");
+        }
+        // Este método filtrará y ordenará según los criterios establecidos
+        restoreOrder = false;
+        load();
+        view.closeOrderPopUp();
+    }
+
+    /**
+     * @see IMainContract.Presenter#onOrderPopUpCancelClicked()
+     */
+    @Override
+    public void onOrderPopUpCancelClicked() {
+    view.closeOrderPopUp();
+
+    }
+
+    /**
+     * @see IMainContract.Presenter#onOrderPopUpClearClicked()
+     */
+    @Override
+    public void onOrderPopUpClearClicked() {
+        restoreOrder = true;
+        load();
+        view.closeOrderPopUp();
+    }
+
+    /**
+     * @see IMainContract.Presenter#setOrderByPrice(OrderByPrice o)
+     */
+    @Override
+    public void setOrderByPrice(OrderByPrice o) {
+        this.orderByPrice = o;
+    }
+
+    /**
+     * @see IMainContract.Presenter#getOrderByPrice()
+     */
+    @Override
+    public OrderByPrice getOrderByPrice() {
+        return orderByPrice;
+    }
+
+
+    // Comprobar los conflictos de ordenación
+    private boolean checkConflicts(IFilter filter, OrderByPrice orderByPrice ) {
+        FuelTypeEnum fuelType = orderByPrice.getFuelType();
+        if (!filter.getFuelTypes().contains(fuelType)) {
+            return true;
+        }
+        return false;
+    }
+
 
     public void setTempListSelection(List<Selection> selections) {
         this.tempListSelection = selections;

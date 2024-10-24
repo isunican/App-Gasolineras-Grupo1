@@ -9,10 +9,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +36,10 @@ import es.unican.gasolineras.R;
 import es.unican.gasolineras.activities.info.InfoView;
 import es.unican.gasolineras.activities.details.DetailsView;
 import es.unican.gasolineras.common.LimitPricesEnum;
+import es.unican.gasolineras.common.FuelTypeEnum;
+import es.unican.gasolineras.common.OrderMethodsEnum;
 import es.unican.gasolineras.model.Gasolinera;
+import es.unican.gasolineras.model.OrderByPrice;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 
 /**
@@ -104,6 +110,9 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
             return true;
         } if (itemId == R.id.menuFilterButton) {
             presenter.onFiltersClicked();
+            return true;
+        } if (itemId == R.id.menuOrderButton)  {
+            presenter.onOrderClicked();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -196,21 +205,6 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         popupWindow = new PopupWindow(popupView, width, height, focusable);
 
 
-        // Buscar el SeekBar en el layout
-        SeekBar maxPriceSeekBar = popupView.findViewById(R.id.MaxPriceSeekBar);
-        // Establece el rango del seekbar
-        maxPriceSeekBar.setMax(staticSeekBarProgress);
-
-        // Ajusta el texto de los TextView minPriceLabel y maxPriceLabel
-        TextView minPriceLabel = popupView.findViewById(R.id.minPriceLabel);
-        TextView maxPriceLabel = popupView.findViewById(R.id.maxPriceLabel);
-        minPriceLabel.setText(String.valueOf(minPriceLimit));
-        maxPriceLabel.setText(String.valueOf(maxPriceLimit));
-
-        // Establece la barra de progreso del precio maximo con el valor almacenado en el filtro
-        presenter.onFiltersPopUpMaxPriceSeekBarLoaded();
-
-
         // Muestra el PopupWindow en el centro de la pantalla
         ConstraintLayout rootLayout = findViewById(R.id.main);
         popupWindow.showAtLocation(rootLayout, Gravity.CENTER, 0, 0);
@@ -235,9 +229,22 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         brandSpinner.setOnClickListener(v -> {
             presenter.onFiltersPopUpBrandsSelected();
         });
+        // Buscar el SeekBar en el layout
+        SeekBar maxPriceSeekBar = popupView.findViewById(R.id.MaxPriceSeekBar);
+        // Establece el rango del seekbar
+        maxPriceSeekBar.setMax(staticSeekBarProgress);
+
+        // Ajusta el texto de los TextView minPriceLabel y maxPriceLabel
+        TextView minPriceLabel = popupView.findViewById(R.id.minPriceLabel);
+        TextView maxPriceLabel = popupView.findViewById(R.id.maxPriceLabel);
+        minPriceLabel.setText(String.valueOf(minPriceLimit));
+        maxPriceLabel.setText(String.valueOf(maxPriceLimit));
+
+        // Establece la barra de progreso del precio maximo con el valor almacenado en el filtro
+        presenter.onFiltersPopUpMaxPriceSeekBarLoaded();
+
 
         // Fija listener al SeekBar del precio maximo de gasolineras para obtener el valor decimal
-        SeekBar maxPriceSeekBar = popupView.findViewById(R.id.MaxPriceSeekBar);
         maxPriceSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -398,6 +405,88 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         alertDialog = null;
         popupWindow = null;
     }
+
+    public void showOrderPopUp(int typeIndex, int methodIndex) {
+        createPopUp(R.layout.activity_sort_layout);
+        // Configurar los Spinners
+        Spinner typeOrderSpinner = popupView.findViewById(R.id.typeOrderSpinner);
+
+        Spinner orderMethodSpinner = popupView.findViewById(R.id.orderPriceMethodSpinner);
+
+        // Llenar los spinners con valores del enumerado
+        ArrayAdapter<FuelTypeEnum> typeFuelAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                FuelTypeEnum.values()
+        );
+        typeFuelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        typeOrderSpinner.setAdapter(typeFuelAdapter);
+        typeOrderSpinner.setSelection(typeIndex);
+
+        ArrayAdapter<OrderMethodsEnum> orderMethodAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                OrderMethodsEnum.values()
+        );
+
+        orderMethodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        orderMethodSpinner.setAdapter(orderMethodAdapter);
+        orderMethodSpinner.setSelection(methodIndex);
+
+
+        // Implementamos los listeners de los elementos interaccionables
+
+        // Asignar listeners a los spinners
+        typeOrderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                FuelTypeEnum selectedType = (FuelTypeEnum) parent.getItemAtPosition(position);
+                // Notificar al presentador sobre la selección
+                presenter.onFuelTypeSelected(selectedType);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO: ver que hacer cuando no se selecciona nada.
+            }
+        });
+
+        orderMethodSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                OrderMethodsEnum selectedMethodOrder = (OrderMethodsEnum) parent.getItemAtPosition(position);
+                presenter.onMethodOrderSelected(selectedMethodOrder);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO: ver que hacer cuando no se selecciona nada.
+            }
+        });
+
+        // Manejo de los botones de aceptar y cancelar
+        ImageButton acceptButton = popupView.findViewById(R.id.order_accept_button);
+        acceptButton.setOnClickListener (v -> { presenter.onOrderPopUpAcceptClicked();
+        });
+
+        ImageButton cancelButton = popupView.findViewById(R.id.order_cancel_button);
+        cancelButton.setOnClickListener(v -> { presenter.onOrderPopUpCancelClicked();
+        });
+
+        // TODO: Hacer el clear de los filtros.
+        ImageButton clearButton = popupView.findViewById(R.id.bt_clear_order);
+        clearButton.setOnClickListener(v -> { presenter.onOrderPopUpClearClicked();
+        });
+
+    }
+
+    public void closeOrderPopUp(){
+        popupWindow.dismiss();
+        popupView = null;
+        alertDialog = null;
+        popupWindow = null;
+    }
+
 
     public String getConstantString(int id) {
         return getString(id);
