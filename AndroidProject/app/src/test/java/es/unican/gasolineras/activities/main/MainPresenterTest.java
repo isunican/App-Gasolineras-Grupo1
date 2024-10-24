@@ -168,7 +168,7 @@ public class MainPresenterTest {
     @Test
     public void testOnFiltersPopUpBrandsSelected_UGIC_2a() {
         IFilter f = new Filter()
-                .setBrands(Collections.singletonList(BrandsEnum.REPSOL));
+                .setGasBrands(Collections.singletonList(BrandsEnum.REPSOL));
         presenter.setTempFilter(f);
 
         presenter.onFiltersPopUpBrandsSelected();

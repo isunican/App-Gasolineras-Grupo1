@@ -204,21 +204,6 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         popupWindow = new PopupWindow(popupView, width, height, focusable);
 
 
-        // Buscar el SeekBar en el layout
-        SeekBar maxPriceSeekBar = popupView.findViewById(R.id.MaxPriceSeekBar);
-        // Establece el rango del seekbar
-        maxPriceSeekBar.setMax(staticSeekBarProgress);
-
-        // Ajusta el texto de los TextView minPriceLabel y maxPriceLabel
-        TextView minPriceLabel = popupView.findViewById(R.id.minPriceLabel);
-        TextView maxPriceLabel = popupView.findViewById(R.id.maxPriceLabel);
-        minPriceLabel.setText(String.valueOf(minPriceLimit));
-        maxPriceLabel.setText(String.valueOf(maxPriceLimit));
-
-        // Establece la barra de progreso del precio maximo con el valor almacenado en el filtro
-        presenter.onFiltersPopUpMaxPriceSeekBarLoaded();
-
-
         // Muestra el PopupWindow en el centro de la pantalla
         ConstraintLayout rootLayout = findViewById(R.id.main);
         popupWindow.showAtLocation(rootLayout, Gravity.CENTER, 0, 0);
@@ -243,9 +228,22 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         brandSpinner.setOnClickListener(v -> {
             presenter.onFiltersPopUpBrandsSelected();
         });
+        // Buscar el SeekBar en el layout
+        SeekBar maxPriceSeekBar = popupView.findViewById(R.id.MaxPriceSeekBar);
+        // Establece el rango del seekbar
+        maxPriceSeekBar.setMax(staticSeekBarProgress);
+
+        // Ajusta el texto de los TextView minPriceLabel y maxPriceLabel
+        TextView minPriceLabel = popupView.findViewById(R.id.minPriceLabel);
+        TextView maxPriceLabel = popupView.findViewById(R.id.maxPriceLabel);
+        minPriceLabel.setText(String.valueOf(minPriceLimit));
+        maxPriceLabel.setText(String.valueOf(maxPriceLimit));
+
+        // Establece la barra de progreso del precio maximo con el valor almacenado en el filtro
+        presenter.onFiltersPopUpMaxPriceSeekBarLoaded();
+
 
         // Fija listener al SeekBar del precio maximo de gasolineras para obtener el valor decimal
-        SeekBar maxPriceSeekBar = popupView.findViewById(R.id.MaxPriceSeekBar);
         maxPriceSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
