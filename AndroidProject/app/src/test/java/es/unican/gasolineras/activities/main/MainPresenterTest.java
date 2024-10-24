@@ -58,7 +58,6 @@ public class MainPresenterTest {
        //  Inicializa la lista de selecciones de marcas
         presenter.setTempListSelection(mockTempListSelection);
 
-
     }
 
     //No hago nada, de seleccionado el todos
@@ -149,6 +148,87 @@ public class MainPresenterTest {
         assertFalse(listaPrueba.get(2).isSelected());
 
     }
+
+
+
+
+
+
+
+    // Caso UGIC.2a: tempList = ["Marca1"]
+    @Test
+    public void testOnFiltersPopUpBrandsSelected_UGIC_2a() {
+        // Simular que el filtro contiene solo "Marca1"
+        when(mockFilter.getBrands()).thenReturn(Arrays.asList(BrandsEnum.MARCA1));
+
+        // Llamar al método que queremos probar
+        presenter.onFiltersPopUpBrandsSelected();
+
+        // Capturar el valor de la lista de selección pasada a la vista
+        ArgumentCaptor<List<Selection>> captor = ArgumentCaptor.forClass(List.class);
+        verify(mockView).showFiltersPopUpBrandSelector(captor.capture());
+
+        List<Selection> result = captor.getValue();
+
+        // Validar los valores esperados
+        assertEquals(3, result.size());
+        assertFalse(result.get(0).isSelected());  // "Todos" no está seleccionado
+        assertTrue(result.get(1).isSelected());   // "Marca1" está seleccionado
+        assertFalse(result.get(2).isSelected());  // "Marca2" no está seleccionado
+    }
+
+    // Caso UGIC.2b: tempList = []
+    @Test
+    public void testOnFiltersPopUpBrandsSelected_UGIC_2b() {
+        // Simular que el filtro contiene una lista vacía
+        when(mockFilter.getBrands()).thenReturn(new ArrayList<>());
+
+        // Llamar al método que queremos probar
+        presenter.onFiltersPopUpBrandsSelected();
+
+        // Capturar el valor de la lista de selección pasada a la vista
+        ArgumentCaptor<List<Selection>> captor = ArgumentCaptor.forClass(List.class);
+        verify(mockView).showFiltersPopUpBrandSelector(captor.capture());
+
+        List<Selection> result = captor.getValue();
+
+        // Validar los valores esperados
+        assertEquals(3, result.size());
+        assertFalse(result.get(0).isSelected());  // "Todos" no está seleccionado
+        assertFalse(result.get(1).isSelected());  // "Marca1" no está seleccionado
+        assertFalse(result.get(2).isSelected());  // "Marca2" no está seleccionado
+    }
+
+    // Caso UGIC.2c: tempList = ["Marca1", "Marca 2"]
+    @Test
+    public void testOnFiltersPopUpBrandsSelected_UGIC_2c() {
+        // Simular que el filtro contiene "Marca1" y "Marca2"
+        when(mockFilter.getBrands()).thenReturn(Arrays.asList(BrandsEnum.MARCA1, BrandsEnum.MARCA2));
+
+        // Llamar al método que queremos probar
+        presenter.onFiltersPopUpBrandsSelected();
+
+        // Capturar el valor de la lista de selección pasada a la vista
+        ArgumentCaptor<List<Selection>> captor = ArgumentCaptor.forClass(List.class);
+        verify(mockView).showFiltersPopUpBrandSelector(captor.capture());
+
+        List<Selection> result = captor.getValue();
+
+        // Validar los valores esperados
+        assertEquals(3, result.size());
+        assertTrue(result.get(0).isSelected());   // "Todos" está seleccionado
+        assertFalse(result.get(1).isSelected());  // "Marca1" no está seleccionado
+        assertFalse(result.get(2).isSelected());  // "Marca2" no está seleccionado
+    }
+}
+
+
+
+
+
+
+
+
 
 
 

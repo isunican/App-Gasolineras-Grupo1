@@ -148,7 +148,6 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onFiltersPopUpBrandsSelected() {
-
         tempListSelection = getBrandsSelections(tempFilter);
         view.showFiltersPopUpBrandSelector(tempListSelection);
     }
