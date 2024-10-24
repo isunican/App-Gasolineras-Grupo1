@@ -18,7 +18,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.robolectric.RobolectricTestRunner;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -83,7 +83,7 @@ public class MainPresenterITest {
     @Test
     public void onFiltersPopUpAcceptClickedGasoleoA() {
         // Gasolineras filtradas por GasoleoA
-        String[] rotulos = {"CEPSA", "REPSOL", "PETRONOR", "PETRONOR V2", "GALP"};
+        String[] rotulos = {"CEPSA", "REPSOL", "PETRONOR", "PETRONOR V2", "REDETRANS"};
         sut.setTempFilter(new Filter()
                 .setFuelTypes(Collections.singletonList(FuelTypeEnum.GASOLEO_A))
         );
@@ -112,21 +112,23 @@ public class MainPresenterITest {
     @Test
     public void onFiltersPopUpAcceptClickedGasolina95E5GasoleoA() {
         // Gasolineras filtradas por gasolina95E5 y gasoleoA
-        String[] rotulos = {"CEPSA", "REPSOL", "PETRONOR", "PETRONOR V2", "GALP"};
-        sut.setTempFilter(new Filter());
+        String[] rotulos = {"CEPSA", "REPSOL", "PETRONOR", "PETRONOR V2"};
+        sut.setTempFilter(new Filter()
+                .setFuelTypes(Arrays.asList(FuelTypeEnum.GASOLEO_A, FuelTypeEnum.GASOLINA_95E5))
+        );
         sut.onFiltersPopUpAcceptClicked();
         verify(view).closeFiltersPopUp();
         // Son 2 veces porque "sut.init(view);" llama al load()
         verify(view, times(2)).getGasolinerasRepository();
         // {CEPSA, REPSOL, PETRONOR, PETRONOR V2, GALP}
-        verify(view).showLoadCorrect(rotulos.length);
+        verify(view, times(2)).showLoadCorrect(rotulos.length);
         verify(view, times(2)).showStations(listCaptor.capture());
         for (int i = 0; i < rotulos.length; i++) {
             Assert.assertEquals(rotulos[i], listCaptor.getValue().get(i).getRotulo());
         }
         // Filter = {Gasolina95E5, GasoleoA}
         IFilter f = sut.getFilter();
-        Assert.assertNull(f.getFuelTypes());
+        Assert.assertEquals(Arrays.asList(FuelTypeEnum.GASOLEO_A, FuelTypeEnum.GASOLINA_95E5), f.getFuelTypes());
         // TempFilter = null
         IFilter tmpF = sut.getTempFilter();
         Assert.assertNull(tmpF);
