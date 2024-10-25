@@ -21,14 +21,51 @@ interface IMainContract#View {
     + showStations(List<Gasolinera> stations)
     + showLoadCorrect(int stations)
     + showLoadError()
+    + showInfoMessage(String message)
     + showStationDetails(Gasolinera station)
     + showInfoActivity()
+    + showFiltersPopUp()
+    + showFiltersPopUpFuelTypesSelector(List<Selection> selections)
+    + showFiltersPopUpBrandSelector(List<Selection> selections)
+    + updateFiltersPopupTextViewsSelections(String fuelTypes, String fuelBrands)
+    + updateFiltersPopupTextViewsMaxPrice(float truncatedMaxPrice)
+    + updateFiltersPopupSeekBarProgressMaxPrice(int progress)
+    + updateFiltersPopUpFuelTypesSelection(int position, boolean value)
+    + updateFiltersPopUpBrandsSelection(int position, boolean value)
+    + closeFiltersPopUp()
+    + showOrderPopUp(int typeIndex, int methodIndex)
+    + closeOrderPopUp()
+    + getConstantString(int id) : String
 }
 
 interface IMainContract#Presenter {
     + init(View view)
     + onStationClicked(Gasolinera station)
     + onMenuInfoClicked()
+    + onFiltersClicked()
+    + onFiltersPopUpFuelTypesSelected()
+    + onFiltersPopUpBrandsSelected()
+    + onFiltersPopUpFuelTypesOneSelected(int index, boolean value)
+    + onFiltersPopUpBrandsOneSelected(int index, boolean value)   
+    + onFiltersPopUpFuelTypesAccepted()
+    + onFiltersPopUpBrandsAccepted()
+    + onFiltersPopUpMaxPriceSeekBarChanged(int progress)
+    + onFiltersPopUpMaxPriceSeekBarLoaded()
+    + onFiltersPopUpCancelClicked()
+    + onFiltersPopUpAcceptClicked()      
+    + onFiltersPopUpClearFiltersClicked()
+    + onOrderClicked()
+    + onFuelTypeSelected(FuelTypeEnum type)
+    + onMethodOrderSelected(OrderMethodsEnum orderMethod)
+    + onOrderPopUpAcceptClicked()
+    + onOrderPopUpCancelClicked()
+    + onOrderPopUpClearClicked() 
+    + setTempFilter(IFilter f)   
+    + getTempFilter() : IFilter      
+    + setOrderByPrice(OrderByPrice o)
+    + getOrderByPrice() : OrderByPrice
+    + getFilter() : IFilter
+    + getTempListSelection() : List<Selection>
 }
 
 interface IGasolinerasRepository {

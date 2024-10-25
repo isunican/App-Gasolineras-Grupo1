@@ -2,7 +2,11 @@ package es.unican.gasolineras.activities.main;
 
 import java.util.List;
 
+import es.unican.gasolineras.common.IFilter;
+import es.unican.gasolineras.common.FuelTypeEnum;
+import es.unican.gasolineras.common.OrderMethodsEnum;
 import es.unican.gasolineras.model.Gasolinera;
+import es.unican.gasolineras.model.OrderByPrice;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 
 /**
@@ -37,6 +41,155 @@ public interface IMainContract {
          */
         public void onMenuInfoClicked();
 
+        /**
+         * The presenter is informed that the filter item in the toolbar has been clicked
+         * Only the View should call this method
+         */
+        public void onFiltersClicked();
+
+        /**
+         * The presenter is informed that the fuel type item in the filter popup has been clicked
+         * Only the View should call this method
+         */
+        public void onFiltersPopUpFuelTypesSelected();
+
+        /**
+         * The presenter is informed that the fuel brand item in the filter popup has been clicked
+         * Only the View should call this method
+         */
+        public void onFiltersPopUpBrandsSelected();
+
+        /**
+         * The presenter is informed that one of fuel type item in the fuel type filter popup has been clicked
+         * Only the View should call this method
+         */
+        public void onFiltersPopUpFuelTypesOneSelected(int index, boolean value);
+
+
+        /**
+         * The presenter is informed that one of fuel type item in the fuel type filter popup has been clicked
+         * Only the View should call this method
+         */
+        public void onFiltersPopUpBrandsOneSelected(int index, boolean value);
+
+
+
+        /**
+         * The presenter is informed that the fuel type in the filter popup has been clicked in accept
+         * Only the View should call this method
+         */
+        public void onFiltersPopUpFuelTypesAccepted();
+
+        /**
+         * The presenter is informed that the brand in the filter popup has been clicked in accept
+         * Only the View should call this method
+         */
+        public void onFiltersPopUpBrandsAccepted();
+
+        /**
+         * The presenter is informed that the max price in the filter popup seekbar has been changed
+         * Only the View should call this method
+         * @param progress the new progress
+         */
+        public void onFiltersPopUpMaxPriceSeekBarChanged(int progress);
+
+        /**
+         * The presenter is informed that the seekbar in the filter popup has been loaded
+         * Only the View should call this method
+         */
+        public void onFiltersPopUpMaxPriceSeekBarLoaded();
+
+        /**
+         * The presenter is informed that the cancel button in the filter popup has been clicked
+         * Only the View should call this method
+         */
+        public void onFiltersPopUpCancelClicked();
+
+        /**
+         * The presenter is informed that the accept button in the filter popup has been clicked
+         * Only the View should call this method
+         */
+        public void onFiltersPopUpAcceptClicked();
+
+        /**
+         * The presenter is informed that the clear filters button in the filter popup has been clicked
+         * Only the View should call this method
+         */
+        public void onFiltersPopUpClearFiltersClicked();
+
+        // Methods for Ordering story user
+
+        /**
+         * The presenter is informed that the order item in the toolbar has been clicked
+         * Only the view should call this method
+         */
+        public void onOrderClicked();
+
+        /**
+         * The presenter is informed that the fuel type item in the order popup has been selected
+         * Only the View should call this method
+         */
+        public void onFuelTypeSelected(FuelTypeEnum type);
+
+        /**
+         * The presenter is informed that the order method  item in the order popup has been selected
+         * Only the View should call this method
+         */
+        public void onMethodOrderSelected(OrderMethodsEnum orderMethod);
+
+        /**
+         * The presenter is informed that the accept button in the order popup has been clicked
+         * Only the View should call this method
+         */
+        public void onOrderPopUpAcceptClicked();
+
+        /**
+         * The presenter is informed that the cancel button in the order popup has been clicked
+         * Only the View should call this method
+         */
+        public void onOrderPopUpCancelClicked();
+
+        /**
+         * The presenter is informed that the clear button in the order popup has been clicked
+         * Only the View should call this method
+         */
+        public void onOrderPopUpClearClicked();
+
+        /**
+         * The presenter is informed to change de tempFilter
+         * This method is for the tests
+         */
+        public void setTempFilter(IFilter f);
+
+        /**
+         * The presenter is informed to get de tempFilter
+         * This method is for the tests
+         */
+        public IFilter getTempFilter();
+
+        /**
+         * Deliver of OrderByPrice object to set order in elements.
+         * suited for Integration texts
+         */
+        public void setOrderByPrice(OrderByPrice o);
+
+        /**
+         * Obtain OrderByPrice object from presenter.
+         * suited for Integration texts
+         */
+        public OrderByPrice getOrderByPrice();
+
+        /**
+         * The presenter is informed to get de filter
+         * This method is for the tests
+         */
+        public IFilter getFilter();
+
+        /**
+         * The presenter is informed to get de tempListSelection
+         * This method is for the tests
+         */
+        public List<Selection> getTempListSelection();
     }
 
     /**
@@ -86,6 +239,12 @@ public interface IMainContract {
         public void showLoadError();
 
         /**
+         * The view is requested to display a notificacion indicating a message.
+         * Only the Presenter should call this method
+         */
+        public void showInfoMessage(String message);
+
+        /**
          * The view is requested to display the detailed view of the given gas station.
          * Only the Presenter should call this method
          * @param station the charging station
@@ -97,6 +256,91 @@ public interface IMainContract {
          * Only the Presenter should call this method
          */
         public void showInfoActivity();
+
+        /**
+         * The view is requested to open the filters popup.
+         * Only the Presenter should call this method
+         */
+        public void showFiltersPopUp();
+
+        /**
+         * The view is requested to to open the filters fuel type selector.
+         * Only the Presenter should call this method
+         * @param selections list of the selections of the fuel types
+         */
+        public void showFiltersPopUpFuelTypesSelector(List<Selection> selections);
+
+
+        /**
+         * The view is requested to to open the filters brand type selector.
+         * Only the Presenter should call this method
+         * @param selections list of the selections of the brands
+         */
+        public void showFiltersPopUpBrandSelector(List<Selection> selections);
+
+        /**
+         * The view is requested to to update the filters textviews of selections.
+         * Only the Presenter and View should call this method
+         * @param fuelTypes the string to update the textView fuel type
+         * @param fuelBrands the string to update the textView fuel brand
+         */
+        public void updateFiltersPopupTextViewsSelections(String fuelTypes, String fuelBrands);
+
+        /**
+         * The view is requested to to update the filters textviews of the max price.
+         * Only the Presenter and View should call this method
+         * @param truncatedMaxPrice the truncated with two decimal max price value
+         */
+        public void updateFiltersPopupTextViewsMaxPrice(float truncatedMaxPrice);
+
+        /**
+         * The view is requested to to update the filters seekbar progress.
+         * Only the Presenter and View should call this method
+         */
+        public void updateFiltersPopupSeekBarProgressMaxPrice(int progress);
+
+        /**
+         * The view is requested to to update the selection of a fuel type selector.
+         * Only the Presenter should call this method
+         * @param position the position of the selection
+         * @param value the new value
+         */
+        public void updateFiltersPopUpFuelTypesSelection(int position, boolean value);
+
+
+        /**
+         * The view is requested to to update the selection of a fuel type selector.
+         * Only the Presenter should call this method
+         * @param position the position of the selection
+         * @param value the new value
+         */
+        public void updateFiltersPopUpBrandsSelection(int position, boolean value);
+
+
+
+        /**
+         * The view is requested to close the filters popup.
+         * Only the Presenter should call this method
+         */
+        public void closeFiltersPopUp();
+
+
+        // Methods for the Ordering story user
+        /**
+         * The view is requested to open the filters popup.
+         * Only the Presenter should call this method
+         */
+
+        public void showOrderPopUp(int typeIndex, int methodIndex);
+
+        /**
+         * The view is requested to close the filters popup
+         * Only the Presenter should call this method.
+         */
+
+        public void closeOrderPopUp();
+
+        public String getConstantString(int id);
 
     }
 }

@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
+import es.unican.gasolineras.common.BrandsEnum;
+import es.unican.gasolineras.common.FuelTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +22,7 @@ import lombok.Setter;
 @Parcel
 @Getter
 @Setter
-public class Gasolinera {
+public class Gasolinera{
 
     @SerializedName("IDEESS")                       protected String id;
 
@@ -33,6 +35,20 @@ public class Gasolinera {
 
     @SerializedName("Precio Gasoleo A")             protected double gasoleoA;
     @SerializedName("Precio Gasolina 95 E5")        protected double gasolina95E5;
+
+
+
+
+
+    public BrandsEnum getBrand(){
+        return BrandsEnum.fromString(rotulo);
+
+    }
+
+
+
+
+
     
     /**
      * Returns the summary price of a gas station.
@@ -41,26 +57,23 @@ public class Gasolinera {
      *
      * @return the summary price of a gas station.
      */
-    public double getPrecioGasolina() {
-        double gasolinePrice = 0;
-        double dieselPrice = 0;
-        double gasolineWeight = 0;
-        double dieselWeight = 0;
-        double summaryPrice = 0;
+    public double getAverageGasPrice() {
+        double gasolinePriceWeighted = gasolina95E5 > 0 ? gasolina95E5 * 2 : 0;
+        double dieselPriceWeighted = gasoleoA > 0 ? gasoleoA : 0;
 
-        if (gasolina95E5 > 0 || gasoleoA > 0) {
-
-            if (gasolina95E5 > 0) {
-                gasolinePrice = gasolina95E5;
-                gasolineWeight = 2;
-            }
-            if (gasoleoA > 0) {
-                dieselPrice = gasoleoA;
-                dieselWeight = 1;
-            }
-
-            summaryPrice = (gasolinePrice * gasolineWeight + dieselPrice * dieselWeight) / (gasolineWeight + dieselWeight);
-        }
-        return summaryPrice;
+        int weight = (gasolina95E5 > 0 ? 2 : 0) + (gasoleoA > 0 ? 1 : 0);
+        return  (gasolinePriceWeighted + dieselPriceWeighted) / (weight==0 ? 1 : weight);
     }
+
+    public double getPrecioPorTipo(FuelTypeEnum t) {
+        switch (t) {
+            case GASOLEO_A: return this.gasoleoA;
+            case GASOLINA_95E5: return this.gasolina95E5;
+            default: return -1.0;
+        }
+    }
+
+
+
+
 }

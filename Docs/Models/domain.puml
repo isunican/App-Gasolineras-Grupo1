@@ -16,7 +16,54 @@ class GasolinerasResponse {
     - String fecha
     - String nota
     - String consulta
+
+    + getPrecioPorTipo(FuelTypeEnum t)
+    + getBrand(): BrandsEnum
+    + getAverageGasPrice(): double
 }
+
+interface IFilter {
+    + setFuelTypes(List<FuelTypeEnum>): IFilter
+    + setBrands(List<BrandsEnum>): IFilter
+    + setGasBrands(List<String>): IFilter
+    + setMaxPrice(Float): IFilter
+    + getFuelTypes(): List<FuelTypeEnum>
+    + getBrands(): List<BrandsEnum>
+    + getMaxPrice(): Float
+    + toFilter(List<Gasolinera>): List<Gasolinera>
+    + clear(): void
+    + toCopy(): IFilter
+}
+
+class Filter {
+    - List<FuelTypeEnum> fuelTypes
+    - List<BrandsEnum> brands
+    - List<String> gasBrands
+    - Float maxPrice
+
+    + setFuelTypes(List<FuelTypeEnum>): IFilter
+    + setBrands(List<BrandsEnum>): IFilter
+    + setGasBrands(List<String>): IFilter
+    + setMaxPrice(Float): IFilter
+    + toFilter(List<Gasolinera>): List<Gasolinera>
+    + clear(): void
+    + toCopy(): IFilter
+
+    - typeFilter(Gasolinera): Boolean
+    - brandsFilter(Gasolinera): Boolean
+    - priceFilter(Gasolinera): Boolean
+}
+
+class OrderByPrice{
+- FuelTypeEnum fuelType
+- Boolean ascending
+
++ compare(Gasolinera g1, Gasolinera g2)  : int
+}
+
+IFilter <|.. Filter
+
+Comparator <|-- OrderByPrice
 
 GasolinerasResponse *-- "*" Gasolinera : gasolineras
 
