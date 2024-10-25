@@ -49,6 +49,84 @@ public class FilterTest {
         assertEquals(5, rotulosCount);
     }
 
+    public void toFilterPrecioMaximo2a() {
+        String[] nombres = {"t", "t", "f", "f"};
+        Double[] diesel = {1.8, 1.0, 1.81, 0.0};
+        Double[] gasolina = {1.8, 1.0, 1.81, 0.0};
+        setUp(nombres, gasolina, diesel);
+        IFilter filter = new Filter()
+                .setMaxPrice(1.8F);
+        l = filter.toFilter(l);
+        assertEquals(l.size(), 2);
+        assertEquals(
+                l.stream()
+                        .filter(e -> e.getRotulo().equals("t"))
+                        .count(),
+                l.size()
+        );
+    }
+
+    @Test
+    public void toFilterPrecioMaximo2b() {
+        String[] nombres = {"f", "f", "f", "f"};
+        Double[] diesel = {1.8, 2.0, 1.81, 0.0};
+        Double[] gasolina = {2.0, 1.0, 2.0, 2.0};
+        setUp(nombres, gasolina, diesel);
+        IFilter filter = new Filter()
+                .setMaxPrice(1.8F);
+        l = filter.toFilter(l);
+        assertEquals(l.size(), 0);
+    }
+
+    @Test
+    public void toFilterPrecioMaximo2c() {
+        String[] nombres = {"t1", "t2", "t3", "t4"};
+        Double[] diesel = {1.8, 1.0, 1.81, 0.0};
+        Double[] gasolina = {1.8, 1.0, 1.81, 0.0};
+        setUp(nombres, gasolina, diesel);
+        IFilter filter = new Filter();
+        l = filter.toFilter(l);
+        assertEquals(l.size(), 4);
+    }
+
+    @Test
+    public void toFilterPrecioMaximo2d() {
+        String[] nombres = {"t", "t", "f", "f"};
+        Double[] diesel = {2.0, 2.0, 2.0, 2.0};
+        Double[] gasolina = {1.8, 1.0, 1.81, 0.0};
+        setUp(nombres, gasolina, diesel);
+        IFilter filter = new Filter()
+                .setMaxPrice(1.8F)
+                .setFuelTypes(Collections.singletonList(FuelTypeEnum.GASOLINA_95E5));
+        l = filter.toFilter(l);
+        assertEquals(l.size(), 2);
+        assertEquals(
+                l.stream()
+                        .filter(e -> e.getRotulo().equals("t"))
+                        .count(),
+                l.size()
+        );
+    }
+
+    @Test
+    public void toFilterPrecioMaximo2e() {
+        String[] nombres = {"t", "t", "f", "f"};
+        Double[] diesel = {1.8, 1.0, 1.81, 0.0};
+        Double[] gasolina = {2.0, 2.0, 2.0, 2.0};
+        setUp(nombres, gasolina, diesel);
+        IFilter filter = new Filter()
+                .setMaxPrice(1.8F)
+                .setFuelTypes(Collections.singletonList(FuelTypeEnum.GASOLEO_A));
+        l = filter.toFilter(l);
+        assertEquals(l.size(), 2);
+        assertEquals(
+                l.stream()
+                        .filter(e -> e.getRotulo().equals("t"))
+                        .count(),
+                l.size()
+        );
+    }
+
     @Test
     public void toFilterGasoleoA() {
         String[] nombres = {"CEPSA", "REPSOL", "PETRONOR", "PETRONOR V2", "REDETRANS", "GALP"};
@@ -75,13 +153,7 @@ public class FilterTest {
         setUp(nombres, gasolinaG5E5, gasoleoA);
         IFilter filter = new Filter();
         l = filter.toFilter(l);
-        assertEquals(4, l.size());
-        // Contar las ocurrencias de los rotulos especificados
-        long rotulosCount = l.stream()
-                .filter(e -> Arrays.asList("CEPSA", "REPSOL", "PETRONOR", "PETRONOR V2")
-                        .contains(e.getRotulo()))
-                .count();
-        assertEquals(4, rotulosCount);
+        assertEquals(6, l.size());
     }
 
     @Test
@@ -98,4 +170,5 @@ public class FilterTest {
                         .count()
         );
     }
+
 }

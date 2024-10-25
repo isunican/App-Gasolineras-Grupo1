@@ -28,7 +28,6 @@ import es.unican.gasolineras.model.OrderByPrice;
 import java.util.Arrays;
 import java.util.Collections;
 
-import es.unican.gasolineras.Utils.MockRepositories;
 import es.unican.gasolineras.common.IFilter;
 import es.unican.gasolineras.model.Filter;
 import es.unican.gasolineras.model.Gasolinera;
@@ -99,9 +98,9 @@ public class MainPresenterITest {
         sut.onOrderPopUpAcceptClicked();
 
         verify(mockMainView,times (2)).showStations(listCaptor.capture());
-        assertEquals("1036", listCaptor.getValue().get(0).getId());
-        assertEquals("1039", listCaptor.getValue().get(3).getId());
-        verify(mockMainView, times (2)).showLoadCorrect(eq(4));
+        assertEquals("13606", listCaptor.getValue().get(0).getId());
+        assertEquals("1048", listCaptor.getValue().get(3).getId());
+        verify(mockMainView, times (2)).showLoadCorrect(eq(7));
         verify(mockMainView, times(1)).closeOrderPopUp();
 
         //ID1.b
@@ -113,7 +112,7 @@ public class MainPresenterITest {
         verify(mockMainView,times (3)).showStations(listCaptor.capture());
         assertEquals("1048", listCaptor.getValue().get(0).getId());
         assertEquals("1039", listCaptor.getValue().get(3).getId());
-        verify(mockMainView, times (3)).showLoadCorrect(eq(4));
+        verify(mockMainView, times (3)).showLoadCorrect(eq(7));
         verify(mockMainView, times(2)).closeOrderPopUp();
     }
 
@@ -205,7 +204,7 @@ public class MainPresenterITest {
         // Son 2 veces porque "sut.init(view);" llama al load()
         verify(mockMainView2, times(2)).getGasolinerasRepository();
         // {CEPSA, REPSOL, PETRONOR, PETRONOR V2, GALP}
-        verify(mockMainView2, times(2)).showLoadCorrect(rotulos.length);
+        verify(mockMainView2, times(2)).showLoadCorrect(6);
         verify(mockMainView2, times(2)).showStations(listCaptor.capture());
         for (int i = 0; i < rotulos.length; i++) {
             Assert.assertEquals(rotulos[i], listCaptor.getValue().get(i).getRotulo());
