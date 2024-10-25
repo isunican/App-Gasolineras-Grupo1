@@ -155,8 +155,16 @@ public interface IMainContract {
          */
         public void onOrderPopUpClearClicked();
 
+        /**
+         * The presenter is informed to change de tempFilter
+         * This method is for the tests
+         */
         public void setTempFilter(IFilter f);
 
+        /**
+         * The presenter is informed to get de tempFilter
+         * This method is for the tests
+         */
         public IFilter getTempFilter();
 
         /**
@@ -171,6 +179,17 @@ public interface IMainContract {
          */
         public OrderByPrice getOrderByPrice();
 
+        /**
+         * The presenter is informed to get de filter
+         * This method is for the tests
+         */
+        public IFilter getFilter();
+
+        /**
+         * The presenter is informed to get de tempListSelection
+         * This method is for the tests
+         */
+        public List<Selection> getTempListSelection();
     }
 
     /**

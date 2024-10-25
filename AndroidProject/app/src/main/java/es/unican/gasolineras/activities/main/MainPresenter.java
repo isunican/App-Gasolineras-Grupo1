@@ -37,6 +37,7 @@ public class MainPresenter implements IMainContract.Presenter {
     @Getter
     @Setter
     private IFilter tempFilter;
+    @Setter
     private List<Selection> tempListSelection;
     // get values from LimitePricesEnum converted to float and integer
     float minPriceLimit = Float.parseFloat(LimitPricesEnum.MIN_PRICE.toString());
@@ -519,16 +520,24 @@ public class MainPresenter implements IMainContract.Presenter {
         return false;
     }
 
-
-    public void setTempListSelection(List<Selection> selections) {
-        this.tempListSelection = selections;
-    }
-
-    public List<Selection> getTempListSelection() {
-        return this.tempListSelection;
-    }
-
+    @Override
     public void setTempFilter(IFilter f) {
-        tempFilter = f;
+        this.tempFilter = f;
     }
+
+    @Override
+    public IFilter getTempFilter() {
+        return tempFilter;
+    }
+
+    @Override
+    public IFilter getFilter() {
+        return filter;
+    }
+
+    @Override
+    public List<Selection> getTempListSelection() {
+        return tempListSelection;
+    }
+
 }
