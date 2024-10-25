@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,9 +35,11 @@ import dagger.hilt.android.AndroidEntryPoint;
 import es.unican.gasolineras.R;
 import es.unican.gasolineras.activities.info.InfoView;
 import es.unican.gasolineras.activities.details.DetailsView;
+import es.unican.gasolineras.common.LimitPricesEnum;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.OrderMethodsEnum;
 import es.unican.gasolineras.model.Gasolinera;
+import es.unican.gasolineras.model.OrderByPrice;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 
 /**
@@ -49,6 +52,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     PopupWindow popupWindow;
     private AlertDialog alertDialog;
     boolean[] selectcionArray;
+    // get values from LimitePricesEnum converted to float and integer
+    float minPriceLimit = Float.parseFloat(LimitPricesEnum.MIN_PRICE.toString());
+    float maxPriceLimit = Float.parseFloat(LimitPricesEnum.MAX_PRICE.toString());
+    int staticSeekBarProgress = Integer.parseInt(LimitPricesEnum.STATIC_SEEKBAR_PROGRESS.toString());
 
     /** The presenter of this view */
     private MainPresenter presenter;
@@ -197,6 +204,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         boolean focusable = true; // Permite al usuario interactuar con los elementos del popup
         popupWindow = new PopupWindow(popupView, width, height, focusable);
 
+
         // Muestra el PopupWindow en el centro de la pantalla
         ConstraintLayout rootLayout = findViewById(R.id.main);
         popupWindow.showAtLocation(rootLayout, Gravity.CENTER, 0, 0);
@@ -216,11 +224,38 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
             presenter.onFiltersPopUpFuelTypesSelected();
         });
 
-
         // Fijar listener al TextView de la marca de gasolineras
         TextView brandSpinner = popupView.findViewById(R.id.brandSpinner);
         brandSpinner.setOnClickListener(v -> {
             presenter.onFiltersPopUpBrandsSelected();
+        });
+        // Buscar el SeekBar en el layout
+        SeekBar maxPriceSeekBar = popupView.findViewById(R.id.MaxPriceSeekBar);
+        // Establece el rango del seekbar
+        maxPriceSeekBar.setMax(staticSeekBarProgress);
+
+        // Ajusta el texto de los TextView minPriceLabel y maxPriceLabel
+        TextView minPriceLabel = popupView.findViewById(R.id.minPriceLabel);
+        TextView maxPriceLabel = popupView.findViewById(R.id.maxPriceLabel);
+        minPriceLabel.setText(String.valueOf(minPriceLimit));
+        maxPriceLabel.setText(String.valueOf(maxPriceLimit));
+
+        // Establece la barra de progreso del precio maximo con el valor almacenado en el filtro
+        presenter.onFiltersPopUpMaxPriceSeekBarLoaded();
+
+
+        // Fija listener al SeekBar del precio maximo de gasolineras para obtener el valor decimal
+        maxPriceSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                presenter.onFiltersPopUpMaxPriceSeekBarChanged(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
         // Fijar listener al boton de limpiar filtros
@@ -236,17 +271,17 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         });
 
         // Fijar listener al boton de aceptar
-        ImageButton accpetlButton = popupView.findViewById(R.id.filters_accpet_button);
+        ImageButton accpetlButton = popupView.findViewById(R.id.filters_accept_button);
         accpetlButton.setOnClickListener(v -> {
             presenter.onFiltersPopUpAcceptClicked();
         });
     }
 
     /**
-     * @see IMainContract.View#updateFiltersPopupTextViews(String, String)
+     * @see IMainContract.View#updateFiltersPopupTextViewsSelections(String, String)
      */
     @Override
-    public void updateFiltersPopupTextViews(String fuelTypes, String fuelBrands) {
+    public void updateFiltersPopupTextViewsSelections(String fuelTypes, String fuelBrands) {
         if (fuelTypes != null) {
             TextView typeSpinner = popupView.findViewById(R.id.typeSpinner);
             typeSpinner.setText(fuelTypes);
@@ -257,6 +292,26 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
             brandSpinner.setText(fuelBrands);
         }
 
+    }
+
+    /**
+     * @see IMainContract.View#updateFiltersPopupTextViewsMaxPrice(float)
+     */
+    @Override
+    public void updateFiltersPopupTextViewsMaxPrice(float truncatedMaxPrice) {
+        // Actualizamos el label que muestra el valor maximo actual
+        TextView lbSelectedMaxPrice = popupView.findViewById(R.id.lbSelectedMaxPrice);
+        lbSelectedMaxPrice.setText(String.valueOf(truncatedMaxPrice));
+    }
+
+    /**
+     * @see IMainContract.View#updateFiltersPopupSeekBarProgressMaxPrice(int)
+     */
+    @Override
+    public void updateFiltersPopupSeekBarProgressMaxPrice(int progress) {
+        // Actualizamos el progress del SeekBar
+        SeekBar maxPriceSeekBar = popupView.findViewById(R.id.MaxPriceSeekBar);
+        maxPriceSeekBar.setProgress(progress);
     }
 
     /**
@@ -356,7 +411,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         // Configurar los Spinners
         Spinner typeOrderSpinner = popupView.findViewById(R.id.typeOrderSpinner);
 
-        Spinner orderMethodSpinner = popupView.findViewById(R.id.priceMethodSpinner);
+        Spinner orderMethodSpinner = popupView.findViewById(R.id.orderPriceMethodSpinner);
 
         // Llenar los spinners con valores del enumerado
         ArrayAdapter<FuelTypeEnum> typeFuelAdapter = new ArrayAdapter<>(
@@ -432,4 +487,8 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         popupWindow = null;
     }
 
+
+    public String getConstantString(int id) {
+        return getString(id);
+    }
 }

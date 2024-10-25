@@ -12,13 +12,16 @@
     <string name="filters_title">Filtros</string>
     <string name="filters_type">Tipo:</string>
     <string name="filters_brand">Marca:</string>
+    <string name="filters_max_price">Precio máximo:</string>
     <string name="filters_type_selection">Seleccione ▼</string>
     <string name="filters_brand_selection">Seleccione ▼</string>
+    <string name="filters_max_price_selection">Seleccione precio máximo</string>
     <string name="filters_cross_description">Cancelar</string>
     <string name="filters_tick_description">Aceptar</string>
+    <string name="all_selections">Todos</string>
 
     <!-- Strings para el ordenamiento -->
-    <string name="order_title">Ordenar:</string>
+    <string name="order_title">Ordenar por precio:</string>
     <string name= "order_type">Combustible:</string>
     <string name="order_price">Tipo orden:</string>
     <!--TODO: Definir los strings-->
