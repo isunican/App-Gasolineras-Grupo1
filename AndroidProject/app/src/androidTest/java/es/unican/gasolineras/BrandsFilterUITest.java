@@ -5,7 +5,6 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static com.google.android.material.internal.ContextUtils.getActivity;
 import static org.hamcrest.CoreMatchers.not;
 import static es.unican.gasolineras.utils.Matchers.withListSize;
 import static es.unican.gasolineras.utils.MockRepositories.getTestRepository;
@@ -67,7 +66,7 @@ public class BrandsFilterUITest {
     }
 
     @Test
-    public void checkFilterByBrand() {
+    public void checkFilterByBrandRepsol() {
 
         Espresso.onView(withId(R.id.menuFilterButton))
                 .perform(ViewActions.click());
@@ -93,7 +92,7 @@ public class BrandsFilterUITest {
                 .check(matches(withListSize(45)));
 
 
-        for (int i = 0; i < 45; i++) {
+        for (int i = 0; i < 44; i++) {
             DataInteraction elementoLista = Espresso
                     .onData(CoreMatchers.anything())
                     .inAdapterView(withId(R.id.lvStations))
@@ -104,6 +103,72 @@ public class BrandsFilterUITest {
             checkValues(R.id.tvRotulo, "REPSOL");
             Espresso.pressBack();
         }
+
+        DataInteraction elementoLista = Espresso
+                .onData(CoreMatchers.anything())
+                .inAdapterView(withId(R.id.lvStations))
+                .atPosition(44);
+        // Entramos en la gasolinera
+        elementoLista.perform(ViewActions.click());
+        // Comprobamos los campos
+        checkValues(R.id.tvRotulo, "REPSOL ");
+        Espresso.pressBack();
+    }
+
+    @Test
+    public void checkFilterByBrandRepsolBallenoil() {
+
+        Espresso.onView(withId(R.id.menuFilterButton))
+                .perform(ViewActions.click());
+
+        List<Selection> testFilterSeleciton = new ArrayList<>();
+        testFilterSeleciton.add(new Selection(BrandsEnum.REPSOL.toString(), true));
+
+        Espresso.onView(withId(R.id.brandSpinner))
+                .perform(ViewActions.click());
+
+        Espresso.onView(withText(BrandsEnum.REPSOL.toString()))
+                .perform(ViewActions.click());
+        Espresso.onView(withText(BrandsEnum.BALLENOIL.toString()))
+                .perform(ViewActions.click());
+
+
+        Espresso.onView(withText("OK"))
+                .perform(ViewActions.click());
+
+        Espresso.onView(withId(R.id.filters_accept_button))
+                .perform(ViewActions.click());
+
+        Espresso.onView(withText("Cargadas 51 gasolineras")).inRoot(RootMatchers.withDecorView(not(decorView))).check(matches(isDisplayed()));
+
+        Espresso.onView(withId(R.id.lvStations))
+                .check(matches(withListSize(51)));
+    }
+    @Test
+    public void checkFilterByBrandTodos() {
+
+        Espresso.onView(withId(R.id.menuFilterButton))
+                .perform(ViewActions.click());
+
+        List<Selection> testFilterSeleciton = new ArrayList<>();
+        testFilterSeleciton.add(new Selection(BrandsEnum.REPSOL.toString(), true));
+
+        Espresso.onView(withId(R.id.brandSpinner))
+                .perform(ViewActions.click());
+
+        Espresso.onView(withText("Todos"))
+                .perform(ViewActions.click());
+
+        Espresso.onView(withText("OK"))
+                .perform(ViewActions.click());
+
+        Espresso.onView(withId(R.id.filters_accept_button))
+                .perform(ViewActions.click());
+
+        Espresso.onView(withText("Cargadas 164 gasolineras")).inRoot(RootMatchers.withDecorView(not(decorView))).check(matches(isDisplayed()));
+
+        Espresso.onView(withId(R.id.lvStations))
+                .check(matches(withListSize(164)));
     }
 
 }
