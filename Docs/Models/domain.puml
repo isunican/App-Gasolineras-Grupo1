@@ -54,7 +54,16 @@ class Filter {
     - priceFilter(Gasolinera): Boolean
 }
 
+class OrderByPrice{
+- FuelTypeEnum fuelType
+- Boolean ascending
+
++ compare(Gasolinera g1, Gasolinera g2)  : int
+}
+
 IFilter <|.. Filter
+
+Comparator <|-- OrderByPrice
 
 GasolinerasResponse *-- "*" Gasolinera : gasolineras
 
