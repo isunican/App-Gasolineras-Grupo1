@@ -107,7 +107,7 @@ public class MainPresenter implements IMainContract.Presenter {
 
     private String getStringOfSelections(List<Selection> s) {
         s = s.stream().filter(Selection::isSelected).collect(Collectors.toList());
-        String text = "ERROR";
+        String text;
         switch (s.size()) {
             case 1:
                 text = s.get(0).getValue();

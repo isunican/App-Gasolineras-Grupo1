@@ -37,7 +37,7 @@ public enum BrandsEnum {
 
         for (BrandsEnum brand : BrandsEnum.values()) {
             // Compara el rótulo con el string proporcionado
-            if (brand.displayName.toLowerCase().contains(rotulo.toLowerCase())) {
+            if (rotulo.toLowerCase().contains(brand.displayName.toLowerCase())) {
                 return brand;
             }
         }
