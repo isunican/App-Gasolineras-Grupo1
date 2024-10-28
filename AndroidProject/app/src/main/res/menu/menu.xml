@@ -14,7 +14,7 @@
         android:title="@string/info" />
     <item
         android:id="@+id/menuOrderButton"
-        android:icon="@drawable/sort"
+        android:icon="@drawable/sort_text"
         android:title="@string/order_title"
         app:showAsAction="always"/>
 </menu>
