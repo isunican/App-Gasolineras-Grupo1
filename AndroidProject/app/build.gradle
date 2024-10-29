@@ -55,6 +55,7 @@ android {
     compileSdk 34
 
     testOptions {
+        animationsDisabled = true
         unitTests {
             includeAndroidResources = true
         }
