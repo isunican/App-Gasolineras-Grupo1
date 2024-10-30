@@ -39,9 +39,11 @@ public class MainPresenter implements IMainContract.Presenter {
     private IFilter tempFilter;
     @Setter
     private List<Selection> tempListSelection;
+
+    private List<Gasolinera> gasStations;
     // get values from LimitePricesEnum converted to float and integer
-    float minPriceLimit = Float.parseFloat(LimitPricesEnum.MIN_PRICE.toString());
-    float maxPriceLimit = Float.parseFloat(LimitPricesEnum.MAX_PRICE.toString());
+    float minPriceLimit;
+    float maxPriceLimit;
     int scalingFactor = Integer.parseInt(LimitPricesEnum.SCALING_FACTOR.toString());
     int staticSeekBarProgress = Integer.parseInt(LimitPricesEnum.STATIC_SEEKBAR_PROGRESS.toString());
 
@@ -334,6 +336,12 @@ public class MainPresenter implements IMainContract.Presenter {
             public void onSuccess(List<Gasolinera> stations) {
                 List<Gasolinera> filtered = null;
                 List<Gasolinera> originalFiltered = null;
+                gasStations = stations;
+
+                // set the min and the max price for the slider
+                minPriceLimit = (float) getMinPrice();
+                maxPriceLimit = (float) getMaxPrice();
+
                 try {
                     filtered = filter.toFilter(stations);
                     originalFiltered = new ArrayList<>(filtered);
@@ -350,7 +358,7 @@ public class MainPresenter implements IMainContract.Presenter {
                         view.showLoadCorrect(originalFiltered.size());
                     }
                     else {
-                        Collections.sort(filtered,orderByPrice );
+                        Collections.sort(filtered,orderByPrice);
                         view.showStations(filtered);
                         view.showLoadCorrect(filtered.size());
                     }
@@ -467,6 +475,38 @@ public class MainPresenter implements IMainContract.Presenter {
             return true;
         }
         return false;
+    }
+
+    /**
+     * This public method obtains the max price for all the gasStations when the view calls it.
+     * @return the max price obtained between the gas stations
+     */
+    public double getMaxPrice(){
+        double maxPrice = 0.0;
+        for (Gasolinera gasStation : gasStations) {
+            if (gasStation.getGasolina95E5() > maxPrice) {
+                maxPrice = gasStation.getGasolina95E5();
+            } else if (gasStation.getGasoleoA() > maxPrice) {
+                maxPrice = gasStation.getGasoleoA();
+            }
+        }
+        return maxPrice;
+    }
+
+    /*
+     * This public method obtains the min price for all the gasStations when the view calls it.
+     * @return the min price obtained between the gas stations
+     */
+    public double getMinPrice(){
+        double minPrice = Double.MAX_VALUE;
+        for (Gasolinera gasStation : gasStations) {
+                if (gasStation.getGasolina95E5() < minPrice) {
+                    minPrice = gasStation.getGasolina95E5();
+                } else if (gasStation.getGasoleoA() < minPrice) {
+                    minPrice = gasStation.getGasoleoA();
+                }
+        }
+        return minPrice;
     }
 
     @Override

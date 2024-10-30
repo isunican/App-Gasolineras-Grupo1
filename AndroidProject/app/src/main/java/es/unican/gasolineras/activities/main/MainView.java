@@ -249,10 +249,12 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         maxPriceSeekBar.setMax(staticSeekBarProgress);
 
         // Ajusta el texto de los TextView minPriceLabel y maxPriceLabel
+        Double minPrice = presenter.getMinPrice();
+        Double maxPrice = presenter.getMaxPrice();
         TextView minPriceLabel = popupView.findViewById(R.id.minPriceLabel);
         TextView maxPriceLabel = popupView.findViewById(R.id.maxPriceLabel);
-        minPriceLabel.setText(String.valueOf(minPriceLimit));
-        maxPriceLabel.setText(String.valueOf(maxPriceLimit));
+        minPriceLabel.setText(String.valueOf(minPrice));
+        maxPriceLabel.setText(String.valueOf(maxPrice));
 
         // Establece la barra de progreso del precio maximo con el valor almacenado en el filtro
         presenter.onFiltersPopUpMaxPriceSeekBarLoaded();
