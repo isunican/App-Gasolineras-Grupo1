@@ -80,7 +80,7 @@ public class MaxPriceFilterSuccessUITest {
     public void maxPriceFilterSuccessUITest() {
 
         //Select the filters option
-        Espresso.onView(withId(R.id.menuFilterButton))
+        Espresso.onView(withId(R.id.menuPointButton))
                 .perform(ViewActions.click());
 
         //A value is set in the seek bar
