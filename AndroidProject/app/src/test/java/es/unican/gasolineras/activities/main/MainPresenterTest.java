@@ -55,6 +55,7 @@ public class MainPresenterTest {
         repository = getTestRepository(context, R.raw.gasolineras_ccaa_06);
 
         when(mockView.getGasolinerasRepository()).thenReturn(repository);
+        when(mockView.getConstantString(R.string.all_selections)).thenReturn("Todos");
 
         presenter.init(mockView);
 
@@ -172,6 +173,8 @@ public class MainPresenterTest {
         presenter.setTempFilter(f);
 
         presenter.onFiltersPopUpBrandsSelected();
+
+
 
         ArgumentCaptor<List<Selection>> captor = ArgumentCaptor.forClass(List.class);
         verify(mockView).showFiltersPopUpBrandSelector(captor.capture());
