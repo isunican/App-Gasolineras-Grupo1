@@ -3,25 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menuPointButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:icon="@drawable/location"
-        android:title="@string/back_home"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/menuFilterButton"
         android:icon="@drawable/filter"
-        android:title="@string/filters_type"
+        android:title="@string/filters_title"
         app:showAsAction="always"/>
     <item
-        android:id="@+id/menuInfoButton"
+        android:id="@+id/menuItemInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:title="@string/info" />
     <item
         android:id="@+id/menuOrderButton"
-        android:icon="@drawable/sort_text"
+        android:icon="@drawable/sort"
         android:title="@string/order_title"
         app:showAsAction="always"/>
 </menu>

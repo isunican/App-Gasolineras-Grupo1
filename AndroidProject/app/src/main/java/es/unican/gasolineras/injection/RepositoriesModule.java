@@ -12,7 +12,7 @@ import es.unican.gasolineras.repository.GasolinerasRepository;
  * Any time somebody demands an @link{IGasolinerasRepository} implementation, Hilt will inject the implementation
  * provided by this module
  *
- * InstallIn: this tells Hilt that this module is available to every Activity that is annotated
+ * InstalllIn: this tells Hilt that this moduke is available to every Activity that is annotated
  * with AndroidEntryPoint. Instead of ActivityComponent.class, I could use SingletonComponent.class,
  * and it seems to work too
  */
