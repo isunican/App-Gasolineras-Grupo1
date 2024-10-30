@@ -17,7 +17,8 @@ import java.util.List;
 import dagger.hilt.android.AndroidEntryPoint;
 import es.unican.gasolineras.R;
 import es.unican.gasolineras.activities.details.DetailsView;
-import es.unican.gasolineras.activities.main.PointsArrayAdapter;
+
+import es.unican.gasolineras.activities.main.IMainContract;
 import es.unican.gasolineras.model.InterestPoint;
 import es.unican.gasolineras.roomDAO.InterestPointsDAO;
 
@@ -27,7 +28,9 @@ import es.unican.gasolineras.roomDAO.InterestPointsDAO;
 @AndroidEntryPoint
 public class PointsView extends AppCompatActivity implements IPointsContract.View {
 
-    /** The presenter of this view */
+    /**
+     * The presenter of this view
+     */
     private PointsPresenter presenter;
 
     @Override
@@ -35,11 +38,6 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_points_list);
 
-        // The default theme does not include a toolbar.
-        // In this app the toolbar is explicitly declared in the layout
-        // Set this toolbar as the activity ActionBar
-        Toolbar toolbar = findViewById(R.id.toolbarPoints);
-        setSupportActionBar(toolbar);
 
         // instantiate presenter and launch initial business logic
         presenter = new PointsPresenter();
@@ -48,22 +46,22 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
 
     /**
      * This is called when an item in the action bar menu is selected.
-     * @param item The menu item that was selected.
      *
+     * @param item The menu item that was selected.
      * @return true if we have handled the selection
      */
-    /*
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        // TODO: Cambiar con IDs Lucia
+
         int itemId = item.getItemId();
-        if (itemId == R.id.menuHomeButton) {
+        if (itemId == R.id.homeiconbutton) {
             presenter.onHomeClicked();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
-    */
+
 
     /**
      * @see IPointsContract.View#init()
@@ -128,5 +126,16 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
      */
     public void showInfoMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * @see IPointsContract.View#showMainPage()
+     */
+    @Override
+    public void showMainPage() {
+        Intent intent = new Intent(this, IMainContract.class);
+        startActivity(intent);
+
+
     }
 }

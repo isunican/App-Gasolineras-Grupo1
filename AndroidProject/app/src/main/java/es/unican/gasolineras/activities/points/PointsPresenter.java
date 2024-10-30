@@ -40,4 +40,11 @@ public class PointsPresenter implements IPointsContract.Presenter {
         InterestPointsDAO ddbb = view.getPointsDao();
         ddbb.getMyInterestPointsDAO().getInterestPoints();
     }
+
+    /**
+     * When you click on the house icon, the main page is displayed.
+     */
+    public void onHomeClicked() {
+        view.showMainPage();
+    }
 }

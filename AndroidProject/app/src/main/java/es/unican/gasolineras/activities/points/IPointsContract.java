@@ -85,5 +85,12 @@ public interface IPointsContract {
          * @param message the message
          */
         public void showInfoMessage(String message);
+
+
+        /**
+         * The view is requested to open the main activity.
+         * Only the Presenter should call this method
+         */
+        void showMainPage();
     }
 }
