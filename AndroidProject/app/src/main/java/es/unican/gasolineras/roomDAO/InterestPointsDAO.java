@@ -4,12 +4,8 @@ import android.content.Context;
 
 import androidx.room.Room;
 
-import java.util.Collections;
-import java.util.List;
-
 import es.unican.gasolineras.common.database.IInterestPointsDAO;
 import es.unican.gasolineras.common.database.InterestPointsDatabase;
-import es.unican.gasolineras.model.InterestPoints;
 
 /**
  * Singleton class, whose instance is used to access the database.

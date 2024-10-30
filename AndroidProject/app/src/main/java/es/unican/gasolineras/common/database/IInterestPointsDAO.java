@@ -8,7 +8,7 @@ import androidx.room.Update;
 
 import java.util.List;
 
-import es.unican.gasolineras.model.InterestPoints;
+import es.unican.gasolineras.model.InterestPoint;
 
 @Dao
 
@@ -20,22 +20,22 @@ import es.unican.gasolineras.model.InterestPoints;
 
 public interface IInterestPointsDAO {
 
-    @Query("SELECT * FROM interestpoints")
-    List<InterestPoints> getInterestPoints();
+    @Query("SELECT * FROM InterestPoint")
+    List<InterestPoint> getInterestPoints();
 
-    @Query("SELECT * FROM interestpoints WHERE name = :name")
-    InterestPoints getInterestPointByName(String name);
+    @Query("SELECT * FROM InterestPoint WHERE name = :name")
+    InterestPoint getInterestPointByName(String name);
 
-    @Query("SELECT * FROM interestpoints WHERE id = :id")
-    InterestPoints getInterestPointById(int id);
+    @Query("SELECT * FROM InterestPoint WHERE id = :id")
+    InterestPoint getInterestPointById(int id);
 
     @Insert
-    void addInterestPoint(InterestPoints interestPoints);
+    void addInterestPoint(InterestPoint interestPoint);
 
     @Delete
-    void deleteInterestPoint(InterestPoints interestPoint);
+    void deleteInterestPoint(InterestPoint interestPoint);
 
     @Update
-    void updateInterestPoint(InterestPoints interestPoint);
+    void updateInterestPoint(InterestPoint interestPoint);
 
 }

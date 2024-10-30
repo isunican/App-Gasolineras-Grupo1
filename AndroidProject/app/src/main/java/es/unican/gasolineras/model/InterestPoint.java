@@ -4,12 +4,15 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import lombok.*;
 
 @Getter
 @Setter
 @Entity
-public class InterestPoints {
+public class InterestPoint {
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
@@ -34,12 +37,17 @@ public class InterestPoints {
     @NonNull
     private double radius;
 
-    public InterestPoints(String name, String color, double latitude, double longitude, double radius) {
+    @ColumnInfo (name = "creationDate")
+    @NonNull
+    private Date creationDate;
+
+    public InterestPoint(String name, String color, double latitude, double longitude, double radius) {
         this.name = name;
         this.color = color;
         this.latitude = latitude;
         this.longitude = longitude;
         this.radius = radius;
+        this.creationDate = Calendar.getInstance().getTime();
     }
 
 }
