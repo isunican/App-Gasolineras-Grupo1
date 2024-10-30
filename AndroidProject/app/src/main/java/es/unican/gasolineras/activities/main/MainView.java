@@ -39,7 +39,6 @@ import es.unican.gasolineras.common.LimitPricesEnum;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.OrderMethodsEnum;
 import es.unican.gasolineras.model.Gasolinera;
-import es.unican.gasolineras.model.OrderByPrice;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 
 /**
@@ -105,10 +104,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
-        if (itemId == R.id.menuItemInfo) {
+        if (itemId == R.id.menuInfoButton) {
             presenter.onMenuInfoClicked();
             return true;
-        } if (itemId == R.id.menuFilterButton) {
+        } if (itemId == R.id.menuPointButton) {
             presenter.onFiltersClicked();
             return true;
         } if (itemId == R.id.menuOrderButton)  {

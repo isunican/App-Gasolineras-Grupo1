@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/points_list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.points.PointsView">
+
+    <!-- Toolbar -->
+    <LinearLayout
+        android:id="@+id/toolbarPoints"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.Gasolineras.Toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+
+        <ImageView
+            android:id="@+id/locationView"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/location" />
+
+        <TextView
+            android:id="@+id/tituloView"
+            android:layout_width="273dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical|start"
+            android:paddingLeft="10dp"
+            android:text="@string/app_name"
+            android:textAlignment="viewStart"
+            android:textColor="@color/white"
+            android:textSize="25sp" />
+
+        <ImageView
+            android:id="@+id/homeiconbutton"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingRight="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/home_icon" />
+
+    </LinearLayout>
+
+
+    <!-- ListView para los puntos -->
+    <ListView
+        android:id="@+id/lvPoints"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/dottedLine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarPoints" />
+
+    <!-- ImageView de linea separacion de puntos -->
+    <ImageView
+        android:id="@+id/dottedLine"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:src="@drawable/dotted_line"
+        app:layout_constraintBottom_toTopOf="@id/sortContainer"
+        app:layout_constraintTop_toBottomOf="@id/lvPoints" />
+
+    <!-- Sección que contiene el botón de añadir, imagen y botón de eliminar -->
+    <LinearLayout
+        android:id="@+id/sortContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <!-- Botón de anhadir -->
+        <Button
+            android:id="@+id/btn_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_weight="1"
+            android:text="@string/point_add_button" />
+
+        <!-- Imagen sort en el centro -->
+        <ImageView
+            android:id="@+id/img_center"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:contentDescription="@string/point_sort_generic_description"
+            android:src="@drawable/sort_generic" />
+
+        <!-- Botón de eliminar -->
+        <Button
+            android:id="@+id/btn_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_weight="1"
+            android:text="@string/point_remove_button" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
