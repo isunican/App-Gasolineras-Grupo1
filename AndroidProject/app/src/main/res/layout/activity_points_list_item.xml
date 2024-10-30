@@ -28,7 +28,7 @@
 
     <!-- TextView para las coordenadas de latitud -->
     <TextView
-        android:id="@+id/tvLatitud"
+        android:id="@+id/tvLatitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -43,12 +43,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         tools:text="-"
-        app:layout_constraintStart_toEndOf="@+id/tvLatitud"
+        app:layout_constraintStart_toEndOf="@+id/tvLatitude"
         app:layout_constraintTop_toBottomOf="@+id/tvName" />
 
     <!-- TextView para las coordenadas de logitud -->
     <TextView
-        android:id="@+id/tvLongitud"
+        android:id="@+id/tvLongitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
@@ -58,32 +58,32 @@
 
     <!-- Label de Radio -->
     <TextView
-        android:id="@+id/tvRadioLabel"
+        android:id="@+id/tvRadiusLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         tools:text="@string/point_radio"
-        app:layout_constraintTop_toBottomOf="@+id/tvLatitud"
+        app:layout_constraintTop_toBottomOf="@+id/tvLatitude"
         app:layout_constraintStart_toEndOf="@+id/ivLocation" />
 
     <!-- Valor de Radio -->
     <TextView
-        android:id="@+id/tvRadioValue"
+        android:id="@+id/tvRadiusValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
         tools:text="0.0"
-        app:layout_constraintTop_toBottomOf="@+id/tvLatitud"
-        app:layout_constraintStart_toEndOf="@+id/tvRadioLabel" />
+        app:layout_constraintTop_toBottomOf="@+id/tvLatitude"
+        app:layout_constraintStart_toEndOf="@+id/tvRadiusLabel" />
 
     <!-- Unidades de Radio -->
     <TextView
-        android:id="@+id/tvRadioUnits"
+        android:id="@+id/tvRadiusUnits"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
         tools:text="km"
-        app:layout_constraintTop_toBottomOf="@+id/tvLatitud"
-        app:layout_constraintStart_toEndOf="@+id/tvRadioValue" />
+        app:layout_constraintTop_toBottomOf="@+id/tvLatitude"
+        app:layout_constraintStart_toEndOf="@+id/tvRadiusValue" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

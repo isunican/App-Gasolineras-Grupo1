@@ -6,6 +6,7 @@ import androidx.room.Room;
 
 import es.unican.gasolineras.common.database.IInterestPointsDAO;
 import es.unican.gasolineras.common.database.InterestPointsDatabase;
+import lombok.Getter;
 
 /**
  * Singleton class, whose instance is used to access the database.
@@ -16,6 +17,7 @@ public class InterestPointsDAO  {
 
     protected static InterestPointsDAO myInstance;
 
+    @Getter
     private IInterestPointsDAO myInterestPointsDAO;
 
     protected  InterestPointsDAO(Context context) {
