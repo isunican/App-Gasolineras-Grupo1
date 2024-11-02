@@ -1,8 +1,6 @@
 package es.unican.gasolineras.common.database;
 
-import android.arch.persistence.room.Database;
-
-
+import androidx.room.Database;
 import androidx.room.RoomDatabase;
 
 import es.unican.gasolineras.model.InterestPoint;

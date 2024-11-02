@@ -68,7 +68,7 @@ public class BrandsFilterUITest {
     @Test
     public void checkFilterByBrandRepsol() {
 
-        Espresso.onView(withId(R.id.menuPointButton))
+        Espresso.onView(withId(R.id.menuFilterButton))
                 .perform(ViewActions.click());
 
         List<Selection> testFilterSeleciton = new ArrayList<>();
@@ -118,7 +118,7 @@ public class BrandsFilterUITest {
     @Test
     public void checkFilterByBrandRepsolBallenoil() {
 
-        Espresso.onView(withId(R.id.menuPointButton))
+        Espresso.onView(withId(R.id.menuFilterButton))
                 .perform(ViewActions.click());
 
         List<Selection> testFilterSeleciton = new ArrayList<>();
@@ -147,7 +147,7 @@ public class BrandsFilterUITest {
     @Test
     public void checkFilterByBrandTodos() {
 
-        Espresso.onView(withId(R.id.menuPointButton))
+        Espresso.onView(withId(R.id.menuFilterButton))
                 .perform(ViewActions.click());
 
         List<Selection> testFilterSeleciton = new ArrayList<>();
