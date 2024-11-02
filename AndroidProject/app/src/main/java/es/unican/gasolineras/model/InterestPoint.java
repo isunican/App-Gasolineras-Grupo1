@@ -40,11 +40,11 @@ public class InterestPoint {
     @NonNull
     private double radius;
 
-    /* FIXME: Arreglar lo de la fecha de creacion para poder introducirla en la BBDD.
+    // FIXME: Arreglar lo de la fecha de creacion para poder introducirla en la BBDD.
     @ColumnInfo (name = "creationDate")
     @NonNull
     private Date creationDate;
-    */
+
 
     public InterestPoint(String name, String color, double latitude, double longitude, double radius) {
         this.name = name;
@@ -52,7 +52,7 @@ public class InterestPoint {
         this.latitude = latitude;
         this.longitude = longitude;
         this.radius = radius;
-        //this.creationDate = Calendar.getInstance().getTime();
+        this.creationDate = Calendar.getInstance().getTime();
     }
 
     //generate getters and setters of attributes
@@ -165,5 +165,22 @@ public class InterestPoint {
         this.radius = radius;
     }
 
+    /**
+     * Gets the creation date of the interest point.
+     *
+     * @return the creation date of the interest point.
+     */
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    /**
+     * Sets the creation date of the interest point.
+     *
+     * @param creationDate the new creation date of the interest point.
+     */
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
 
 }
