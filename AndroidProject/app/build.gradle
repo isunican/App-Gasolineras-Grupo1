@@ -135,4 +135,8 @@ dependencies {
 
     // Roboelectric (to get a proper Context object in unit tests)
     testImplementation libs.roboelectric
+
+    // Room for creating a database
+    implementation "androidx.room:room-runtime:2.6.1"
+    annotationProcessor "androidx.room:room-compiler:2.6.1"
 }

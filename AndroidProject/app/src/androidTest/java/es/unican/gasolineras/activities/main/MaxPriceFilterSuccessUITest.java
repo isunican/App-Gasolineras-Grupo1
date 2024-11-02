@@ -48,7 +48,7 @@ public class MaxPriceFilterSuccessUITest {
 
     @BindValue
     final IGasolinerasRepository repository = getTestRepository(context, R.raw.gasolineras_ccaa_06);
-    
+
     @Before
     public void setUp() {
         activityRule.getScenario().onActivity(activity -> decorView = activity.getWindow().getDecorView());
