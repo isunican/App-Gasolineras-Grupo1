@@ -43,6 +43,6 @@ public enum LimitPricesEnum {
         float minPriceLimit = Float.parseFloat(MIN_PRICE.displayLimitPrices);
         float maxPriceLimit = Float.parseFloat(MAX_PRICE.displayLimitPrices);
         int scalingFactor = Integer.parseInt(SCALING_FACTOR.displayLimitPrices);
-        return String.valueOf((int) ((maxPriceLimit - minPriceLimit) * scalingFactor));
+        return String.valueOf((int) ((Math.ceil((1.649 - 1.237) * 100) / 100) * scalingFactor));
     }
 }

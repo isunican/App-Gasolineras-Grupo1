@@ -47,6 +47,15 @@ public class MainPresenter implements IMainContract.Presenter {
     int scalingFactor = Integer.parseInt(LimitPricesEnum.SCALING_FACTOR.toString());
     int staticSeekBarProgress = Integer.parseInt(LimitPricesEnum.STATIC_SEEKBAR_PROGRESS.toString());
 
+    /*
+     * Actualizamos los valores máximos y mínimos del SeekBar para que sean float,
+     * aunque la implementación seekbar original solo permita valores int.
+     * Esto se consigue mediante la siguiente fórmula.
+     */
+    private String calculateSeekbarProgress() {
+        return String.valueOf((int) ((maxPriceLimit - minPriceLimit) * scalingFactor));
+    }
+
     // Orden by price:
     private OrderByPrice orderByPrice = new OrderByPrice();
     private boolean restoreOrder = false;
@@ -279,7 +288,7 @@ public class MainPresenter implements IMainContract.Presenter {
         // Establecer el valor maximo del filtro
         tempFilter.setMaxPrice(maxPrice);
         // Solo se muestran dos decimales en la vista
-        float truncatedMaxPrice = (float) Math.round(maxPrice * 100) / 100;
+        float truncatedMaxPrice = (float) Math.floor(maxPrice * 100) / 100;
         view.updateFiltersPopupTextViewsMaxPrice(truncatedMaxPrice);
     }
 
@@ -500,9 +509,9 @@ public class MainPresenter implements IMainContract.Presenter {
     public double getMinPrice(){
         double minPrice = Double.MAX_VALUE;
         for (Gasolinera gasStation : gasStations) {
-                if (gasStation.getGasolina95E5() < minPrice) {
+                if (gasStation.getGasolina95E5() < minPrice && gasStation.getGasolina95E5() != 0.0) {
                     minPrice = gasStation.getGasolina95E5();
-                } else if (gasStation.getGasoleoA() < minPrice) {
+                } else if (gasStation.getGasoleoA() < minPrice && gasStation.getGasoleoA() != 0.0) {
                     minPrice = gasStation.getGasoleoA();
                 }
         }
