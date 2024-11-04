@@ -44,17 +44,9 @@ public class MainPresenter implements IMainContract.Presenter {
     // get values from LimitePricesEnum converted to float and integer
     float minPriceLimit;
     float maxPriceLimit;
-    int scalingFactor = Integer.parseInt(LimitPricesEnum.SCALING_FACTOR.toString());
-    int staticSeekBarProgress = Integer.parseInt(LimitPricesEnum.STATIC_SEEKBAR_PROGRESS.toString());
 
-    /*
-     * Actualizamos los valores máximos y mínimos del SeekBar para que sean float,
-     * aunque la implementación seekbar original solo permita valores int.
-     * Esto se consigue mediante la siguiente fórmula.
-     */
-    private String calculateSeekbarProgress() {
-        return String.valueOf((int) ((maxPriceLimit - minPriceLimit) * scalingFactor));
-    }
+    int staticSeekBarProgress;
+    private static final int SCALING_FACTOR = 100;
 
     // Orden by price:
     private OrderByPrice orderByPrice = new OrderByPrice();
@@ -284,7 +276,7 @@ public class MainPresenter implements IMainContract.Presenter {
     @Override
     public void onFiltersPopUpMaxPriceSeekBarChanged(int progress) {
         // Calcular el valor decimal del progress tipo int
-        float maxPrice = minPriceLimit + (progress / (float) scalingFactor);
+        float maxPrice = minPriceLimit + (progress / (float) SCALING_FACTOR);
         // Establecer el valor maximo del filtro
         tempFilter.setMaxPrice(maxPrice);
         // Solo se muestran dos decimales en la vista
@@ -297,11 +289,23 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     public void onFiltersPopUpMaxPriceSeekBarLoaded() {
         // Una regla de tres para obtener el porcentaje del valor maximo actual
+
+        staticSeekBarProgress = Integer.parseInt(calculateSeekbarProgress());
         float limitPercent = staticSeekBarProgress;
         float result = (tempFilter.getMaxPrice() - minPriceLimit) / (maxPriceLimit - minPriceLimit) * limitPercent;
         // conver the float to int
         int progress = (int) result;
         view.updateFiltersPopupSeekBarProgressMaxPrice(progress);
+    }
+
+    /*
+     * Actualizamos los valores máximos y mínimos del SeekBar para que sean float,
+     * aunque la implementación seekbar original solo permita valores int.
+     * Esto se consigue mediante la siguiente fórmula.
+     */
+    @Override
+    public String calculateSeekbarProgress() {
+        return String.valueOf((int) ((Math.ceil((maxPriceLimit - minPriceLimit) * 100) / 100) * SCALING_FACTOR));
     }
 
     /**
@@ -514,6 +518,10 @@ public class MainPresenter implements IMainContract.Presenter {
                 } else if (gasStation.getGasoleoA() < minPrice && gasStation.getGasoleoA() != 0.0) {
                     minPrice = gasStation.getGasoleoA();
                 }
+        }
+
+        if (minPrice == Double.MAX_VALUE){
+            minPrice = 0.0;
         }
         return minPrice;
     }

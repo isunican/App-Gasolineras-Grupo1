@@ -56,7 +56,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     // get values from LimitePricesEnum converted to float and integer
     float minPriceLimit;
     float maxPriceLimit;
-    int staticSeekBarProgress = Integer.parseInt(LimitPricesEnum.STATIC_SEEKBAR_PROGRESS.toString());
+
 
     /** The presenter of this view */
     private MainPresenter presenter;
@@ -246,16 +246,16 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         // Buscar el SeekBar en el layout
         SeekBar maxPriceSeekBar = popupView.findViewById(R.id.MaxPriceSeekBar);
         // Establece el rango del seekbar
-        maxPriceSeekBar.setMax(staticSeekBarProgress);
+        maxPriceSeekBar.setMax(Integer.parseInt(presenter.calculateSeekbarProgress()));
 
         // Ajusta el texto de los TextView minPriceLabel y maxPriceLabel
-        Double minPrice = Math.floor(presenter.getMinPrice() * 100) / 100;
-        Double maxPrice = Math.ceil(presenter.getMaxPrice() * 100) / 100;
+        minPriceLimit =  (float) presenter.getMinPrice();
+        maxPriceLimit =  (float) presenter.getMaxPrice();
 
         TextView minPriceLabel = popupView.findViewById(R.id.minPriceLabel);
         TextView maxPriceLabel = popupView.findViewById(R.id.maxPriceLabel);
-        minPriceLabel.setText(String.valueOf(minPrice));
-        maxPriceLabel.setText(String.valueOf(maxPrice));
+        minPriceLabel.setText(String.valueOf(minPriceLimit));
+        maxPriceLabel.setText(String.valueOf(maxPriceLimit));
 
         // Establece la barra de progreso del precio maximo con el valor almacenado en el filtro
         presenter.onFiltersPopUpMaxPriceSeekBarLoaded();
@@ -293,6 +293,8 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
             presenter.onFiltersPopUpAcceptClicked();
         });
     }
+
+
 
     /**
      * @see IMainContract.View#updateFiltersPopupTextViewsSelections(String, String)
