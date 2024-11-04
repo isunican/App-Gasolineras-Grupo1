@@ -60,8 +60,6 @@ public class OrderByPriceAscUITest {
 
     @Test
     public void OrderByPriceAscSuccessTest() {
-        onView(withId(R.id.toolbar)).perform(click());
-
         // Click on menuOrderButton
         onView(withId(R.id.menuOrderButton)).perform(click());
 
