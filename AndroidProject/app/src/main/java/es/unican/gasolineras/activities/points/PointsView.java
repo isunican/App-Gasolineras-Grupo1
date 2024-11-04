@@ -3,6 +3,9 @@ package es.unican.gasolineras.activities.points;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -19,6 +22,7 @@ import es.unican.gasolineras.R;
 import es.unican.gasolineras.activities.details.DetailsView;
 
 import es.unican.gasolineras.activities.main.IMainContract;
+import es.unican.gasolineras.activities.main.MainView;
 import es.unican.gasolineras.model.InterestPoint;
 import es.unican.gasolineras.roomDAO.InterestPointsDAO;
 
@@ -42,7 +46,18 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         // instantiate presenter and launch initial business logic
         presenter = new PointsPresenter();
         presenter.init(this);
+
+        ImageView homeButton = findViewById(R.id.homeiconbutton);
+
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onHomeClicked();
+            }
+        });
     }
+
+
 
     /**
      * This is called when an item in the action bar menu is selected.
@@ -50,7 +65,7 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
      * @param item The menu item that was selected.
      * @return true if we have handled the selection
      */
-
+/* Solo serviria si el menú es predefinido.
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
@@ -61,7 +76,7 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         }
         return super.onOptionsItemSelected(item);
     }
-
+*/
 
     /**
      * @see IPointsContract.View#init()
@@ -133,8 +148,9 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
      */
     @Override
     public void showMainPage() {
-        Intent intent = new Intent(this, IMainContract.class);
+        Intent intent = new Intent(this, MainView.class);
         startActivity(intent);
+
 
 
     }

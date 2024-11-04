@@ -79,6 +79,14 @@ public class MainPresenter implements IMainContract.Presenter {
         view.showInfoActivity();
     }
 
+    /**
+     * @see IMainContract.Presenter#onPointsClicked()
+     */
+    @Override
+    public void onPointsClicked() {
+        view.showPointsActivity();
+    }
+
     private List<Selection> getFuelTypesSelections(IFilter f) {
         List<Selection> s = new ArrayList<>();
         boolean allSelected = f.getFuelTypes().size() == FuelTypeEnum.values().length;
