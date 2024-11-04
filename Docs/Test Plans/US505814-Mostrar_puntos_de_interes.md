@@ -25,9 +25,7 @@ En esta historia de usuario se accede a persistencia de datos, pero como esta es
 
 ### Pruebas unitarias de clases de negocio
 
-Deben de probarse los métodos de la clase `PointsPresenter` mediante el uso de mocks de `IPointsContract#View`, .........
-
-#! TODO ----------------- Indicar que clases se mockean ---------------------------------
+Deben de probarse los métodos de la clase `PointsPresenter` mediante el uso de mocks de `IPointsContract#View` y `InterestPointsDAO`
 
 Deberían de probarse los siguientes metodos de la clase `PointsPresenter`:
 
@@ -37,10 +35,10 @@ Deberían de probarse los siguientes metodos de la clase `PointsPresenter`:
 
 Se va a implementar la prueba unitaria del método **init( view : IPointsContract.View )**:
 
-| Identificador | Entrada | Valor esperado | 
+| Identificador | Entrada | Valor esperado |
 |---------------|---------|----------------|
-| UD5.a | DAO con: [puntos_interes_ejemplos_1](#puntos_interes_ejemplos_1) | nada |
-
+| UD1.a | DAO con: [puntos_interes_ejemplos_1](#puntos_interes_ejemplos_1) | 1- View: llamado a init()<br>2- View: llamado a showpoints(<br>&emsp;[punto 2, punto 1, punto 3]<br>) |
+| UD2.a | DAO con: [puntos_interes_vacio](#puntos_interes_vacio) | 1- View: llamado a init()<br>2- View: llamado a showpoints( [] ) |
 
 <br/>
 
