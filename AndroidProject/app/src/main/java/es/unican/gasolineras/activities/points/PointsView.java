@@ -2,32 +2,23 @@ package es.unican.gasolineras.activities.points;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import org.parceler.Parcels;
 
 import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import es.unican.gasolineras.R;
-import es.unican.gasolineras.activities.details.DetailsView;
 
-import es.unican.gasolineras.activities.main.IMainContract;
 import es.unican.gasolineras.activities.main.MainView;
 import es.unican.gasolineras.model.InterestPoint;
 import es.unican.gasolineras.roomDAO.InterestPointsDAO;
 
 /**
- * The main view of the application. It shows a list of gas stations.
+ * The points view of the application. It shows a list of interest points.
  */
 @AndroidEntryPoint
 public class PointsView extends AppCompatActivity implements IPointsContract.View {
@@ -42,64 +33,19 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_points_list);
 
-
         // instantiate presenter and launch initial business logic
         presenter = new PointsPresenter();
         presenter.init(this);
-
-        ImageView homeButton = findViewById(R.id.homeiconbutton);
-
-        homeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.onHomeClicked();
-            }
-        });
     }
-
-
-
-    /**
-     * This is called when an item in the action bar menu is selected.
-     *
-     * @param item The menu item that was selected.
-     * @return true if we have handled the selection
-     */
-/* Solo serviria si el menú es predefinido.
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-        int itemId = item.getItemId();
-        if (itemId == R.id.homeiconbutton) {
-            presenter.onHomeClicked();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-*/
 
     /**
      * @see IPointsContract.View#init()
      */
     @Override
     public void init() {
-        // initialize on click listeners (when clicking on a interest point in the list)
-        ListView list = findViewById(R.id.lvPoints);
-        list.setOnItemClickListener((parent, view, position, id) -> {
-            InterestPoint point = (InterestPoint) parent.getItemAtPosition(position);
-            presenter.onPointClicked(point);
-        });
-    }
-
-    /**
-     * @see IPointsContract.View#showStationsInPoint(InterestPoint)
-     */
-    @Override
-    public void showStationsInPoint(InterestPoint point) {
-        // TODO Para mostrar las gasolineras de un punto de interes
-        Intent intent = new Intent(this, DetailsView.class);
-        intent.putExtra(DetailsView.INTENT_STATION, Parcels.wrap(point));
-        startActivity(intent);
+        // initialize on click listeners
+        ImageView homeButton = findViewById(R.id.homeiconbutton);
+        homeButton.setOnClickListener(v -> presenter.onHomeClicked());
     }
 
     /**
@@ -150,8 +96,5 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
     public void showMainPage() {
         Intent intent = new Intent(this, MainView.class);
         startActivity(intent);
-
-
-
     }
 }
