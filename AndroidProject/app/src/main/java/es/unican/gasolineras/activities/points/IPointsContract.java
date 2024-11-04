@@ -28,6 +28,11 @@ public interface IPointsContract {
          * When you click on the house icon, the main page is displayed.
          */
         public void onHomeClicked();
+
+        /**
+         * When you click on the create button, a popup is displayed.
+         */
+        public void onCreatePointOfInterestClicked();
     }
 
     /**
@@ -82,5 +87,12 @@ public interface IPointsContract {
          * Only the Presenter should call this method
          */
         void showMainPage();
+
+        /**
+         * The view is requested to display a new window to allow creation
+         * of new Point of Interest
+         * Only the presenter should call this method
+         */
+         void showPointOfInterestPopUp();
     }
 }
