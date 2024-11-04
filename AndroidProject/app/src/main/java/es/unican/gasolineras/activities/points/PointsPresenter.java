@@ -6,7 +6,7 @@ import es.unican.gasolineras.model.InterestPoint;
 import es.unican.gasolineras.roomDAO.InterestPointsDAO;
 
 /**
- * The presenter of the main activity of the application. It controls {@link PointsView}
+ * The presenter of the points activity of the application. It controls {@link PointsView}
  */
 public class PointsPresenter implements IPointsContract.Presenter {
 
@@ -26,11 +26,10 @@ public class PointsPresenter implements IPointsContract.Presenter {
     }
 
     /**
-     * @see IPointsContract.Presenter#onPointClicked(InterestPoint)
+     * @see IPointsContract.Presenter#onHomeClicked()
      */
-    @Override
-    public void onPointClicked(InterestPoint point) {
-        view.showStationsInPoint(point);
+    public void onHomeClicked() {
+        view.showMainPage();
     }
 
     /**
@@ -38,13 +37,10 @@ public class PointsPresenter implements IPointsContract.Presenter {
      */
     private void load() {
         InterestPointsDAO ddbb = view.getPointsDao();
-        ddbb.getMyInterestPointsDAO().getInterestPoints();
-    }
-
-    /**
-     * When you click on the house icon, the main page is displayed.
-     */
-    public void onHomeClicked() {
-        view.showMainPage();
+        points = ddbb.getMyInterestPointsDAO().getInterestPoints();
+        //points.add(new InterestPoint("Prueba 1", "#ff0000", 20, 20, 20));
+        //points.add(new InterestPoint("Prueba 2", "#00ff00", 20, 20, 20));
+        //points.add(new InterestPoint("Prueba 3", "#0000ff", 20, 20, 20));
+        view.showPoints(points);
     }
 }

@@ -79,6 +79,11 @@ public class MainPresenter implements IMainContract.Presenter {
         view.showInfoActivity();
     }
 
+    @Override
+    public void onPointsClicked() {
+        view.showPointsActivity();
+    }
+
     private <E> List<Selection> getSelections(List<E> selections, E[] allValues) {
         List<Selection> s = new ArrayList<>();
         boolean allSelected = selections.size() == allValues.length;
@@ -108,7 +113,6 @@ public class MainPresenter implements IMainContract.Presenter {
         return text;
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////
 
     private void setFiltersPopupData() {
         // Obtener la lista de selecciones de fuelTypes

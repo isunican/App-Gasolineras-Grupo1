@@ -35,6 +35,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 import es.unican.gasolineras.R;
 import es.unican.gasolineras.activities.info.InfoView;
 import es.unican.gasolineras.activities.details.DetailsView;
+import es.unican.gasolineras.activities.points.PointsView;
 import es.unican.gasolineras.common.LimitPricesEnum;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.OrderMethodsEnum;
@@ -113,8 +114,8 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         } if (itemId == R.id.menuOrderButton)  {
             presenter.onOrderClicked();
             return true;
-    }   if (itemId == R.id.menuPointButton) {
-           // presenter.onPointsClicked();
+        }   if (itemId == R.id.menuPointButton) {
+           presenter.onPointsClicked();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -196,6 +197,16 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         Intent intent = new Intent(this, InfoView.class);
         startActivity(intent);
     }
+
+    /**
+     * @see IMainContract.View#showPointsActivity()
+     */
+    @Override
+    public void showPointsActivity() {
+        Intent intent = new Intent(this, PointsView.class);
+        startActivity(intent);
+    }
+
 
     private void createPopUp(int layoutId) {
         // Crear el layout del Popup
