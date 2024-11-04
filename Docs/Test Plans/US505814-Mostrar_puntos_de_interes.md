@@ -88,3 +88,38 @@ Estos son listas de puntos de interés creadas para poder tener datos de prueba 
 | 2 | punto 2 | #00ff00 | 65.0400 | 23.3770 | 6.0 | 10/07/2024 |
 | 3 | punto 3 | #0000ff | -25.6783 | 3.3422 | 53.2 | 01/10/2024 |
 
+```plantuml
+@startuml
+
+interface IPasiego {
+    +hacerSobados(): String
+    +hacerCocido(): String
+}
+
+interface ILebaniego {
+    +hacerOrujo(): String
+    +hacerCocido(): String
+}
+
+class Pasiego implements IPasiego {
+    +hacerSobados(): String
+    +hacerCocido(): String
+}
+
+class Lebaniego implements ILebaniego {
+    +hacerOrujo(): String
+    +hacerCocido(): String
+}
+
+class PasiegoLebaniego implements IPasiego, ILebaniego {
+    -mixedPasiego: IPasiego
+    -mixedLebaniego: ILebaniego
+
+    +hacerSobados(): String
+    +hacerOrujo(): String
+    +hacerCocido(): String
+}
+
+@enduml
+```
+
