@@ -38,6 +38,11 @@ public class PointsPresenter implements IPointsContract.Presenter {
         view.showMainPage();
     }
 
+    @Override
+    public void onCreatePointOfInterestClicked() {
+        view.showPointOfInterestPopUp();
+    }
+
     /**
      * Loads the interest points from the DDBB, and sends them to the view
      */

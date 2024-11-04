@@ -3,6 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/new_point_of_interest_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
@@ -42,6 +43,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_weight="2"
+                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789;,.:-_áéíóü¿?¡!"
                 android:gravity="start|center_vertical" />
         </LinearLayout>
 
@@ -69,11 +71,10 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button"
+                    android:id="@+id/btColorPicker"
                     style="@style/CircularButtonStyle"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:foreground="@drawable/palette" />
+                    android:foreground="@drawable/palette"
+                    app:backgroundTint="@color/gray" />
             </LinearLayout>
 
         </LinearLayout>
@@ -101,7 +102,8 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_weight="2"
-                android:gravity="start|center_vertical" />
+                android:gravity="start|center_vertical"
+                android:inputType="number|numberDecimal" />
         </LinearLayout>
 
         <LinearLayout
@@ -126,7 +128,8 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_weight="2"
-                android:gravity="start|center_vertical" />
+                android:gravity="start|center_vertical"
+                android:inputType="number|numberDecimal" />
         </LinearLayout>
 
         <LinearLayout
@@ -151,7 +154,8 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_weight="2"
-                android:gravity="start|center_vertical" />
+                android:gravity="start|center_vertical"
+                android:inputType="number|numberDecimal" />
         </LinearLayout>
 
     </LinearLayout>
@@ -162,7 +166,7 @@
         android:orientation="horizontal">
 
         <ImageButton
-            android:id="@+id/filters_cancel_button"
+            android:id="@+id/newPI_cancel_button"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_gravity="center"
@@ -175,7 +179,7 @@
             app:tint="@android:color/holo_red_dark" />
 
         <ImageButton
-            android:id="@+id/filters_accept_button"
+            android:id="@+id/newPI_accept_button"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_gravity="center"
