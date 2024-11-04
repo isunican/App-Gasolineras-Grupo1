@@ -38,6 +38,6 @@
     <!-- Item -->
     <string name="point_location_description">Localizar</string>
     <string name="point_radio">Radio:</string>
-    <string name="back_home">Inicio</string>
+    <string name="back_home">MenuPuntos</string>
 
 </resources>

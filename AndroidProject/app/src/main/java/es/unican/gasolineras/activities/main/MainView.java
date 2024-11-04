@@ -114,7 +114,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         } if (itemId == R.id.menuOrderButton)  {
             presenter.onOrderClicked();
             return true;
-    }   if (itemId == R.id.menuPointButton) {
+        }   if (itemId == R.id.menuPointButton) {
            presenter.onPointsClicked();
             return true;
         }

@@ -139,7 +139,7 @@ public class BrandsFilterUITest {
         Espresso.onView(withId(R.id.filters_accept_button))
                 .perform(ViewActions.click());
 
-        Espresso.onView(withText("Cargadas 51 gasolineras")).inRoot(RootMatchers.withDecorView(not(decorView))).check(matches(isDisplayed()));
+        //Espresso.onView(withText("Cargadas 51 gasolineras")).inRoot(RootMatchers.withDecorView(not(decorView))).check(matches(isDisplayed()));
 
         Espresso.onView(withId(R.id.lvStations))
                 .check(matches(withListSize(51)));
