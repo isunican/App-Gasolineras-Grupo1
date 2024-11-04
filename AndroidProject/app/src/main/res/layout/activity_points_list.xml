@@ -47,6 +47,7 @@
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:focusedByDefault="true"
             android:paddingRight="10dp"
             android:scaleType="centerInside"
             android:src="@drawable/home_icon" />

@@ -42,6 +42,12 @@ public interface IMainContract {
         public void onMenuInfoClicked();
 
         /**
+         * The presenter is informed that the Info item in the menu has been clicked
+         * Only the View should call this method
+         */
+        public void onPointsClicked();
+
+        /**
          * The presenter is informed that the filter item in the toolbar has been clicked
          * Only the View should call this method
          */
@@ -256,6 +262,12 @@ public interface IMainContract {
          * Only the Presenter should call this method
          */
         public void showInfoActivity();
+
+        /**
+         * The view is requested to open the point activity.
+         * Only the Presenter should call this method
+         */
+        public void showPointsActivity();
 
         /**
          * The view is requested to open the filters popup.
