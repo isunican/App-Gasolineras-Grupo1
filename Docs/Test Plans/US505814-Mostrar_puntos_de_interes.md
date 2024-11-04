@@ -46,15 +46,26 @@ Se va a implementar la prueba unitaria del método **init( view : IPointsContrac
 
 ## Pruebas de integración
 
-Para las pruebas de integración se ha añadido las interfaces de `IPointsContract#View`, `IPointsContract#Presenter` y `InterestPointsDAO`
+Para las pruebas de integración se ha añadido las interfaces de `IPointsContract#View`, `IPointsContract#Presenter` y `InterestPointsDAO`. Se va a probar la integración entre el `PointsPresenter` y `InterestPointsDAO` mockeando el `PointsView`
 
+Se probará el funcionamiento de:
 
+- init( view : IPointsContract.View ) : Void
+- onPointClicked( point : InterestPoint ): Void
+- onHomeClicked( ): Void
+
+Se va a implementar la prueba unitaria del método **init( view : IPointsContract.View )**:
+
+| Identificador | Entrada | Valor esperado |
+|---------------|---------|----------------|
+| UD1.a | DAO con: [puntos_interes_ejemplos_1](#puntos_interes_ejemplos_1) | 1- View: llamado a init()<br>2- View: llamado a showpoints(<br>&emsp;[punto 2, punto 1, punto 3]<br>) |
+| UD2.a | DAO con: [puntos_interes_vacio](#puntos_interes_vacio) | 1- View: llamado a init()<br>2- View: llamado a showpoints( [] ) |
 
 <br/>
 
 ## Reporte final
 
-#! TODO ----------------- Indicar que pruebas se han hecho ---------------------------------
+------------------------------------- TODO : Indicar que pruebas se han hecho -------------------------------------
 
 <br/>
 
