@@ -124,9 +124,10 @@ public class MainPresenter implements IMainContract.Presenter {
         // Obtener la lista de selecciones de fuelBrands
         String fuelBrands = getStringOfSelections(
                 getSelections(tempFilter.getGasBrands(), BrandsEnum.values()));
+
         // Update the view
         view.updateFiltersPopupTextViewsSelections(fuelTypes, fuelBrands);
-        view.updateFiltersPopupTextViewsMaxPrice(tempFilter.getMaxPrice());
+        view.updateFiltersPopupTextViewsMaxPrice(tempFilter.getMaxPrice() == Float.MAX_VALUE ? maxPriceLimit : tempFilter.getMaxPrice());
     }
 
     /**
