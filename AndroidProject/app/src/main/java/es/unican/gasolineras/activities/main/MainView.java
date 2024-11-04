@@ -104,14 +104,17 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
-        if (itemId == R.id.menuInfoButton) {
+        if (itemId == R.id.menuItemInfo) {
             presenter.onMenuInfoClicked();
             return true;
-        } if (itemId == R.id.menuPointButton) {
+        } if (itemId == R.id.menuFilterButton) {
             presenter.onFiltersClicked();
             return true;
         } if (itemId == R.id.menuOrderButton)  {
             presenter.onOrderClicked();
+            return true;
+    }   if (itemId == R.id.menuPointButton) {
+           // presenter.onPointsClicked();
             return true;
         }
         return super.onOptionsItemSelected(item);

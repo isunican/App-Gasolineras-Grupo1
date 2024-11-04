@@ -1,9 +1,8 @@
 package es.unican.gasolineras.common.database;
 
-import android.arch.persistence.room.Database;
-
-
+import androidx.room.Database;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 
 import es.unican.gasolineras.model.InterestPoint;
 
@@ -13,6 +12,7 @@ import es.unican.gasolineras.model.InterestPoint;
  */
 
 @Database(entities = {InterestPoint.class}, version = 1)
+@TypeConverters({Converters.class})
 public abstract class InterestPointsDatabase extends RoomDatabase {
 
     public abstract IInterestPointsDAO getInterestPointsDAO();

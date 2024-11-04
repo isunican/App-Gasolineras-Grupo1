@@ -67,7 +67,7 @@ public class FuelTypesUITest {
     @Test
     public void checkFilterByGasolineAndDiesel() {
         // Abrir el menú de filtros
-        Espresso.onView(withId(R.id.menuPointButton)).perform(ViewActions.click());
+        Espresso.onView(withId(R.id.menuFilterButton)).perform(ViewActions.click());
 
         // Seleccionar Gasolina
         Espresso.onView(withId(R.id.typeSpinner)).perform(ViewActions.click());
