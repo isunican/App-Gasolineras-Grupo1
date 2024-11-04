@@ -39,11 +39,14 @@ public class MainPresenter implements IMainContract.Presenter {
     private IFilter tempFilter;
     @Setter
     private List<Selection> tempListSelection;
+
+    private List<Gasolinera> gasStations;
     // get values from LimitePricesEnum converted to float and integer
-    float minPriceLimit = Float.parseFloat(LimitPricesEnum.MIN_PRICE.toString());
-    float maxPriceLimit = Float.parseFloat(LimitPricesEnum.MAX_PRICE.toString());
-    int scalingFactor = Integer.parseInt(LimitPricesEnum.SCALING_FACTOR.toString());
-    int staticSeekBarProgress = Integer.parseInt(LimitPricesEnum.STATIC_SEEKBAR_PROGRESS.toString());
+    float minPriceLimit;
+    float maxPriceLimit;
+
+    int staticSeekBarProgress;
+    private static final int SCALING_FACTOR = 100;
 
     // Orden by price:
     private OrderByPrice orderByPrice = new OrderByPrice();
@@ -121,9 +124,10 @@ public class MainPresenter implements IMainContract.Presenter {
         // Obtener la lista de selecciones de fuelBrands
         String fuelBrands = getStringOfSelections(
                 getSelections(tempFilter.getGasBrands(), BrandsEnum.values()));
+
         // Update the view
         view.updateFiltersPopupTextViewsSelections(fuelTypes, fuelBrands);
-        view.updateFiltersPopupTextViewsMaxPrice(tempFilter.getMaxPrice());
+        view.updateFiltersPopupTextViewsMaxPrice(tempFilter.getMaxPrice() == Float.MAX_VALUE ? maxPriceLimit : tempFilter.getMaxPrice());
     }
 
     /**
@@ -273,11 +277,11 @@ public class MainPresenter implements IMainContract.Presenter {
     @Override
     public void onFiltersPopUpMaxPriceSeekBarChanged(int progress) {
         // Calcular el valor decimal del progress tipo int
-        float maxPrice = minPriceLimit + (progress / (float) scalingFactor);
+        float maxPrice = minPriceLimit + (progress / (float) SCALING_FACTOR);
         // Establecer el valor maximo del filtro
         tempFilter.setMaxPrice(maxPrice);
         // Solo se muestran dos decimales en la vista
-        float truncatedMaxPrice = (float) Math.round(maxPrice * 100) / 100;
+        float truncatedMaxPrice = (float) Math.floor(maxPrice * 100) / 100;
         view.updateFiltersPopupTextViewsMaxPrice(truncatedMaxPrice);
     }
 
@@ -286,11 +290,23 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     public void onFiltersPopUpMaxPriceSeekBarLoaded() {
         // Una regla de tres para obtener el porcentaje del valor maximo actual
+
+        staticSeekBarProgress = Integer.parseInt(calculateSeekbarProgress());
         float limitPercent = staticSeekBarProgress;
         float result = (tempFilter.getMaxPrice() - minPriceLimit) / (maxPriceLimit - minPriceLimit) * limitPercent;
         // conver the float to int
         int progress = (int) result;
         view.updateFiltersPopupSeekBarProgressMaxPrice(progress);
+    }
+
+    /*
+     * Actualizamos los valores máximos y mínimos del SeekBar para que sean float,
+     * aunque la implementación seekbar original solo permita valores int.
+     * Esto se consigue mediante la siguiente fórmula.
+     */
+    @Override
+    public String calculateSeekbarProgress() {
+        return String.valueOf((int) ((Math.ceil((maxPriceLimit - minPriceLimit) * 100) / 100) * SCALING_FACTOR));
     }
 
     /**
@@ -334,6 +350,12 @@ public class MainPresenter implements IMainContract.Presenter {
             public void onSuccess(List<Gasolinera> stations) {
                 List<Gasolinera> filtered = null;
                 List<Gasolinera> originalFiltered = null;
+                gasStations = stations;
+
+                // set the min and the max price for the slider
+                minPriceLimit = (float) getMinPrice();
+                maxPriceLimit = (float) getMaxPrice();
+
                 try {
                     filtered = filter.toFilter(stations);
                     originalFiltered = new ArrayList<>(filtered);
@@ -350,7 +372,7 @@ public class MainPresenter implements IMainContract.Presenter {
                         view.showLoadCorrect(originalFiltered.size());
                     }
                     else {
-                        Collections.sort(filtered,orderByPrice );
+                        Collections.sort(filtered,orderByPrice);
                         view.showStations(filtered);
                         view.showLoadCorrect(filtered.size());
                     }
@@ -467,6 +489,42 @@ public class MainPresenter implements IMainContract.Presenter {
             return true;
         }
         return false;
+    }
+
+    /**
+     * This public method obtains the max price for all the gasStations when the view calls it.
+     * @return the max price obtained between the gas stations
+     */
+    public double getMaxPrice(){
+        double maxPrice = 0.0;
+        for (Gasolinera gasStation : gasStations) {
+            if (gasStation.getGasolina95E5() > maxPrice) {
+                maxPrice = gasStation.getGasolina95E5();
+            } else if (gasStation.getGasoleoA() > maxPrice) {
+                maxPrice = gasStation.getGasoleoA();
+            }
+        }
+        return maxPrice;
+    }
+
+    /*
+     * This public method obtains the min price for all the gasStations when the view calls it.
+     * @return the min price obtained between the gas stations
+     */
+    public double getMinPrice(){
+        double minPrice = Double.MAX_VALUE;
+        for (Gasolinera gasStation : gasStations) {
+                if (gasStation.getGasolina95E5() < minPrice && gasStation.getGasolina95E5() != 0.0) {
+                    minPrice = gasStation.getGasolina95E5();
+                } else if (gasStation.getGasoleoA() < minPrice && gasStation.getGasoleoA() != 0.0) {
+                    minPrice = gasStation.getGasoleoA();
+                }
+        }
+
+        if (minPrice == Double.MAX_VALUE){
+            minPrice = 0.0;
+        }
+        return minPrice;
     }
 
     @Override

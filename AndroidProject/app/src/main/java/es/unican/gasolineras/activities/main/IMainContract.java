@@ -196,6 +196,12 @@ public interface IMainContract {
          * This method is for the tests
          */
         public List<Selection> getTempListSelection();
+
+        /**
+         * The presenter is requested to calculate the actual progress of the price seekbar.
+         * @return a string with the actual progress.
+         */
+        public String calculateSeekbarProgress();
     }
 
     /**
@@ -353,6 +359,8 @@ public interface IMainContract {
         public void closeOrderPopUp();
 
         public String getConstantString(int id);
+
+
 
     }
 }

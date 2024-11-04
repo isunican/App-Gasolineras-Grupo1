@@ -54,9 +54,9 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     private AlertDialog alertDialog;
     boolean[] selectcionArray;
     // get values from LimitePricesEnum converted to float and integer
-    float minPriceLimit = Float.parseFloat(LimitPricesEnum.MIN_PRICE.toString());
-    float maxPriceLimit = Float.parseFloat(LimitPricesEnum.MAX_PRICE.toString());
-    int staticSeekBarProgress = Integer.parseInt(LimitPricesEnum.STATIC_SEEKBAR_PROGRESS.toString());
+    float minPriceLimit;
+    float maxPriceLimit;
+
 
     /** The presenter of this view */
     private MainPresenter presenter;
@@ -246,9 +246,12 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         // Buscar el SeekBar en el layout
         SeekBar maxPriceSeekBar = popupView.findViewById(R.id.MaxPriceSeekBar);
         // Establece el rango del seekbar
-        maxPriceSeekBar.setMax(staticSeekBarProgress);
+        maxPriceSeekBar.setMax(Integer.parseInt(presenter.calculateSeekbarProgress()));
 
         // Ajusta el texto de los TextView minPriceLabel y maxPriceLabel
+        minPriceLimit =  (float) presenter.getMinPrice();
+        maxPriceLimit =  (float) presenter.getMaxPrice();
+
         TextView minPriceLabel = popupView.findViewById(R.id.minPriceLabel);
         TextView maxPriceLabel = popupView.findViewById(R.id.maxPriceLabel);
         minPriceLabel.setText(String.valueOf(minPriceLimit));
@@ -290,6 +293,8 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
             presenter.onFiltersPopUpAcceptClicked();
         });
     }
+
+
 
     /**
      * @see IMainContract.View#updateFiltersPopupTextViewsSelections(String, String)
