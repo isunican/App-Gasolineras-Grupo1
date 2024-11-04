@@ -18,18 +18,16 @@ public interface IPointsContract {
     public interface Presenter {
 
         /**
-         * Links the presenter with its view.
+         * Links the presenter with its view. It load the points from the DDBB.
          * Only the View should call this method
          * @param view the view to control.
          */
         public void init(View view);
 
         /**
-         * The presenter is informed that a interest point has been clicked
-         * Only the View should call this method
-         * @param point the interest point that has been clicked
+         * When you click on the house icon, the main page is displayed.
          */
-        public void onPointClicked(InterestPoint point);
+        public void onHomeClicked();
     }
 
     /**
@@ -43,13 +41,6 @@ public interface IPointsContract {
          * Only the Presenter should call this method
          */
         public void init();
-
-        /**
-         * The view is requested to display the gas stations of the given interest point.
-         * Only the Presenter should call this method
-         * @param point the charging point
-         */
-        public void showStationsInPoint(InterestPoint point);
 
         /**
          * Get the instance of the DDBB.
@@ -85,7 +76,6 @@ public interface IPointsContract {
          * @param message the message
          */
         public void showInfoMessage(String message);
-
 
         /**
          * The view is requested to open the main activity.

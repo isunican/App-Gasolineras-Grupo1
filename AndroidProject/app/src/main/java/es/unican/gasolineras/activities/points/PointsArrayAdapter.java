@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +13,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Objects;
 
 import es.unican.gasolineras.R;
-import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.model.InterestPoint;
 
 /**
@@ -67,23 +68,24 @@ public class PointsArrayAdapter extends BaseAdapter {
 
         if (convertView == null) {
             convertView = LayoutInflater.from(context)
-                    .inflate(R.layout.activity_points_list, parent, false);
+                    .inflate(R.layout.activity_points_list_item, parent, false);
         }
 
         // logo of location
         {
             ImageView iv = convertView.findViewById(R.id.ivLocation);
 
-            // Get the color string from point.getColor() (assuming it's a hex color string like "#000000")
-            String colorString = point.getColor();
-            int color = Color.parseColor(colorString); // Parse the color string to an int
+            // Obtén el Drawable del vector
+            Drawable drawable = Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.location)).mutate();
 
-            // Set the vector drawable tint
-            Drawable drawable = iv.getDrawable();
-            if (drawable != null) {
-                drawable.mutate(); // To avoid affecting other instances of this drawable
-                drawable.setTint(color); // Apply the color
-            }
+            // Usa DrawableCompat para garantizar compatibilidad con versiones anteriores
+            Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
+
+            // Cambia el color de la imagen
+            DrawableCompat.setTint(wrappedDrawable, Color.parseColor(point.getColor()));
+
+            // Asigna el Drawable al ImageView
+            iv.setImageDrawable(wrappedDrawable);
         }
 
         // name
