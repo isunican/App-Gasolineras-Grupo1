@@ -1,9 +1,13 @@
 package es.unican.gasolineras.activities.points;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -11,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -58,7 +63,7 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         // initialize on click listeners
         ImageView homeButton = findViewById(R.id.homeiconbutton);
         homeButton.setOnClickListener(v -> presenter.onHomeClicked());
-        findViewById(R.id.btn_add).setOnClickListener(v -> presenter.onCreatePointOfInterestClicked());
+        this.findViewById(R.id.btn_add).setOnClickListener(v -> presenter.onCreatePointOfInterestClicked());
 
     }
 
@@ -116,23 +121,45 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
      * @see IPointsContract.View#showPointOfInterestPopUp()
      */
     public void showPointOfInterestPopUp() {
-        // Crea el popup
-        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        popupViewPI = inflater.inflate(R.layout.activity_new_point_of_interest_layout, null);
-        int width = ViewGroup.LayoutParams.MATCH_PARENT;
-        int height = ViewGroup.LayoutParams.MATCH_PARENT;
-        boolean focusable = true; // Permite al usuario interactuar con los elementos del popup
-        PopupWindow popupWindow = new PopupWindow(popupViewPI, width, height, focusable);
+        LayoutInflater inflater = getLayoutInflater();
+        View newPIView = inflater.inflate(R.layout.activity_new_point_of_interest_layout, null);
+        int width = MATCH_PARENT;
+        int heigh = MATCH_PARENT;
+        boolean focusable = true;
+        PopupWindow popupWindow = new PopupWindow(newPIView,width,heigh,focusable);
 
-
-        // Muestra el PopupWindow en el centro de la pantalla
         ConstraintLayout rootLayout = findViewById(R.id.points_list);
-        popupWindow.showAtLocation(rootLayout, Gravity.CENTER, 0, 0);
+        popupWindow.showAtLocation(rootLayout,Gravity.CENTER,0,0);
 
-        // Fijar listener al TextView del tipo de combustible
-        View colorPickerButton = popupViewPI.findViewById(R.id.btColorPicker);
+        View colorPickerButton = newPIView.findViewById(R.id.btColorPicker);
         colorPickerButton.setOnClickListener(v -> showColorPickerPopUp());
 
+        View cancelButton = newPIView.findViewById(R.id.newPI_cancel_button);
+        cancelButton.setOnClickListener(v -> popupWindow.dismiss());
+
+        EditText nameTextView = newPIView.findViewById(R.id.tvPIName);
+        EditText longTextView = newPIView.findViewById(R.id.tvPILongitud);
+        EditText latTextView = newPIView.findViewById(R.id.tvPILatitud);
+        EditText radiusTextView = newPIView.findViewById(R.id.tvPIRadio);
+
+        View acceptButton = newPIView.findViewById(R.id.newPI_accept_button);
+
+
+        Drawable color = colorPickerButton.getBackground();
+        Color colorC = Color.valueOf(1629297440);
+
+        acceptButton.setOnClickListener(v -> {
+            InterestPoint newPointOfInterest = new InterestPoint(
+                    nameTextView.getText().toString(),
+                    //((ColorDrawable)colorPickerButton.getBackground()).getColor(),
+                    "COLOR",
+                    Double.parseDouble(latTextView.getText().toString()),
+                    Double.parseDouble(longTextView.getText().toString()),
+                    Double.parseDouble(radiusTextView.getText().toString())
+            );
+
+            presenter.onAcceptNewPointOfInterestClicked(newPointOfInterest);
+        });
     }
     private void showColorPickerPopUp() {
         // Crea el popup

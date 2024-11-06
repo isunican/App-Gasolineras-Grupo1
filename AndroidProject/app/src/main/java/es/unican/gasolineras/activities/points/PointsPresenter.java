@@ -12,8 +12,9 @@ public class PointsPresenter implements IPointsContract.Presenter {
 
     /** The view that is controlled by this presenter */
     private IPointsContract.View view;
+    private List<InterestPoint> points;
+    private InterestPointsDAO ddbb;
 
-    List<InterestPoint> points;
 
     /**
      * @see IPointsContract.Presenter#init(IPointsContract.View)
@@ -22,6 +23,7 @@ public class PointsPresenter implements IPointsContract.Presenter {
     public void init(IPointsContract.View view) {
         this.view = view;
         this.view.init();
+        ddbb = view.getPointsDao();
         load();
     }
 
@@ -38,10 +40,20 @@ public class PointsPresenter implements IPointsContract.Presenter {
     }
 
     /**
+     *
+     * @see IPointsContract.Presenter#onAcceptNewPointOfInterestClicked(InterestPoint newInterestPoint)
+     */
+    @Override
+    public void onAcceptNewPointOfInterestClicked(InterestPoint newInterestPoint) {
+        //TODO Validaciones del punto de interes
+        ddbb.getMyInterestPointsDAO().addInterestPoint(newInterestPoint);
+        load();
+    }
+
+    /**
      * Loads the interest points from the DDBB, and sends them to the view
      */
     private void load() {
-        InterestPointsDAO ddbb = view.getPointsDao();
         points = ddbb.getMyInterestPointsDAO().getInterestPoints();
         //points.add(new InterestPoint("Prueba 1", "#ff0000", 20, 20, 20));
         //points.add(new InterestPoint("Prueba 2", "#00ff00", 20, 20, 20));
