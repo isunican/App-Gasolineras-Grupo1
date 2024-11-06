@@ -38,4 +38,7 @@ public interface IInterestPointsDAO {
     @Update
     void updateInterestPoint(InterestPoint interestPoint);
 
+    @Query("DELETE FROM InterestPoint")
+    void deleteAll();
+
 }

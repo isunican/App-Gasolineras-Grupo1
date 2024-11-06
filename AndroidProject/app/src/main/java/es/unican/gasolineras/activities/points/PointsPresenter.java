@@ -24,6 +24,7 @@ public class PointsPresenter implements IPointsContract.Presenter {
         this.view = view;
         this.view.init();
         ddbb = view.getPointsDao();
+        ddbb.getMyInterestPointsDAO().deleteAll();
         load();
     }
 
