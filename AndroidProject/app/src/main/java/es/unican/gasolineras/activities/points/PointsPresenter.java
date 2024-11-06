@@ -2,6 +2,8 @@ package es.unican.gasolineras.activities.points;
 
 import android.graphics.Color;
 
+import android.database.sqlite.SQLiteException;
+
 import java.util.Comparator;
 import java.util.List;
 
@@ -40,9 +42,13 @@ public class PointsPresenter implements IPointsContract.Presenter {
      * Loads the interest points from the DDBB, and sends them to the view
      */
     private void load() {
-        IInterestPointsDAO ddbb = view.getPointsDao().getMyInterestPointsDAO();
-        points = ddbb.getInterestPoints();
-        points.add(new InterestPoint("Prueba 1", "#ff0000", 20, 20, 20));
+        try {
+            IInterestPointsDAO ddbb = view.getPointsDao().getMyInterestPointsDAO();
+            points = ddbb.getInterestPoints();
+        } catch (SQLiteException e) {
+            view.showLoadError();
+        }
+        //points.add(new InterestPoint("Prueba 1", "#ff0000", 20, 20, 20));
         //points.add(new InterestPoint("Prueba 2", "#00ff00", 20, 20, 20));
         //points.add(new InterestPoint("Prueba 3", "#0000ff", 20, 20, 20));
         points.sort(Comparator.comparing(InterestPoint::getCreationDate));
