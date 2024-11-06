@@ -3,6 +3,7 @@ package es.unican.gasolineras.activities.points;
 import java.util.Comparator;
 import java.util.List;
 
+import es.unican.gasolineras.common.database.IInterestPointsDAO;
 import es.unican.gasolineras.model.InterestPoint;
 import es.unican.gasolineras.roomDAO.InterestPointsDAO;
 
@@ -37,8 +38,8 @@ public class PointsPresenter implements IPointsContract.Presenter {
      * Loads the interest points from the DDBB, and sends them to the view
      */
     private void load() {
-        InterestPointsDAO ddbb = view.getPointsDao();
-        points = ddbb.getMyInterestPointsDAO().getInterestPoints();
+        IInterestPointsDAO ddbb = view.getPointsDao().getMyInterestPointsDAO();
+        points = ddbb.getInterestPoints();
         points.add(new InterestPoint("Prueba 1", "#ff0000", 20, 20, 20));
         //points.add(new InterestPoint("Prueba 2", "#00ff00", 20, 20, 20));
         //points.add(new InterestPoint("Prueba 3", "#0000ff", 20, 20, 20));
