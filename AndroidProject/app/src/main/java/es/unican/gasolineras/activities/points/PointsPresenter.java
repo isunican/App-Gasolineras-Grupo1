@@ -1,5 +1,6 @@
 package es.unican.gasolineras.activities.points;
 
+import java.util.Comparator;
 import java.util.List;
 
 import es.unican.gasolineras.model.InterestPoint;
@@ -38,9 +39,10 @@ public class PointsPresenter implements IPointsContract.Presenter {
     private void load() {
         InterestPointsDAO ddbb = view.getPointsDao();
         points = ddbb.getMyInterestPointsDAO().getInterestPoints();
-        //points.add(new InterestPoint("Prueba 1", "#ff0000", 20, 20, 20));
+        points.add(new InterestPoint("Prueba 1", "#ff0000", 20, 20, 20));
         //points.add(new InterestPoint("Prueba 2", "#00ff00", 20, 20, 20));
         //points.add(new InterestPoint("Prueba 3", "#0000ff", 20, 20, 20));
+        points.sort(Comparator.comparing(InterestPoint::getCreationDate));
         view.showPoints(points);
     }
 }
