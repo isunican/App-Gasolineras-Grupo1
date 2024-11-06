@@ -19,7 +19,7 @@ Son las mismas pruebas que las pruebas de aceptación, renombradas como “UI.x�
 
 ## Pruebas de unitarias
 
-En esta historia de usuario se accede a persistencia de datos, pero como esta esta hecha con room no es necesario probarla. También tiene una capa de negocio de la clase  `InterestPoint`  pero como es una clase unicamente de datos con getters y setters no es necesario probarla. Por lo tanto, las pruebas unitarias solo consistirán en pruebas de las clases de negocio y presentación.
+En esta historia de usuario se accede a persistencia de datos, pero como está hecha con room no es necesario probarla. También tiene una capa de negocio de la clase  `InterestPoint`  pero como es una clase unicamente de datos con getters y setters no es necesario probarla. Por lo tanto, las pruebas unitarias solo consistirán en pruebas de las clases de negocio y presentación.
 
 <br/>
 

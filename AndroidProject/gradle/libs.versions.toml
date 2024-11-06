@@ -18,6 +18,7 @@ sonarqube = "5.1.0.4882"
 junitJupiter = "5.8.1"
 roomRuntime = "2.6.1"
 roomCompiler = "2.6.1"
+core = "1.6.1"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -42,6 +43,7 @@ roboelectric = { group = "org.robolectric", name = "robolectric", version.ref = 
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomRuntime" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
+core = { group = "androidx.test", name = "core", version.ref = "core" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

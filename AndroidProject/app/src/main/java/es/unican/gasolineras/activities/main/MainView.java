@@ -328,19 +328,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
-     * @see IMainContract.View#updateFiltersPopUpFuelTypesSelection(int, boolean)
+     * @see IMainContract.View#updateFiltersPopUpSelection(int, boolean)
      */
     @Override
-    public void updateFiltersPopUpFuelTypesSelection(int position, boolean value) {
-        selectcionArray[position] = value;
-        alertDialog.getListView().setItemChecked(position, value);
-    }
-
-    /**
-     * @see IMainContract.View#updateFiltersPopUpBrandsSelection(int, boolean)
-     */
-    @Override
-    public void updateFiltersPopUpBrandsSelection(int position, boolean value) {
+    public void updateFiltersPopUpSelection(int position, boolean value) {
         selectcionArray[position] = value;
         alertDialog.getListView().setItemChecked(position, value);
     }

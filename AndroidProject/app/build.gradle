@@ -105,6 +105,7 @@ dependencies {
     implementation libs.activity
     implementation libs.constraintlayout
     implementation libs.room.runtime
+    implementation libs.core
     testImplementation libs.junit
     testImplementation libs.junit.jupiter
     androidTestImplementation libs.ext.junit
