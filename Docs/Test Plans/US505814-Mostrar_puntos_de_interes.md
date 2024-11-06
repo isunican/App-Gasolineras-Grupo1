@@ -13,7 +13,8 @@ Son las mismas pruebas que las pruebas de aceptación, renombradas como “UI.x�
 |---------------|---------|-----------|
 | UI.1 | [puntos_interes_ejemplos_1](#puntos_interes_ejemplos_1) | muestra: [ punto 2, punto 1, punto 3] |
 | UI.2 | [puntos_interes_vacio](#puntos_interes_vacio) | muestra que no hay puntos | 
-| UI.3 | [puntos_interes_ejemplos_1](#puntos_interes_ejemplos_1) | muestra: [ punto 2, punto 1, punto 3] |
+| UI.3 | [puntos_interes_ejemplos_1](#puntos_interes_ejemplos_1) | muestra: [ punto 2, punto 1, punto 3]<br>Se vuelve a la pantalla de inicio |
+| UI.4 | Error en la DAO | muestra Toast con mensaje de error |
 
 <br/>
 
@@ -30,7 +31,6 @@ Deben de probarse los métodos de la clase `PointsPresenter` mediante el uso de 
 Deberían de probarse los siguientes metodos de la clase `PointsPresenter`:
 
 - init( view : IPointsContract.View ) : Void
-- onPointClicked( point : InterestPoint ): Void
 - onHomeClicked( ): Void
 
 Se va a implementar la prueba unitaria del método **init( view : IPointsContract.View )**:
@@ -38,9 +38,8 @@ Se va a implementar la prueba unitaria del método **init( view : IPointsContrac
 | Identificador | Entrada | Valor esperado |
 |---------------|---------|----------------|
 | UD1.a | DAO con: [puntos_interes_ejemplos_1](#puntos_interes_ejemplos_1) | 1- View: llamado a init()<br>2- View: llamado a showpoints(<br>&emsp;[punto 2, punto 1, punto 3]<br>) |
-| UD2.a | DAO con: [puntos_interes_vacio](#puntos_interes_vacio) | 1- View: llamado a init()<br>2- View: llamado a showpoints( [] ) |
-
-<br/>
+| UD1.b | DAO con: [puntos_interes_vacio](#puntos_interes_vacio) | 1- View: llamado a init()<br>2- View: llamado a showpoints( [] ) |
+| UD1.c | Error en la DAO | 1- View: llamado a init()<br>2- View: llamado a showLoadError() |
 
 <br/>
 
@@ -51,15 +50,19 @@ Para las pruebas de integración se ha añadido las interfaces de `IPointsContra
 Se probará el funcionamiento de:
 
 - init( view : IPointsContract.View ) : Void
-- onPointClicked( point : InterestPoint ): Void
 - onHomeClicked( ): Void
 
-Se va a implementar la prueba unitaria del método **init( view : IPointsContract.View )**:
+<br>
+
+Como todos los métodos son muy sencillos se va a implementar el método **onFiltersPopUpFuelTypesOneSelected(int index, boolean value): void** de la historia de usuario *feature/500955-Filtrar_por_tipo_de_combustible*. Esto debería de estar en el plan de pruebas de esa historia de usuario, pero como es de un sprint viejo y no disponemos del archivo viejo esta escrito aquí:
 
 | Identificador | Entrada | Valor esperado |
 |---------------|---------|----------------|
-| UD1.a | DAO con: [puntos_interes_ejemplos_1](#puntos_interes_ejemplos_1) | 1- View: llamado a init()<br>2- View: llamado a showpoints(<br>&emsp;[punto 2, punto 1, punto 3]<br>) |
-| UD2.a | DAO con: [puntos_interes_vacio](#puntos_interes_vacio) | 1- View: llamado a init()<br>2- View: llamado a showpoints( [] ) |
+| UD3.a | tempListSelection: {<br>&nbsp;&nbsp;&nbsp;Selection(Todos, False),<br>&nbsp;&nbsp;&nbsp;Selection(Gasolina 95, False),<br>&nbsp;&nbsp;&nbsp;Selection(Diesel, True)<br>}<br>index: 0<br>value: True | - View: llamado a updateFiltersPopUpSelection(1, false)<br>- View: llamado a updateFiltersPopUpSelection(2, false)<br>- View.tempListSelection: {<br>&nbsp;&nbsp;&nbsp;Selection(Todos, True),<br>&nbsp;&nbsp;&nbsp;Selection(Gasolina 95, False),<br>&nbsp;&nbsp;&nbsp;Selection(Diesel, False)<br>} |
+| UD3.b | tempListSelection: {<br>&nbsp;&nbsp;&nbsp;Selection(Todos, True),<br>&nbsp;&nbsp;&nbsp;Selection(Gasolina 95, False),<br>&nbsp;&nbsp;&nbsp;Selection(Diesel, False)<br>}<br>index: 0<br>value: False | - View: llamado a updateFiltersPopUpSelection(0, true)<br>- View.tempListSelection: {<br>&nbsp;&nbsp;&nbsp;Selection(Todos, True),<br>&nbsp;&nbsp;&nbsp;Selection(Gasolina 95, False),<br>&nbsp;&nbsp;&nbsp;Selection(Diesel, False)<br>} |
+| UD3.c | tempListSelection: {<br>&nbsp;&nbsp;&nbsp;Selection(Todos, True),<br>&nbsp;&nbsp;&nbsp;Selection(Gasolina 95, False),<br>&nbsp;&nbsp;&nbsp;Selection(Diesel, False)<br>}<br>index: 2<br>value: True | - View: llamado a updateFiltersPopUpSelection(0, false)<br>- View.tempListSelection: {<br>&nbsp;&nbsp;&nbsp;Selection(Todos, False),<br>&nbsp;&nbsp;&nbsp;Selection(Gasolina 95, False),<br>&nbsp;&nbsp;&nbsp;Selection(Diesel, True)<br>} |
+| UD3.d | tempListSelection: {<br>&nbsp;&nbsp;&nbsp;Selection(Todos, False),<br>&nbsp;&nbsp;&nbsp;Selection(Gasolina 95, False),<br>&nbsp;&nbsp;&nbsp;Selection(Diesel, True)<br>}<br>index: 1<br>value: True | - View: llamado a updateFiltersPopUpSelection(0, true)<br>- View: llamado a updateFiltersPopUpSelection(1, false)<br>- View: llamado a updateFiltersPopUpSelection(2, false)<br>- View.tempListSelection: {<br>&nbsp;&nbsp;&nbsp;Selection(Todos, True),<br>&nbsp;&nbsp;&nbsp;Selection(Gasolina 95, False),<br>&nbsp;&nbsp;&nbsp;Selection(Diesel, False)<br>} |
+| UD3.e | tempListSelection: {<br>&nbsp;&nbsp;&nbsp;Selection(Todos, False),<br>&nbsp;&nbsp;&nbsp;Selection(Gasolina 95, False),<br>&nbsp;&nbsp;&nbsp;Selection(Diesel, True)<br>}<br>index: 2<br>value: False | - View: llamado a updateFiltersPopUpSelection(0, true)<br>- View: llamado a updateFiltersPopUpSelection(1, false)<br>- View.tempListSelection: {<br>&nbsp;&nbsp;&nbsp;Selection(Todos, True),<br>&nbsp;&nbsp;&nbsp;Selection(Gasolina 95, False),<br>&nbsp;&nbsp;&nbsp;Selection(Diesel, False)<br>} |
 
 <br/>
 
