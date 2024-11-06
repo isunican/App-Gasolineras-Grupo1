@@ -501,4 +501,8 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     public String getConstantString(int id) {
         return getString(id);
     }
+
+    public MainPresenter getMainPresenter() {
+        return presenter;
+    }
 }
