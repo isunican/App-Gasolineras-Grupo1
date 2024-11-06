@@ -504,6 +504,10 @@ public class MainPresenter implements IMainContract.Presenter {
                 maxPrice = gasStation.getGasoleoA();
             }
         }
+
+        //round to two decimal places
+        maxPrice =Math.ceil(maxPrice * 100.00) /100.00;
+
         return maxPrice;
     }
 
@@ -524,6 +528,11 @@ public class MainPresenter implements IMainContract.Presenter {
         if (minPrice == Double.MAX_VALUE){
             minPrice = 0.0;
         }
+
+        //round to two decimal places
+        minPrice =Math.ceil(minPrice * 100.00) /100.00;
+
+
         return minPrice;
     }
 
