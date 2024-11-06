@@ -7,14 +7,11 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -30,6 +27,9 @@ import dagger.hilt.android.AndroidEntryPoint;
 import es.unican.gasolineras.R;
 
 import es.unican.gasolineras.activities.main.MainView;
+import es.unican.gasolineras.activities.points.inputFilters.LatitudInputFilter;
+import es.unican.gasolineras.activities.points.inputFilters.LongitudInputFilter;
+import es.unican.gasolineras.activities.points.inputFilters.RadiusInputFilter;
 import es.unican.gasolineras.model.InterestPoint;
 import es.unican.gasolineras.roomDAO.InterestPointsDAO;
 
@@ -43,7 +43,7 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
      * The presenter of this view
      */
     private PointsPresenter presenter;
-    private View popupViewPI;
+    private View newPIView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,50 +121,48 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
      * @see IPointsContract.View#showPointOfInterestPopUp()
      */
     public void showPointOfInterestPopUp() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(PointsView.this);
         LayoutInflater inflater = getLayoutInflater();
-        View newPIView = inflater.inflate(R.layout.activity_new_point_of_interest_layout, null);
-        int width = MATCH_PARENT;
-        int heigh = MATCH_PARENT;
-        boolean focusable = true;
-        PopupWindow popupWindow = new PopupWindow(newPIView,width,heigh,focusable);
 
-        ConstraintLayout rootLayout = findViewById(R.id.points_list);
-        popupWindow.showAtLocation(rootLayout,Gravity.CENTER,0,0);
+        newPIView = inflater.inflate(R.layout.activity_new_point_of_interest_layout, null);
+        builder.setView(newPIView);
+        AlertDialog newPIDialog = builder.create();
 
         View colorPickerButton = newPIView.findViewById(R.id.btColorPicker);
+        colorPickerButton.setTag(Color.valueOf(getResources().getColor(R.color.gray,getTheme())));
         colorPickerButton.setOnClickListener(v -> showColorPickerPopUp());
 
         View cancelButton = newPIView.findViewById(R.id.newPI_cancel_button);
-        cancelButton.setOnClickListener(v -> popupWindow.dismiss());
+        cancelButton.setOnClickListener(v -> newPIDialog.cancel());
 
         EditText nameTextView = newPIView.findViewById(R.id.tvPIName);
         EditText longTextView = newPIView.findViewById(R.id.tvPILongitud);
+        longTextView.setFilters(new InputFilter[]{new LongitudInputFilter()});
         EditText latTextView = newPIView.findViewById(R.id.tvPILatitud);
+        latTextView.setFilters(new InputFilter[]{new LatitudInputFilter()});
         EditText radiusTextView = newPIView.findViewById(R.id.tvPIRadio);
+        radiusTextView.setFilters(new InputFilter[]{new RadiusInputFilter()});
 
         View acceptButton = newPIView.findViewById(R.id.newPI_accept_button);
-
-
-        Drawable color = colorPickerButton.getBackground();
-        Color colorC = Color.valueOf(1629297440);
 
         acceptButton.setOnClickListener(v -> {
             InterestPoint newPointOfInterest = new InterestPoint(
                     nameTextView.getText().toString(),
-                    //((ColorDrawable)colorPickerButton.getBackground()).getColor(),
-                    "COLOR",
+                    //(Color) colorPickerButton.getTag(),
+                    "Colo",
                     Double.parseDouble(latTextView.getText().toString()),
                     Double.parseDouble(longTextView.getText().toString()),
                     Double.parseDouble(radiusTextView.getText().toString())
             );
-
             presenter.onAcceptNewPointOfInterestClicked(newPointOfInterest);
         });
+
+        newPIDialog.show();
+        newPIDialog.getWindow().setLayout(WRAP_CONTENT,WRAP_CONTENT);
     }
     private void showColorPickerPopUp() {
-        // Crea el popup
         AlertDialog.Builder builder = new AlertDialog.Builder(PointsView.this);
-        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = getLayoutInflater();
 
         View colorPickerView = inflater.inflate(R.layout.activity_color_picker_layout, null);
         builder.setView(colorPickerView);
@@ -217,15 +215,18 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
 
         colorPickerDialog.show();
         colorPickerDialog.getWindow().setLayout(WRAP_CONTENT,WRAP_CONTENT);
+        colorPickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     }
 
-    private void onColorSelected(int colorResoureID, boolean needWhitePalette, AlertDialog colorPickerDialog) {
-        View btColorPicker = popupViewPI.findViewById(R.id.btColorPicker);
-        btColorPicker.setBackgroundColor(colorResoureID);
+    private void onColorSelected(int colorResourceID, boolean needWhitePalette, AlertDialog colorPickerDialog) {
+        View btColorPicker = newPIView.findViewById(R.id.btColorPicker);
+        btColorPicker.setBackgroundColor(colorResourceID);
         btColorPicker.setForeground(
                 needWhitePalette
                         ? getResources().getDrawable(R.drawable.white_palette, getTheme())
                         : getResources().getDrawable(R.drawable.palette, getTheme()));
+        Color color = Color.valueOf(colorResourceID);
+        btColorPicker.setTag(color);
         colorPickerDialog.cancel();
     }
 }
