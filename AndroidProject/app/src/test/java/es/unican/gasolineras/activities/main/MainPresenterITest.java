@@ -32,6 +32,7 @@ import es.unican.gasolineras.common.IFilter;
 import es.unican.gasolineras.model.Filter;
 import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
+import es.unican.gasolineras.utils.MockRepositories;
 
 @RunWith(RobolectricTestRunner.class)
 public class MainPresenterITest {

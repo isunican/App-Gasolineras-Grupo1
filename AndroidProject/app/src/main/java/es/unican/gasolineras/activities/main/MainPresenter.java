@@ -417,10 +417,10 @@ public class MainPresenter implements IMainContract.Presenter {
 
     public void onMethodOrderSelected(OrderMethodsEnum orderMethod) {
         switch (orderMethod) {
-            case Ascending:
+            case ASCENDING:
                 orderByPrice.setAscending(true);  // Asigna directamente si es ascendente
                 break;
-            case Descending:
+            case DESCENDING:
                 orderByPrice.setAscending(false); // Asigna directamente si es descendente
                 break;
             default:

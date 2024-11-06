@@ -109,13 +109,19 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         if (itemId == R.id.menuItemInfo) {
             presenter.onMenuInfoClicked();
             return true;
-        } if (itemId == R.id.menuFilterButton) {
+        }
+
+        if (itemId == R.id.menuFilterButton) {
             presenter.onFiltersClicked();
             return true;
-        } if (itemId == R.id.menuOrderButton)  {
+        }
+
+        if (itemId == R.id.menuOrderButton)  {
             presenter.onOrderClicked();
             return true;
-        }   if (itemId == R.id.menuPointButton) {
+        }
+
+        if (itemId == R.id.menuPointButton) {
            presenter.onPointsClicked();
             return true;
         }
@@ -268,11 +274,17 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
                 presenter.onFiltersPopUpMaxPriceSeekBarChanged(progress);
             }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                throw new UnsupportedOperationException("onStartTrackingTouch not supported");
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                throw new UnsupportedOperationException("onStopTrackingTouch not supported");
+            }
+
         });
 
         // Fijar listener al boton de limpiar filtros
