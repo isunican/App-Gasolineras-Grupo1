@@ -323,18 +323,7 @@ public interface IMainContract {
          * @param position the position of the selection
          * @param value the new value
          */
-        public void updateFiltersPopUpFuelTypesSelection(int position, boolean value);
-
-
-        /**
-         * The view is requested to to update the selection of a fuel type selector.
-         * Only the Presenter should call this method
-         * @param position the position of the selection
-         * @param value the new value
-         */
-        public void updateFiltersPopUpBrandsSelection(int position, boolean value);
-
-
+        public void updateFiltersPopUpSelection(int position, boolean value);
 
         /**
          * The view is requested to close the filters popup.

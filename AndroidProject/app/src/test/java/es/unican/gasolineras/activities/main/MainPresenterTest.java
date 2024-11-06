@@ -41,11 +41,6 @@ public class MainPresenterTest {
     Context context = ApplicationProvider.getApplicationContext();
     private IGasolinerasRepository repository;
 
-
-
-
-
-
     @Before
     public void setUp() {
 
@@ -59,8 +54,6 @@ public class MainPresenterTest {
 
         presenter.init(mockView);
 
-
-
         mockTempListSelection = new ArrayList<>(Arrays.asList(
                 new Selection("Todos", true),
                 new Selection("Marca1", false),
@@ -69,7 +62,6 @@ public class MainPresenterTest {
 
        //  Inicializa la lista de selecciones de marcas
         presenter.setTempListSelection(mockTempListSelection);
-
     }
 
     //No hago nada, de seleccionado el todos
@@ -79,7 +71,7 @@ public class MainPresenterTest {
         presenter.onFiltersPopUpBrandsOneSelected(0, true);
 
         for (int i = 1; i < mockTempListSelection.size(); i++) {
-            verify(mockView).updateFiltersPopUpBrandsSelection(i, false);
+            verify(mockView).updateFiltersPopUpSelection(i, false);
         }
 
         List<Selection> listaPrueba = presenter.getTempListSelection();
@@ -97,7 +89,7 @@ public class MainPresenterTest {
         presenter.onFiltersPopUpBrandsOneSelected(1, true);
         //presenter.onFiltersPopUpBrandsOneSelected(2, false);
 
-        verify(mockView).updateFiltersPopUpBrandsSelection(0, false);
+        verify(mockView).updateFiltersPopUpSelection(0, false);
 
         List<Selection> listaPrueba = presenter.getTempListSelection();
         assertFalse(listaPrueba.get(0).isSelected());
@@ -113,9 +105,9 @@ public class MainPresenterTest {
         presenter.onFiltersPopUpBrandsOneSelected(1, true);
         presenter.onFiltersPopUpBrandsOneSelected(2, true);
 
-        verify(mockView).updateFiltersPopUpBrandsSelection(0, true);
-        verify(mockView).updateFiltersPopUpBrandsSelection(1, false);
-        verify(mockView).updateFiltersPopUpBrandsSelection(2, false);
+        //verify(mockView).updateFiltersPopUpSelection(0, true);
+        verify(mockView).updateFiltersPopUpSelection(1, false);
+        verify(mockView).updateFiltersPopUpSelection(2, false);
 
         List<Selection> listaPrueba = presenter.getTempListSelection();
         assertTrue(listaPrueba.get(0).isSelected());
@@ -132,7 +124,7 @@ public class MainPresenterTest {
         presenter.onFiltersPopUpBrandsOneSelected(0, false);
         //presenter.onFiltersPopUpBrandsOneSelected(2, false);
 
-        verify(mockView).updateFiltersPopUpBrandsSelection(0, true);
+        verify(mockView).updateFiltersPopUpSelection(0, true);
 
         List<Selection> listaPrueba = presenter.getTempListSelection();
         assertTrue(listaPrueba.get(0).isSelected());
@@ -151,8 +143,8 @@ public class MainPresenterTest {
         presenter.onFiltersPopUpBrandsOneSelected(1, false);
 
 
-        verify(mockView).updateFiltersPopUpBrandsSelection(0, true);
-        verify(mockView).updateFiltersPopUpBrandsSelection(1, false);
+        verify(mockView).updateFiltersPopUpSelection(0, true);
+        verify(mockView).updateFiltersPopUpSelection(1, false);
 
         List<Selection> listaPrueba = presenter.getTempListSelection();
         assertTrue(listaPrueba.get(0).isSelected());

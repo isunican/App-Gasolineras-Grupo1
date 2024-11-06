@@ -19,15 +19,13 @@ Son las mismas pruebas que las pruebas de aceptación, renombradas como “UI.x�
 
 ## Pruebas de unitarias
 
-En esta historia de usuario se accede a persistencia de datos, pero como esta esta hecha con room no es necesario probarla. También tiene una capa de negocio de la clase  `InterestPoint`  pero como es una clase unicamente de datos con getters y setters no es necesario probarla. Por lo tanto, las pruebas unitarias solo consistirán en pruebas de las clases de negocio y presentación.
+En esta historia de usuario se accede a persistencia de datos, pero como está hecha con room no es necesario probarla. También tiene una capa de negocio de la clase  `InterestPoint`  pero como es una clase unicamente de datos con getters y setters no es necesario probarla. Por lo tanto, las pruebas unitarias solo consistirán en pruebas de las clases de negocio y presentación.
 
 <br/>
 
 ### Pruebas unitarias de clases de negocio
 
-Deben de probarse los métodos de la clase `PointsPresenter` mediante el uso de mocks de `IPointsContract#View`, .........
-
-#! TODO ----------------- Indicar que clases se mockean ---------------------------------
+Deben de probarse los métodos de la clase `PointsPresenter` mediante el uso de mocks de `IPointsContract#View` y `InterestPointsDAO`
 
 Deberían de probarse los siguientes metodos de la clase `PointsPresenter`:
 
@@ -37,10 +35,10 @@ Deberían de probarse los siguientes metodos de la clase `PointsPresenter`:
 
 Se va a implementar la prueba unitaria del método **init( view : IPointsContract.View )**:
 
-| Identificador | Entrada | Valor esperado | 
+| Identificador | Entrada | Valor esperado |
 |---------------|---------|----------------|
-| UD5.a | DAO con: [puntos_interes_ejemplos_1](#puntos_interes_ejemplos_1) | nada |
-
+| UD1.a | DAO con: [puntos_interes_ejemplos_1](#puntos_interes_ejemplos_1) | 1- View: llamado a init()<br>2- View: llamado a showpoints(<br>&emsp;[punto 2, punto 1, punto 3]<br>) |
+| UD2.a | DAO con: [puntos_interes_vacio](#puntos_interes_vacio) | 1- View: llamado a init()<br>2- View: llamado a showpoints( [] ) |
 
 <br/>
 
@@ -48,15 +46,26 @@ Se va a implementar la prueba unitaria del método **init( view : IPointsContrac
 
 ## Pruebas de integración
 
-Para las pruebas de integración se ha añadido las interfaces de `IPointsContract#View`, `IPointsContract#Presenter` y `InterestPointsDAO`
+Para las pruebas de integración se ha añadido las interfaces de `IPointsContract#View`, `IPointsContract#Presenter` y `InterestPointsDAO`. Se va a probar la integración entre el `PointsPresenter` y `InterestPointsDAO` mockeando el `PointsView`
 
+Se probará el funcionamiento de:
 
+- init( view : IPointsContract.View ) : Void
+- onPointClicked( point : InterestPoint ): Void
+- onHomeClicked( ): Void
+
+Se va a implementar la prueba unitaria del método **init( view : IPointsContract.View )**:
+
+| Identificador | Entrada | Valor esperado |
+|---------------|---------|----------------|
+| UD1.a | DAO con: [puntos_interes_ejemplos_1](#puntos_interes_ejemplos_1) | 1- View: llamado a init()<br>2- View: llamado a showpoints(<br>&emsp;[punto 2, punto 1, punto 3]<br>) |
+| UD2.a | DAO con: [puntos_interes_vacio](#puntos_interes_vacio) | 1- View: llamado a init()<br>2- View: llamado a showpoints( [] ) |
 
 <br/>
 
 ## Reporte final
 
-#! TODO ----------------- Indicar que pruebas se han hecho ---------------------------------
+------------------------------------- TODO : Indicar que pruebas se han hecho -------------------------------------
 
 <br/>
 
