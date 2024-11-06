@@ -30,6 +30,9 @@ import es.unican.gasolineras.activities.main.MainView;
 import es.unican.gasolineras.activities.points.inputFilters.LatitudInputFilter;
 import es.unican.gasolineras.activities.points.inputFilters.LongitudInputFilter;
 import es.unican.gasolineras.activities.points.inputFilters.RadiusInputFilter;
+import es.unican.gasolineras.common.exceptions.LatitudInvalidaException;
+import es.unican.gasolineras.common.exceptions.LongitudInvalidaException;
+import es.unican.gasolineras.common.exceptions.RadioInvalidoException;
 import es.unican.gasolineras.model.InterestPoint;
 import es.unican.gasolineras.roomDAO.InterestPointsDAO;
 
@@ -149,12 +152,18 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
             InterestPoint newPointOfInterest = new InterestPoint(
                     nameTextView.getText().toString(),
                     //(Color) colorPickerButton.getTag(),
-                    "Colo",
+                    "",
                     Double.parseDouble(latTextView.getText().toString()),
                     Double.parseDouble(longTextView.getText().toString()),
                     Double.parseDouble(radiusTextView.getText().toString())
             );
-            presenter.onAcceptNewPointOfInterestClicked(newPointOfInterest);
+            try{
+                presenter.onAcceptNewPointOfInterestClicked(newPointOfInterest);
+                newPIDialog.cancel();
+            }catch(LongitudInvalidaException | RadioInvalidoException |
+                   LatitudInvalidaException exception){
+                Toast.makeText(this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
 
         newPIDialog.show();
