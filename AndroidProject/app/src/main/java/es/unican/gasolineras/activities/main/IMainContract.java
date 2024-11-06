@@ -202,6 +202,20 @@ public interface IMainContract {
          * @return a string with the actual progress.
          */
         public String calculateSeekbarProgress();
+
+        /**
+         * This public method obtains the max price for all the gasStations when the view calls it
+         * @return the max price obtained between the gas stations
+         */
+
+        public double getMaxPrice();
+
+        /**
+         * This public method obtains the min price for all the gasStations when the view calls it
+         * @return the min price obtained between the gas stations
+         */
+
+        public double getMinPrice();
     }
 
     /**
