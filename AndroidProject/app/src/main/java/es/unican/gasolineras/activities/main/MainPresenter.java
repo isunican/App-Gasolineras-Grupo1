@@ -530,7 +530,7 @@ public class MainPresenter implements IMainContract.Presenter {
         }
 
         //round to two decimal places
-        minPrice =Math.ceil(minPrice * 100.00) /100.00;
+        minPrice = Math.ceil(minPrice * 100.00) /100.00;
 
 
         return minPrice;
