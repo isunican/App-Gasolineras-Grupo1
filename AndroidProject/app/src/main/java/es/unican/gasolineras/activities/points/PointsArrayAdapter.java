@@ -16,9 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
-import java.text.DecimalFormat;
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -84,10 +81,10 @@ public class PointsArrayAdapter extends BaseAdapter {
             Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
 
             // Cambia el color de la imagen
-            DrawableCompat.setTint(wrappedDrawable, Color.parseColor(point.getColor()));
+            DrawableCompat.setTint(wrappedDrawable, Color.parseColor(point.getStringColor()));
 
             // Establecemos un tag a modo de ID de color para poder manejarlo más facil
-            iv.setTag(point.getColor());
+            iv.setTag(point.getStringColor());
 
             // Asigna el Drawable al ImageView
             iv.setImageDrawable(wrappedDrawable);
