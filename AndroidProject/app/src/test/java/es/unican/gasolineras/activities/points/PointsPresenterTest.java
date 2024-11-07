@@ -2,6 +2,7 @@ package es.unican.gasolineras.activities.points;
 
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -9,6 +10,8 @@ import static org.mockito.Mockito.when;
 import android.content.Context;
 
 import androidx.test.platform.app.InstrumentationRegistry;
+
+import android.database.sqlite.SQLiteException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -102,6 +105,27 @@ public class PointsPresenterTest {
 
         // Verifica que se llama a showPoints()
         verify(view).showPoints(listaVacia);
+
+
+
+    }
+
+    @Test
+    public void initWithOutConexionBDPointsTest() {
+        //Comprobamos la lista con los puntos
+        when(view.getPointsDao()).thenReturn(pointsDAO);
+        when(pointsDAO.getMyInterestPointsDAO()).thenReturn(iPointsDAO);
+        when(iPointsDAO.getInterestPoints()).thenThrow(new SQLiteException());
+
+        //Realizamos la inicialización
+        sut.init(view);
+
+        // Verifica que se llama a view.init()
+        verify(view).init();
+
+        // Verifica que se llama a showLoadError()
+        verify(view).showLoadError();
+
 
 
 

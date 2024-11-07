@@ -4,6 +4,7 @@ import android.graphics.Color;
 
 import android.database.sqlite.SQLiteException;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -47,6 +48,7 @@ public class PointsPresenter implements IPointsContract.Presenter {
             points = ddbb.getInterestPoints();
         } catch (SQLiteException e) {
             view.showLoadError();
+            points = new ArrayList<InterestPoint>();
         }
         //points.add(new InterestPoint("Prueba 1", "#ff0000", 20, 20, 20));
         //points.add(new InterestPoint("Prueba 2", "#00ff00", 20, 20, 20));

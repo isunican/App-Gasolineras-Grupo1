@@ -39,6 +39,10 @@ public class MainPresenterTest {
     private IMainContract.View mockView;
     @Mock
     private List<Selection> mockTempListSelection;
+
+    @Mock
+    private List<Selection> mockTempListType;
+
     Context context = ApplicationProvider.getApplicationContext();
     private IGasolinerasRepository repository;
 
@@ -203,5 +207,145 @@ public class MainPresenterTest {
                 assertFalse(s.isSelected());
         }
     }
+
+
+    //Tests para onFiltersPopUpFuelTypesOneSelected(int index, boolean value)
+    @Test
+    public void onFilterPopUpFuelTypesOneSelected_UD3_aTest() {
+        mockTempListType = new ArrayList<>(Arrays.asList(
+                new Selection("Todos", false),
+                new Selection("Gasolina 95", false),
+                new Selection("Diesel", true)
+        ));
+
+        //  Inicializa la lista de selecciones de tipos de combustible
+        presenter.setTempListSelection(mockTempListType);
+
+        presenter.onFiltersPopUpFuelTypesOneSelected(0, true);
+
+
+        verify(mockView).updateFiltersPopUpSelection(1, false);
+        verify(mockView).updateFiltersPopUpSelection(1, false);
+
+        List<Selection> listaPrueba = presenter.getTempListSelection();
+        assertTrue(listaPrueba.get(0).isSelected());
+        assertFalse(listaPrueba.get(1).isSelected());
+        assertFalse(listaPrueba.get(2).isSelected());
+
+
+
+    }
+
+
+    @Test
+    public void onFilterPopUpFuelTypesOneSelected_UD3_bTest() {
+        mockTempListType = new ArrayList<>(Arrays.asList(
+                new Selection("Todos", true),
+                new Selection("Gasolina 95", false),
+                new Selection("Diesel", false)
+        ));
+
+        //  Inicializa la lista de selecciones de tipos de combustible
+        presenter.setTempListSelection(mockTempListType);
+
+        presenter.onFiltersPopUpFuelTypesOneSelected(0, false);
+
+
+        verify(mockView).updateFiltersPopUpSelection(0, true);
+
+        List<Selection> listaPrueba = presenter.getTempListSelection();
+        assertTrue(listaPrueba.get(0).isSelected());
+        assertFalse(listaPrueba.get(1).isSelected());
+        assertFalse(listaPrueba.get(2).isSelected());
+
+
+
+    }
+
+
+    @Test
+    public void onFilterPopUpFuelTypesOneSelected_UD3_cTest() {
+        mockTempListType = new ArrayList<>(Arrays.asList(
+                new Selection("Todos", true),
+                new Selection("Gasolina 95", false),
+                new Selection("Diesel", false)
+        ));
+
+        //  Inicializa la lista de selecciones de tipos de combustible
+        presenter.setTempListSelection(mockTempListType);
+
+        presenter.onFiltersPopUpFuelTypesOneSelected(2, true);
+
+
+        verify(mockView).updateFiltersPopUpSelection(0, false);
+
+
+        List<Selection> listaPrueba = presenter.getTempListSelection();
+        assertFalse(listaPrueba.get(0).isSelected());
+        assertFalse(listaPrueba.get(1).isSelected());
+        assertTrue(listaPrueba.get(2).isSelected());
+
+
+
+    }
+
+    @Test
+    public void onFilterPopUpFuelTypesOneSelected_UD3_dTest() {
+        mockTempListType = new ArrayList<>(Arrays.asList(
+                new Selection("Todos", false),
+                new Selection("Gasolina 95", false),
+                new Selection("Diesel", true)
+        ));
+
+        //  Inicializa la lista de selecciones de tipos de combustible
+        presenter.setTempListSelection(mockTempListType);
+
+        presenter.onFiltersPopUpFuelTypesOneSelected(1, true);
+
+
+        verify(mockView).updateFiltersPopUpSelection(0, true);
+        verify(mockView).updateFiltersPopUpSelection(1, false);
+        verify(mockView).updateFiltersPopUpSelection(2, false);
+
+
+        List<Selection> listaPrueba = presenter.getTempListSelection();
+        assertTrue(listaPrueba.get(0).isSelected());
+        assertFalse(listaPrueba.get(1).isSelected());
+        assertFalse(listaPrueba.get(2).isSelected());
+
+
+
+    }
+
+    @Test
+    public void onFilterPopUpFuelTypesOneSelected_UD3_eTest() {
+        mockTempListType = new ArrayList<>(Arrays.asList(
+                new Selection("Todos", false),
+                new Selection("Gasolina 95", false),
+                new Selection("Diesel", true)
+        ));
+
+        //  Inicializa la lista de selecciones de tipos de combustible
+        presenter.setTempListSelection(mockTempListType);
+
+        presenter.onFiltersPopUpFuelTypesOneSelected(2, false);
+
+
+        verify(mockView).updateFiltersPopUpSelection(0, true);
+
+
+
+        List<Selection> listaPrueba = presenter.getTempListSelection();
+        assertTrue(listaPrueba.get(0).isSelected());
+        assertFalse(listaPrueba.get(1).isSelected());
+        assertFalse(listaPrueba.get(2).isSelected());
+
+
+
+    }
+
+
+
+
 
 }
