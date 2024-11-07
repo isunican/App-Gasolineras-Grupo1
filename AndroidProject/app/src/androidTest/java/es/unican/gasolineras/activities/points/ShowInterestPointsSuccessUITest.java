@@ -115,7 +115,7 @@ public class ShowInterestPointsSuccessUITest {
 
             // Check color of R.id.ivLocation drawable
             elto.onChildView(withId(R.id.ivLocation))
-                    .check(matches(withTintColor(expectedPoint.getColor())));   // Custom matcher
+                    .check(matches(withTintColor(expectedPoint.getStringColor())));   // Custom matcher
 
             elto.onChildView(withId(R.id.tvLatitude))
                    .check(matches(withText(String.valueOf(expectedPoint.getLatitude()))));

@@ -2,6 +2,8 @@ package es.unican.gasolineras.model;
 
 
 
+import android.graphics.Color;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -94,12 +96,21 @@ public class InterestPoint {
     }
 
     /**
+     * Gets the string of the color of the interest point.
+     *
+     * @return the color of the interest point.
+     */
+    public String getStringColor() {
+        return color;
+    }
+
+    /**
      * Gets the color of the interest point.
      *
      * @return the color of the interest point.
      */
-    public String getColor() {
-        return color;
+    public Color getColor() {
+        return Color.valueOf(250, 250, 250);
     }
 
     /**
