@@ -5,7 +5,8 @@
         "longitude",
         "mockean",
         "mocks",
-        "setters"
+        "setters",
+        "sprint"
     ],
     "cSpell.ignoreWords": [
         "Contract",
