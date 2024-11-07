@@ -54,7 +54,7 @@ Se probará el funcionamiento de:
 
 <br>
 
-Como todos los métodos son muy sencillos se va a implementar el método **onFiltersPopUpFuelTypesOneSelected(int index, boolean value): void** de la historia de usuario *feature/500955-Filtrar_por_tipo_de_combustible*. Esto debería de estar en el plan de pruebas de esa historia de usuario, pero como es de un sprint viejo y no disponemos del archivo viejo esta escrito aquí:
+Como todos los métodos son muy sencillos se va a implementar el método **onFiltersPopUpFuelTypesOneSelected(index : int, value : boolean): void** de la historia de usuario *feature/500955-Filtrar_por_tipo_de_combustible*. Esto debería de estar en el plan de pruebas de esa historia de usuario, pero como es de un sprint viejo y no disponemos del archivo viejo esta escrito aquí:
 
 | Identificador | Entrada | Valor esperado |
 |---------------|---------|----------------|
@@ -68,8 +68,28 @@ Como todos los métodos son muy sencillos se va a implementar el método **onFil
 
 ## Reporte final
 
-------------------------------------- TODO : Indicar que pruebas se han hecho -------------------------------------
+Estos son algunos comentarios sobre los resultados vistos después de haber realizado los test.
 
+### Pruebas de UI
+
+#### UI.1
+
+En la realización de esta prueba se ha detectado que los puntos de interés no se ordenaban correctamente.  
+Una vez corregido este problema, la prueba ha pasado correctamente.
+
+### Pruebas unitarias
+
+#### Método PointsPresenter.init(view : IPointsContract.View)
+
+En la realización de esta prueba se ha detectado que cuando ocurría un error en la base de datos, no se inicializaba correctamente la lista de deseados a una lista vacía, lo que hacia que se intentara mostrar una lista de puntos de interés nula haciendo que se cierre la aplicación.  
+Una vez corregido este problema la prueba ha pasado correctamente.
+
+#### Método MainPresenter.onFiltersPopUpFuelTypesOneSelected(index : int, value : boolean)
+
+Como este método es del sprint pasado, no se ha encontrado ningún error porque ya funcionaba correctamente.
+
+<br/>
+<br/>
 <br/>
 
 ## Autoría
