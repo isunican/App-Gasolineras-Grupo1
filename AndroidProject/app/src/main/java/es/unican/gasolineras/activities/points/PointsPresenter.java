@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteException;
 import java.util.Comparator;
 import java.util.List;
 
+import es.unican.gasolineras.common.exceptions.LatitudInvalidaException;
+import es.unican.gasolineras.common.exceptions.LongitudInvalidaException;
+import es.unican.gasolineras.common.exceptions.RadioInvalidoException;
 import es.unican.gasolineras.common.database.IInterestPointsDAO;
 import es.unican.gasolineras.common.exceptions.LatitudInvalidaException;
 import es.unican.gasolineras.common.exceptions.LongitudInvalidaException;
@@ -34,7 +37,6 @@ public class PointsPresenter implements IPointsContract.Presenter {
         this.view = view;
         this.view.init();
         ddbb = view.getPointsDao();
-        ddbb.getMyInterestPointsDAO().deleteAll();
         load();
     }
 
@@ -67,8 +69,7 @@ public class PointsPresenter implements IPointsContract.Presenter {
      */
     private void load() {
         try {
-            IInterestPointsDAO ddbb = view.getPointsDao().getMyInterestPointsDAO();
-            points = ddbb.getInterestPoints();
+        points = ddbb.getMyInterestPointsDAO().getInterestPoints();
         } catch (SQLiteException e) {
             view.showLoadError();
         }

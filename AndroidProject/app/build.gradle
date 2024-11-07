@@ -109,11 +109,7 @@ dependencies {
     implementation libs.parceler.api
     annotationProcessor libs.parceler
 
-    // Lombok (auto generate getters, etc.)
-    compileOnly libs.lombok
-    annotationProcessor libs.lombok
-    testCompileOnly libs.lombok
-    testAnnotationProcessor libs.lombok
+
 
     // GSON (for json (de)serialization)
     implementation libs.gson
@@ -137,7 +133,13 @@ dependencies {
     // Roboelectric (to get a proper Context object in unit tests)
     testImplementation libs.roboelectric
 
+    // Lombok (auto generate getters, etc.)
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+    testCompileOnly libs.lombok
+    testAnnotationProcessor libs.lombok
+
     // Room for creating a database
-    implementation "androidx.room:room-runtime:2.6.1"
-    annotationProcessor "androidx.room:room-compiler:2.6.1"
+    implementation libs.room.runtime
+    annotationProcessor libs.room.compiler
 }
