@@ -167,21 +167,21 @@ public class MainPresenter implements IMainContract.Presenter {
             filtersSelectionsPopUpUnSelectOptions();
         } else {
             update = false;
-            view.updateFiltersPopUpFuelTypesSelection(0, true);
+            view.updateFiltersPopUpSelection(0, true);
         }
         return update;
     }
 
-    private boolean filtersSelectionsPopUpCheckOtherClicked(boolean value, int length) {
+    private boolean filtersSelectionsPopUpCheckOtherClicked(boolean value) {
         boolean update = true;
         int numActivated = (int) tempListSelection.stream()
                 .skip(1)
                 .filter(Selection::isSelected)
                 .count();
-        if (value && numActivated < length - 1) {
+        if (value && numActivated < tempListSelection.size() - 2) {
             // Si se selecciona una opcion distinta de "Todos", y no esta marcando todas
             filtersSelectionsPopUpSelectAllOption(false);
-        } else if (value && numActivated == length - 1) {
+        } else if (value && numActivated == tempListSelection.size() - 2) {
             // Si se selecciona una opcion distinta de "Todos" y se marcan todas
             filtersSelectionsPopUpSelectAllOption(true);
             filtersSelectionsPopUpUnSelectOptions();
@@ -194,22 +194,22 @@ public class MainPresenter implements IMainContract.Presenter {
 
     private void filtersSelectionsPopUpSelectAllOption(boolean value) {
         tempListSelection.get(0).setSelected(value);
-        view.updateFiltersPopUpFuelTypesSelection(0, value);
+        view.updateFiltersPopUpSelection(0, value);
     }
 
     private void filtersSelectionsPopUpUnSelectOptions() {
         for (int i = 1; i < tempListSelection.size(); i++) {
             tempListSelection.get(i).setSelected(false);
-            view.updateFiltersPopUpFuelTypesSelection(i, false);
+            view.updateFiltersPopUpSelection(i, false);
         }
     }
 
-    private void filtersAlertDialogControler(int index, boolean value, int length) {
+    private void filtersAlertDialogControler(int index, boolean value) {
         boolean update;
         if (index == 0) {
             update = filtersSelectionsPopUpCheckAllClicked(value);
         } else {
-            update = filtersSelectionsPopUpCheckOtherClicked(value, length);
+            update = filtersSelectionsPopUpCheckOtherClicked(value);
         }
         if (update)
             tempListSelection.get(index).setSelected(value);
@@ -220,7 +220,7 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onFiltersPopUpFuelTypesOneSelected(int index, boolean value) {
-        filtersAlertDialogControler(index, value, FuelTypeEnum.values().length);
+        filtersAlertDialogControler(index, value);
     }
 
     /**
@@ -228,7 +228,7 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onFiltersPopUpBrandsOneSelected(int index, boolean value) {
-        filtersAlertDialogControler(index, value, BrandsEnum.values().length);
+        filtersAlertDialogControler(index, value);
     }
 
     private <T> void updateSelectionToFilter(List<T> allElements,
@@ -417,10 +417,10 @@ public class MainPresenter implements IMainContract.Presenter {
 
     public void onMethodOrderSelected(OrderMethodsEnum orderMethod) {
         switch (orderMethod) {
-            case Ascending:
+            case ASCENDING:
                 orderByPrice.setAscending(true);  // Asigna directamente si es ascendente
                 break;
-            case Descending:
+            case DESCENDING:
                 orderByPrice.setAscending(false); // Asigna directamente si es descendente
                 break;
             default:
@@ -504,6 +504,10 @@ public class MainPresenter implements IMainContract.Presenter {
                 maxPrice = gasStation.getGasoleoA();
             }
         }
+
+        //round to two decimal places
+        maxPrice =Math.ceil(maxPrice * 100.00) /100.00;
+
         return maxPrice;
     }
 
@@ -524,6 +528,11 @@ public class MainPresenter implements IMainContract.Presenter {
         if (minPrice == Double.MAX_VALUE){
             minPrice = 0.0;
         }
+
+        //round to two decimal places
+        minPrice = Math.ceil(minPrice * 100.00) /100.00;
+
+
         return minPrice;
     }
 

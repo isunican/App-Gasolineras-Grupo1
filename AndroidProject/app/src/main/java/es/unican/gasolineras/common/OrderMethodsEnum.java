@@ -3,8 +3,8 @@ package es.unican.gasolineras.common;
 import androidx.annotation.NonNull;
 
 public enum OrderMethodsEnum {
-    Ascending("Ascendente"),
-    Descending("Descendente");
+    ASCENDING("Ascendente"),
+    DESCENDING("Descendente");
 
     private final String displayName;
 

@@ -2,8 +2,11 @@ package es.unican.gasolineras.model;
 
 
 
+import android.graphics.Color;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Calendar;
@@ -18,7 +21,6 @@ import lombok.*;
 public class InterestPoint {
 
     @PrimaryKey(autoGenerate = true)
-    @NonNull
     private int id;
 
     @ColumnInfo(name = "name")
@@ -26,35 +28,45 @@ public class InterestPoint {
     private String name;
 
     @ColumnInfo (name = "color")
-    private String color;
+    private int colorArgb;
 
     @ColumnInfo (name = "latitude")
-    @NonNull
     private double latitude;
 
     @ColumnInfo (name = "longitude")
-    @NonNull
     private double longitude;
 
     @ColumnInfo (name = "radius")
-    @NonNull
     private double radius;
 
-    // FIXME: Arreglar lo de la fecha de creacion para poder introducirla en la BBDD.
     @ColumnInfo (name = "creationDate")
     @NonNull
     private Date creationDate;
 
+    @Ignore
+    private Color color;
 
-    public InterestPoint(String name, String color, double latitude, double longitude, double radius) {
+    private void inicializateData(String name, Color color, double latitude, double longitude, double radius) {
         this.name = name;
         this.color = color;
+        this.colorArgb = color.toArgb();
         this.latitude = latitude;
         this.longitude = longitude;
         this.radius = radius;
         this.creationDate = Calendar.getInstance().getTime();
     }
 
+
+    public InterestPoint(String name, Color color, double latitude, double longitude, double radius) {
+        inicializateData(name, color, latitude, longitude, radius);
+    }
+    public InterestPoint(String name, int colorArgb, double latitude, double longitude, double radius) {
+        inicializateData(name, Color.valueOf(colorArgb), latitude, longitude, radius);
+    }
+
+    public InterestPoint(String name, String colorString, double latitude, double longitude, double radius) {
+        inicializateData(name, Color.valueOf(Color.parseColor(colorString)), latitude, longitude, radius);
+    }
     //generate getters and setters of attributes
 
     /**
@@ -92,23 +104,13 @@ public class InterestPoint {
     public void setName(String name) {
         this.name = name;
     }
-
     /**
-     * Gets the color of the interest point.
+     * Gets the colorArgb of the interest point.
      *
-     * @return the color of the interest point.
+     * @return the colorArgb of the interest point.
      */
-    public String getColor() {
-        return color;
-    }
-
-    /**
-     * Sets the color of the interest point.
-     *
-     * @param color the new color of the interest point.
-     */
-    public void setColor(String color) {
-        this.color = color;
+    public int getColorArgb() {
+        return colorArgb;
     }
 
     /**
@@ -181,6 +183,32 @@ public class InterestPoint {
      */
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
+    }
+
+    /**
+     * Gets the color of the interest point.
+     *
+     * @return the color of the interest point.
+     */
+    public Color getColor() {
+        if(color == null){
+            color = Color.valueOf(this.colorArgb);
+        }
+        return color;
+    }
+
+    /**
+     * Sets the color of the interest point.
+     *
+     * @param color the new color of the interest point.
+     */
+    public void setColor(Color color) {
+        this.color = color;
+        this.colorArgb = color.toArgb();
+    }
+
+    public String getStringColor() {
+        return String.format("#%06X", (0xFFFFFF & colorArgb));
     }
 
 }

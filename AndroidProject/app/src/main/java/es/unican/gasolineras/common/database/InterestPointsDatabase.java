@@ -11,10 +11,9 @@ import es.unican.gasolineras.model.InterestPoint;
  * @Author Lucia Fernandez Mancebo
  */
 
-@Database(entities = {InterestPoint.class}, version = 1)
+@Database(entities = {InterestPoint.class}, version = 2)
 @TypeConverters({Converters.class})
 public abstract class InterestPointsDatabase extends RoomDatabase {
-
     public abstract IInterestPointsDAO getInterestPointsDAO();
-
 }
+

@@ -1,7 +1,16 @@
 package es.unican.gasolineras.activities.points;
 
+import android.graphics.Color;
+
+import android.database.sqlite.SQLiteException;
+
+import java.util.Comparator;
 import java.util.List;
 
+import es.unican.gasolineras.common.exceptions.LatitudInvalidaException;
+import es.unican.gasolineras.common.exceptions.LongitudInvalidaException;
+import es.unican.gasolineras.common.exceptions.RadioInvalidoException;
+import es.unican.gasolineras.common.database.IInterestPointsDAO;
 import es.unican.gasolineras.common.exceptions.LatitudInvalidaException;
 import es.unican.gasolineras.common.exceptions.LongitudInvalidaException;
 import es.unican.gasolineras.common.exceptions.RadioInvalidoException;
@@ -28,7 +37,6 @@ public class PointsPresenter implements IPointsContract.Presenter {
         this.view = view;
         this.view.init();
         ddbb = view.getPointsDao();
-        ddbb.getMyInterestPointsDAO().deleteAll();
         load();
     }
 
@@ -60,10 +68,13 @@ public class PointsPresenter implements IPointsContract.Presenter {
      * Loads the interest points from the DDBB, and sends them to the view
      */
     private void load() {
+        try {
         points = ddbb.getMyInterestPointsDAO().getInterestPoints();
-        //points.add(new InterestPoint("Prueba 1", "#ff0000", 20, 20, 20));
-        //points.add(new InterestPoint("Prueba 2", "#00ff00", 20, 20, 20));
-        //points.add(new InterestPoint("Prueba 3", "#0000ff", 20, 20, 20));
+        } catch (SQLiteException e) {
+            view.showLoadError();
+        }
+
+        points.sort(Comparator.comparing(InterestPoint::getCreationDate));
         view.showPoints(points);
     }
 }

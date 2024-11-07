@@ -151,8 +151,7 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         acceptButton.setOnClickListener(v -> {
             InterestPoint newPointOfInterest = new InterestPoint(
                     nameTextView.getText().toString(),
-                    //(Color) colorPickerButton.getTag(),
-                    "",
+                    (Color) colorPickerButton.getTag(),
                     Double.parseDouble(latTextView.getText().toString()),
                     Double.parseDouble(longTextView.getText().toString()),
                     Double.parseDouble(radiusTextView.getText().toString())
@@ -223,8 +222,7 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         cancelButton.setOnClickListener(v -> colorPickerDialog.cancel());
 
         colorPickerDialog.show();
-        colorPickerDialog.getWindow().setLayout(WRAP_CONTENT,WRAP_CONTENT);
-        colorPickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        colorPickerDialog.getWindow().setLayout(750,750);
     }
 
     private void onColorSelected(int colorResourceID, boolean needWhitePalette, AlertDialog colorPickerDialog) {

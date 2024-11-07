@@ -13,14 +13,25 @@ import androidx.test.espresso.ViewAction;
 
 import org.hamcrest.Matcher;
 
+import es.unican.gasolineras.activities.main.MainPresenter;
+import es.unican.gasolineras.common.IFilter;
+
 
 public class SeekBarActions {
 
-    private static final double MIN_PRICE = 1.0;
-    private static final double MAX_PRICE = 2.5;
+    //private static final double MIN_PRICE = 1.24;
+    //private static final double MAX_PRICE = 1.65;
+
+    private static MainPresenter mainPresenter;  //
+
+    // Establecer la instancia del MainPresenter
+    public static void setMainPresenter(MainPresenter presenter) {
+        mainPresenter = presenter;
+    }
 
     public static ViewAction setProgress(final double v) {
         return new ViewAction() {
+
             @Override
             public Matcher<View> getConstraints() {
                 return instanceOf(SeekBar.class);
@@ -37,7 +48,7 @@ public class SeekBarActions {
                 int max = seekBar.getMax();
 
 
-                double normalizedValue = (v - MIN_PRICE) / (MAX_PRICE - MIN_PRICE);
+                double normalizedValue = (v - mainPresenter.getMinPrice()) / (mainPresenter.getMaxPrice() - mainPresenter.getMinPrice());
 
 
                 int progressF = (int) (normalizedValue * max);

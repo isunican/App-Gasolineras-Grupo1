@@ -109,13 +109,19 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         if (itemId == R.id.menuItemInfo) {
             presenter.onMenuInfoClicked();
             return true;
-        } if (itemId == R.id.menuFilterButton) {
+        }
+
+        if (itemId == R.id.menuFilterButton) {
             presenter.onFiltersClicked();
             return true;
-        } if (itemId == R.id.menuOrderButton)  {
+        }
+
+        if (itemId == R.id.menuOrderButton)  {
             presenter.onOrderClicked();
             return true;
-        }   if (itemId == R.id.menuPointButton) {
+        }
+
+        if (itemId == R.id.menuPointButton) {
            presenter.onPointsClicked();
             return true;
         }
@@ -268,11 +274,17 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
                 presenter.onFiltersPopUpMaxPriceSeekBarChanged(progress);
             }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                throw new UnsupportedOperationException("onStartTrackingTouch not supported");
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                throw new UnsupportedOperationException("onStopTrackingTouch not supported");
+            }
+
         });
 
         // Fijar listener al boton de limpiar filtros
@@ -334,19 +346,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
-     * @see IMainContract.View#updateFiltersPopUpFuelTypesSelection(int, boolean)
+     * @see IMainContract.View#updateFiltersPopUpSelection(int, boolean)
      */
     @Override
-    public void updateFiltersPopUpFuelTypesSelection(int position, boolean value) {
-        selectcionArray[position] = value;
-        alertDialog.getListView().setItemChecked(position, value);
-    }
-
-    /**
-     * @see IMainContract.View#updateFiltersPopUpBrandsSelection(int, boolean)
-     */
-    @Override
-    public void updateFiltersPopUpBrandsSelection(int position, boolean value) {
+    public void updateFiltersPopUpSelection(int position, boolean value) {
         selectcionArray[position] = value;
         alertDialog.getListView().setItemChecked(position, value);
     }
@@ -509,5 +512,9 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
     public String getConstantString(int id) {
         return getString(id);
+    }
+
+    public MainPresenter getMainPresenter() {
+        return presenter;
     }
 }

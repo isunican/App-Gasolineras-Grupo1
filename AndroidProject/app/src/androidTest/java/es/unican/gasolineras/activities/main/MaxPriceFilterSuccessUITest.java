@@ -49,9 +49,14 @@ public class MaxPriceFilterSuccessUITest {
     @BindValue
     final IGasolinerasRepository repository = getTestRepository(context, R.raw.gasolineras_ccaa_06);
 
+    private MainPresenter mainPresenter;
     @Before
     public void setUp() {
-        activityRule.getScenario().onActivity(activity -> decorView = activity.getWindow().getDecorView());
+        activityRule.getScenario().onActivity(activity -> {
+            decorView = activity.getWindow().getDecorView();
+            mainPresenter = activity.getMainPresenter(); // Aquí accedes al MainPresenter de la actividad
+            SeekBarActions.setMainPresenter(mainPresenter);  // Pasas la instancia al SeekBarActions
+        });
     }
 
     private void checkSeekBarValue(int idElement, double value) {
@@ -85,7 +90,7 @@ public class MaxPriceFilterSuccessUITest {
 
         //A value is set in the seek bar
         Espresso.onView(withId(R.id.MaxPriceSeekBar))
-                .perform(SeekBarActions.setProgress(1.5));
+                .perform(SeekBarActions.setProgress(1.50));
 
         //The value established in the label is checked
         Espresso.onView(withId(R.id.lbSelectedMaxPrice))
@@ -113,9 +118,9 @@ public class MaxPriceFilterSuccessUITest {
 
             elto.perform(ViewActions.click());
 
-            checkSeekBarValue(R.id.tvGasoleoA, 1.5);
+            checkSeekBarValue(R.id.tvGasoleoA, 1.50);
 
-            checkSeekBarValue(R.id.tvGasolina95E5, 1.5);
+            checkSeekBarValue(R.id.tvGasolina95E5, 1.50);
 
             Espresso.pressBack();
 

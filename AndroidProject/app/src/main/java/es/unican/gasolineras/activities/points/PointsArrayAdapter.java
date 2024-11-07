@@ -16,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Objects;
 
@@ -82,7 +81,10 @@ public class PointsArrayAdapter extends BaseAdapter {
             Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
 
             // Cambia el color de la imagen
-            DrawableCompat.setTint(wrappedDrawable, Color.parseColor(point.getColor()));
+            DrawableCompat.setTint(wrappedDrawable, point.getColorArgb());
+
+            // Establecemos un tag a modo de ID de color para poder manejarlo más facil
+            iv.setTag(point.getColor());
 
             // Asigna el Drawable al ImageView
             iv.setImageDrawable(wrappedDrawable);
@@ -98,24 +100,24 @@ public class PointsArrayAdapter extends BaseAdapter {
         {
             TextView tv = convertView.findViewById(R.id.tvLatitude);
             double latitude = point.getLatitude();
-            DecimalFormat df = new DecimalFormat("#.####"); // Formato para 4 decimales
-            tv.setText(df.format(latitude));
+            latitude = Math.round(latitude * 10000.0) / 10000.0;    // Formato para 4 decimales
+            tv.setText(String.valueOf(latitude));
         }
 
         // longitude
         {
             TextView tv = convertView.findViewById(R.id.tvLongitude);
             double longitude = point.getLongitude();
-            DecimalFormat df = new DecimalFormat("#.####"); // Formato para 4 decimales
-            tv.setText(df.format(longitude));
+            longitude = Math.round(longitude * 10000.0) / 10000.0;    // Formato para 4 decimales
+            tv.setText(String.valueOf(longitude));
         }
 
         // radious
         {
             TextView tv = convertView.findViewById(R.id.tvRadiusValue);
             double radius = point.getRadius();
-            DecimalFormat df = new DecimalFormat("#.#"); // Formato para 1 decimal
-            tv.setText(df.format(radius));
+            radius = Math.round(radius * 10.0) / 10.0;    // Formato para 1 decimal
+            tv.setText(String.valueOf(radius));
         }
 
         return convertView;
