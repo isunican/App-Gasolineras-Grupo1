@@ -46,8 +46,7 @@ public class InterestPoint {
     @Ignore
     private Color color;
 
-
-    public InterestPoint(String name, Color color, double latitude, double longitude, double radius) {
+    private void inicializateData(String name, Color color, double latitude, double longitude, double radius) {
         this.name = name;
         this.color = color;
         this.colorArgb = color.toArgb();
@@ -56,14 +55,17 @@ public class InterestPoint {
         this.radius = radius;
         this.creationDate = Calendar.getInstance().getTime();
     }
+
+
+    public InterestPoint(String name, Color color, double latitude, double longitude, double radius) {
+        inicializateData(name, color, latitude, longitude, radius);
+    }
     public InterestPoint(String name, int colorArgb, double latitude, double longitude, double radius) {
-        this.name = name;
-        this.color = Color.valueOf(colorArgb);
-        this.colorArgb = colorArgb;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.radius = radius;
-        this.creationDate = Calendar.getInstance().getTime();
+        inicializateData(name, Color.valueOf(colorArgb), latitude, longitude, radius);
+    }
+
+    public InterestPoint(String name, String colorString, double latitude, double longitude, double radius) {
+        inicializateData(name, Color.valueOf(Color.parseColor(colorString)), latitude, longitude, radius);
     }
     //generate getters and setters of attributes
 
@@ -205,5 +207,8 @@ public class InterestPoint {
         this.colorArgb = color.toArgb();
     }
 
+    public String getStringColor() {
+        return String.format("#%06X", (0xFFFFFF & colorArgb));
+    }
 
 }
