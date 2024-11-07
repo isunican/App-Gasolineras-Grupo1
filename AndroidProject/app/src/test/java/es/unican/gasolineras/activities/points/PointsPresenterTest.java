@@ -2,6 +2,8 @@ package es.unican.gasolineras.activities.points;
 
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.junit.Assert.assertThrows;
@@ -23,6 +25,7 @@ import org.robolectric.RobolectricTestRunner;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import es.unican.gasolineras.common.database.IInterestPointsDAO;
@@ -36,16 +39,8 @@ import es.unican.gasolineras.roomDAO.InterestPointsDAO;
 public class PointsPresenterTest {
 
     private IPointsContract.Presenter sut;
-    @Mock
-    private IPointsContract.View view;
-    @Mock
-    private InterestPointsDAO pointsDAO;
-    @Mock
-    private IInterestPointsDAO iPointsDAO;
 
     //Mocks de la vista y de la DAO, para las pruebas de crear.
-
-    private PointsPresenter presenter;
     @Mock
     private IPointsContract.View mockView;
 
@@ -76,186 +71,217 @@ public class PointsPresenterTest {
         listaConPuntos.add(point2);
         listaConPuntos.add(point3);
 
-        sut = new PointsPresenter();
 
-        MockitoAnnotations.openMocks(this);
-
-        // Configuramos mockView para que devuelva mockDAO cuando se llame a getPointsDao()
+        // Mocking ddbb and setting it up in the presenter
         when(mockView.getPointsDao()).thenReturn(mockDAO);
         when(mockDAO.getMyInterestPointsDAO()).thenReturn(IMockDAO);
-        // Configuramos mockDAO para devolver un mock del método interno si es necesario
 
         // En este caso es el sut.
-        presenter = new PointsPresenter();
-        presenter.init(mockView);
-
+        sut= new PointsPresenter();
+        sut.init(mockView);
 
     }
-
 
     @Test
     public void initWithPointsTest() {
         //Comprobamos la lista con los puntos
-        when(view.getPointsDao()).thenReturn(pointsDAO);
-        when(pointsDAO.getMyInterestPointsDAO()).thenReturn(iPointsDAO);
-        when(iPointsDAO.getInterestPoints()).thenReturn(listaConPuntos);
+        when(mockView.getPointsDao()).thenReturn(mockDAO);
+        when(mockDAO.getMyInterestPointsDAO()).thenReturn(IMockDAO);
+        when(IMockDAO.getInterestPoints()).thenReturn(listaConPuntos);
 
-        //Realizamos la inicialización
-        sut.init(view);
+        // Llama al método init
+        sut.init(mockView);
 
         // Verifica que se llama a view.init()
-        verify(view).init();
+        verify(mockView, times(2)).init();
 
         // Verifica que se llama a showPoints()
-        verify(view).showPoints(listaConPuntos);
+        verify(mockView).showPoints(listaConPuntos);
         //Compruebo que el orden de los puntos es el correcto.
         assertEquals(listaConPuntos.get(0), point2);
         assertEquals(listaConPuntos.get(1), point1);
         assertEquals(listaConPuntos.get(2), point3);
-
-
-
     }
 
     @Test
     public void initWithOutPointsTest() {
         //Comprobamos la lista con los puntos
-        when(view.getPointsDao()).thenReturn(pointsDAO);
-        when(pointsDAO.getMyInterestPointsDAO()).thenReturn(iPointsDAO);
-        when(iPointsDAO.getInterestPoints()).thenReturn(listaVacia);
 
-        //Realizamos la inicialización
-        sut.init(view);
+        when(mockView.getPointsDao()).thenReturn(mockDAO);
+        when(mockDAO.getMyInterestPointsDAO()).thenReturn(IMockDAO);
+        when(IMockDAO.getInterestPoints()).thenReturn(listaConPuntos);
+
+        // Llama al método init
+        sut.init(mockView);
 
         // Verifica que se llama a view.init()
-        verify(view).init();
+        verify(mockView, times(2)).init();
+        when(IMockDAO.getInterestPoints()).thenReturn(listaVacia);
 
         // Verifica que se llama a showPoints()
-        verify(view).showPoints(listaVacia);
-
-
+        verify(mockView).showPoints(listaVacia);
 
     }
 
-    // Test de exito
+    // Test de exito: no hay puntos en la BBDD
     @Test
     public void testOnAcceptNewPointOfInterestClicked_withValidPoint() {
-        // TOASK: Preguntar a Patri
+        // Configuramos el punto válido
         InterestPoint validPoint = new InterestPoint("Punto", "#0000ff", 40.0637, -82.3467, 20);
 
         // Creamos un mock para la lista de InterestPoints
         List<InterestPoint> interestPointsList = new ArrayList<>();
 
-        // Simulamos que getInterestPoints() devuelve una lista vacía inicialmente
+        // Simulamos que getInterestPoints() devuelve la lista creada de puntos de interes.
         when(mockDAO.getMyInterestPointsDAO().getInterestPoints()).thenReturn(interestPointsList);
 
-        // Act
-        presenter.onAcceptNewPointOfInterestClicked(validPoint);
+        //Comprobamos el tamanho
+        assertEquals(0, mockDAO.getMyInterestPointsDAO().getInterestPoints().size());
 
-        // Usamos ArgumentCaptor para capturar el argumento pasado a addInterestPoint
-        ArgumentCaptor<InterestPoint> captor = ArgumentCaptor.forClass(InterestPoint.class);
-        Mockito.verify(mockDAO.getMyInterestPointsDAO()).addInterestPoint(captor.capture());
+        // Ejecutamos el metodo
+        sut.onAcceptNewPointOfInterestClicked(validPoint);
 
         // Añadimos el punto manualmente a la lista para simular que se agrega al DAO
         interestPointsList.add(validPoint);
 
-        // Assert
-        // Verifica que el punto capturado sea el correcto
-        assertEquals(validPoint, captor.getValue());
+        // Usamos ArgumentCaptor para capturar la lista de InterestPoints pasada a showPoints
+        ArgumentCaptor<List> captorList = ArgumentCaptor.forClass(List.class);
 
-        // Verifica que el tamaño de la lista de puntos de interés haya aumentado a 1
-        assertEquals(1, mockDAO.getMyInterestPointsDAO().getInterestPoints().size());
+        verify(mockDAO.getMyInterestPointsDAO()).addInterestPoint(validPoint);
+        verify(mockView, times(2)).showPoints(captorList.capture());
+        // Verificar que se llama al método getInterestPoints() en el DAO
+        verify(mockDAO.getMyInterestPointsDAO(), times(3)).getInterestPoints();
+
+        // Verificar que el tamaño de la lista de puntos de interés haya aumentado a 1
+        assertEquals(1, captorList.getValue().size());
+
+        // Verifica que el punto validPoint está en la lista capturada
+        assertTrue(captorList.getValue().contains(validPoint));
+        assertEquals(captorList.getValue().get(0), validPoint);
+    }
+
+    // Test de exito II: Se anhade un nuevo punto, por antiguedad y se comprueba que se ha anhadido en la posicion correcta
+    @Test
+    public void testAddNewPointByAgeWithoutSorting() {
+        // Crear el primer punto con una fecha antigua
+        InterestPoint point1 = new InterestPoint("Point 1", "#0000ff", 40.0, -3.0, 100);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2020, Calendar.JANUARY, 1); // Fecha antigua
+        point1.setCreationDate(calendar.getTime());
+
+        // Crear el segundo punto con la fecha actual (automáticamente)
+        InterestPoint point2 = new InterestPoint("Point 2", "#fff000", 41.0, -3.0, 60);
+
+        // Simular la obtención de los puntos desde la base de datos (no ordenados)
+        List<InterestPoint> pointsList = new ArrayList<>();
+        // Simulamos que getInterestPoints() devuelve una lista vacía inicialmente
+        when(mockDAO.getMyInterestPointsDAO().getInterestPoints()).thenReturn(pointsList);
+
+        // Acción: se añaden los puntos
+        sut.onAcceptNewPointOfInterestClicked(point1);
+        sut.onAcceptNewPointOfInterestClicked(point2);
+
+        pointsList.add(point1); // El punto con fecha antigua
+        pointsList.add(point2); // El punto con fecha reciente
+
+        // Crear el ArgumentCaptor para capturar la lista de puntos
+        ArgumentCaptor<List<InterestPoint>> captor = ArgumentCaptor.forClass(List.class);
+
+        // Verificar que se haya llamado al método showPoints() con la lista de puntos
+        verify(mockView, times(3)).showPoints(captor.capture());
+
+        // Obtener la lista capturada
+        List<InterestPoint> capturedPoints = captor.getValue();
+
+        // Comprobar que los puntos se han añadido en el orden esperado
+        assertEquals("The first point should be at position 0", point1, capturedPoints.get(0)); // Punto antiguo en la posición 0
+        assertEquals("The second point should be at position 1", point2, capturedPoints.get(1)); // Punto reciente en la posición 1
+
+        // Verificar que se ha llamado al método addInterestPoint
+        verify(mockDAO.getMyInterestPointsDAO()).addInterestPoint(point2);
+
+        // Verificar que se llama al método getInterestPoints() en el DAO
+        verify(mockDAO.getMyInterestPointsDAO(), times(3)).getInterestPoints();
+
     }
 
     // Test de fracaso por la latitud  >90
     @Test(expected = LatitudInvalidaException.class)
     public void testOnAcceptNewPointOfInterestClicked_withInvalidLatitudeAbove() {
+        // Configuramos mockView para que devuelva mockDAO cuando se llame a getmockDAO()
+
         InterestPoint invalidPoint = new InterestPoint("Punto", "#0000ff", 100, -82.3467, 20);
-        presenter.onAcceptNewPointOfInterestClicked(invalidPoint);
+        sut.onAcceptNewPointOfInterestClicked(invalidPoint);
         Mockito.verify(mockDAO.getMyInterestPointsDAO(), never()).addInterestPoint(invalidPoint);
+        verify(mockDAO.getMyInterestPointsDAO(), never()).getInterestPoints();
         assertThrows(LatitudInvalidaException.class,
-                () -> presenter.onAcceptNewPointOfInterestClicked(invalidPoint));
+                () -> sut.onAcceptNewPointOfInterestClicked(invalidPoint));
     }
 
     // Test de fracaso por la latitud inferior <(-90)
     @Test(expected = LatitudInvalidaException.class)
     public void testOnAcceptNewPointOfInterestClicked_withInvalidLatitudeBelow() {
+        // Configuramos mockView para que devuelva mockDAO cuando se llame a getmockDAO()
         InterestPoint invalidPoint = new InterestPoint("Punto", "#0000ff", -96, -82.3467, 20);
-        presenter.onAcceptNewPointOfInterestClicked(invalidPoint);
+        sut.onAcceptNewPointOfInterestClicked(invalidPoint);
         Mockito.verify(mockDAO.getMyInterestPointsDAO(), never()).addInterestPoint(invalidPoint);
+        verify(mockDAO.getMyInterestPointsDAO(), never()).getInterestPoints();
         assertThrows(LatitudInvalidaException.class,
-                () -> presenter.onAcceptNewPointOfInterestClicked(invalidPoint));
+                () -> sut.onAcceptNewPointOfInterestClicked(invalidPoint));
     }
 
-    // Test de fracaso por latitud == null, no se prueba al ser double primitivo
-    //@Test(expected = LatitudInvalidaException.class)
-    //public void testOnAcceptNewPointOfInterestClicked_withNullLatitude() {
-    //    InterestPoint invalidPoint = new InterestPoint("Punto", "#0000ff", null, 40.0637, 20);
-    //    presenter.onAcceptNewPointOfInterestClicked(invalidPoint);
-    //    Mockito.verify(mockDAO.getMyInterestPointsDAO(), never()).addInterestPoint(invalidPoint);
-    //    assertThrows(LatitudInvalidaException.class,
-    //            () -> presenter.onAcceptNewPointOfInterestClicked(invalidPoint));
-    //}
 
     // Test de fracaso por la longitud  >180
     @Test(expected = LongitudInvalidaException.class)
     public void testOnAcceptNewPointOfInterestClicked_withInvalidLongitudeAbove() {
+        // Configuramos mockView para que devuelva mockDAO cuando se llame a getmockDAO()
         InterestPoint invalidPoint = new InterestPoint("Punto", "#0000ff", 40.0637, 300, 20);
-        presenter.onAcceptNewPointOfInterestClicked(invalidPoint);
+        sut.onAcceptNewPointOfInterestClicked(invalidPoint);
         Mockito.verify(mockDAO.getMyInterestPointsDAO(), never()).addInterestPoint(invalidPoint);
+        verify(mockDAO.getMyInterestPointsDAO(), never()).getInterestPoints();
         assertThrows(LongitudInvalidaException.class,
-                () -> presenter.onAcceptNewPointOfInterestClicked(invalidPoint));
+                () -> sut.onAcceptNewPointOfInterestClicked(invalidPoint));
     }
 
     // Test de fracaso por la longitud  <(-180)
     @Test(expected = LongitudInvalidaException.class)
     public void testOnAcceptNewPointOfInterestClicked_withInvalidLongitudeBelow() {
-        InterestPoint invalidPoint = new InterestPoint("Punto", "#0000ff", 40.0637, -234, 20);
-        presenter.onAcceptNewPointOfInterestClicked(invalidPoint);
-        Mockito.verify(mockDAO.getMyInterestPointsDAO(), never()).addInterestPoint(invalidPoint);
-        assertThrows(LongitudInvalidaException.class,
-                () -> presenter.onAcceptNewPointOfInterestClicked(invalidPoint));
-    }
+        // Configuramos mockView para que devuelva mockDAO cuando se llame a getmockDAO()
 
-    // Test de fracaso, por longitud == null, al ser un double primitivo no se prueba.
-    //@Test(expected = LongitudInvalidaException.class)
-    //public void testOnAcceptNewPointOfInterestClicked_withNullLongitude() {
-    //    InterestPoint invalidPoint = new InterestPoint("Punto", "#0000ff", 40.0637, null, 20);
-    //    presenter.onAcceptNewPointOfInterestClicked(invalidPoint);
-    //    Mockito.verify(mockDAO.getMyInterestPointsDAO(), never()).addInterestPoint(invalidPoint);
-    //    assertThrows(LongitudInvalidaException.class,
-    //            () -> presenter.onAcceptNewPointOfInterestClicked(invalidPoint));
-    //}
+        InterestPoint invalidPoint = new InterestPoint("Punto", "#0000ff", 40.0637, -234, 20);
+        sut.onAcceptNewPointOfInterestClicked(invalidPoint);
+        Mockito.verify(mockDAO.getMyInterestPointsDAO(), never()).addInterestPoint(invalidPoint);
+        verify(mockDAO.getMyInterestPointsDAO(), never()).getInterestPoints();
+        assertThrows(LongitudInvalidaException.class,
+                () -> sut.onAcceptNewPointOfInterestClicked(invalidPoint));
+    }
 
     // Test de fracaso radio igual que cero.
     @Test(expected = RadioInvalidoException.class)
     public void testOnAcceptNewPointOfInterestClicked_withZeroRadius() {
+        // Configuramos mockView para que devuelva mockDAO cuando se llame a getmockDAO()
+
         InterestPoint invalidPoint = new InterestPoint("Punto", "#0000ff", 40.0637, -82.3467, 0);
-        presenter.onAcceptNewPointOfInterestClicked(invalidPoint);
+        sut.onAcceptNewPointOfInterestClicked(invalidPoint);
         Mockito.verify(mockDAO.getMyInterestPointsDAO(), never()).addInterestPoint(invalidPoint);
+        verify(mockDAO.getMyInterestPointsDAO(), never()).getInterestPoints();
         assertThrows(RadioInvalidoException.class,
-                () -> presenter.onAcceptNewPointOfInterestClicked(invalidPoint));
+                () -> sut.onAcceptNewPointOfInterestClicked(invalidPoint));
     }
 
     // Test de fracaso radio negativo.
     @Test(expected = RadioInvalidoException.class)
     public void testOnAcceptNewPointOfInterestClicked_withNegativeRadius() {
+        // Configuramos mockView para que devuelva mockDAO cuando se llame a getmockDAO()
+
         InterestPoint invalidPoint = new InterestPoint("Punto", "#0000ff", 40.0637, -82.3467, -10);
-        presenter.onAcceptNewPointOfInterestClicked(invalidPoint);
+        sut.onAcceptNewPointOfInterestClicked(invalidPoint);
         Mockito.verify(mockDAO.getMyInterestPointsDAO(), never()).addInterestPoint(invalidPoint);
+        verify(mockDAO.getMyInterestPointsDAO(), never()).getInterestPoints();
         assertThrows(RadioInvalidoException.class,
-                () -> presenter.onAcceptNewPointOfInterestClicked(invalidPoint));
+                () -> sut.onAcceptNewPointOfInterestClicked(invalidPoint));
     }
 
-    // Test de fracaso por radio == null, al ser un double primitivo estos no se prueban.
-    // @Test (expected = RadioInvalidoException.class)
-   // public void testOnAcceptNewPointOfInterestClicked_withNullRadius() {
-    //  InterestPoint invalidPoint = new InterestPoint("Punto", "#0000ff", 82.3467, 40.0637, null);
-    //  presenter.onAcceptNewPointOfInterestClicked(invalidPoint);
-    //  Mockito.verify(mockDAO.getMyInterestPointsDAO(), never()).addInterestPoint(invalidPoint);
-    //  assertThrows(RadioInvalidoException.class,
-    //  () -> presenter.onAcceptNewPointOfInterestClicked(invalidPoint));
-    // }
 }
 
 
