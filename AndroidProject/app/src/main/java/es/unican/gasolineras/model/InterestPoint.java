@@ -2,6 +2,8 @@ package es.unican.gasolineras.model;
 
 
 
+import android.graphics.Color;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -26,7 +28,7 @@ public class InterestPoint {
     private String name;
 
     @ColumnInfo (name = "color")
-    private String color;
+    private String stringColor;
 
     @ColumnInfo (name = "latitude")
     @NonNull
@@ -46,9 +48,9 @@ public class InterestPoint {
     private Date creationDate;
 
 
-    public InterestPoint(String name, String color, double latitude, double longitude, double radius) {
+    public InterestPoint(String name, String stringColor, double latitude, double longitude, double radius) {
         this.name = name;
-        this.color = color;
+        this.stringColor = stringColor;
         this.latitude = latitude;
         this.longitude = longitude;
         this.radius = radius;
@@ -94,12 +96,21 @@ public class InterestPoint {
     }
 
     /**
+     * Gets the string of the color of the interest point.
+     *
+     * @return the color of the interest point.
+     */
+    public String getStringColor() {
+        return stringColor;
+    }
+
+    /**
      * Gets the color of the interest point.
      *
      * @return the color of the interest point.
      */
-    public String getColor() {
-        return color;
+    public Color getColor() {
+        return Color.valueOf(250, 250, 250);
     }
 
     /**
@@ -107,8 +118,8 @@ public class InterestPoint {
      *
      * @param color the new color of the interest point.
      */
-    public void setColor(String color) {
-        this.color = color;
+    public void setStringColor(String color) {
+        this.stringColor = color;
     }
 
     /**
