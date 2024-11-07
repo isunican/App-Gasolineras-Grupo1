@@ -207,8 +207,4 @@ public class InterestPoint {
         this.colorArgb = color.toArgb();
     }
 
-    public String getStringColor() {
-        return String.format("#%06X", (0xFFFFFF & colorArgb));
-    }
-
 }
