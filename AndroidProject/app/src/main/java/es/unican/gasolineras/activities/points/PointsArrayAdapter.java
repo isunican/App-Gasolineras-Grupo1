@@ -81,10 +81,10 @@ public class PointsArrayAdapter extends BaseAdapter {
             Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
 
             // Cambia el color de la imagen
-            DrawableCompat.setTint(wrappedDrawable, Color.parseColor(point.getStringColor()));
+            DrawableCompat.setTint(wrappedDrawable, point.getColorArgb());
 
             // Establecemos un tag a modo de ID de color para poder manejarlo más facil
-            iv.setTag(point.getStringColor());
+            iv.setTag(point.getColor());
 
             // Asigna el Drawable al ImageView
             iv.setImageDrawable(wrappedDrawable);

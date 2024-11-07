@@ -8,11 +8,7 @@ import es.unican.gasolineras.common.database.IInterestPointsDAO;
 import es.unican.gasolineras.common.database.InterestPointsDatabase;
 import lombok.Getter;
 
-/**
- * Singleton class, whose instance is used to access the database.
- *
- * @Author Lucia Fernandez Mancebo
- */
+
 public class InterestPointsDAO  {
 
     protected static InterestPointsDAO myInstance;
@@ -24,6 +20,7 @@ public class InterestPointsDAO  {
         Context appContext = context.getApplicationContext();
         // Create the database with the entity class, without creating a parallel execution thread
         InterestPointsDatabase database = Room.databaseBuilder(appContext, InterestPointsDatabase.class, "interestpoints")
+                .fallbackToDestructiveMigrationFrom(1)
                 .allowMainThreadQueries().build();
         myInterestPointsDAO = database.getInterestPointsDAO();
     }
