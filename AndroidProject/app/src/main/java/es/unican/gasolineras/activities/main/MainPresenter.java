@@ -127,8 +127,24 @@ public class MainPresenter implements IMainContract.Presenter {
 
         // Update the view
         view.updateFiltersPopupTextViewsSelections(fuelTypes, fuelBrands);
-        view.updateFiltersPopupTextViewsMaxPrice(tempFilter.getMaxPrice() == Float.MAX_VALUE ? maxPriceLimit : tempFilter.getMaxPrice());
+        updateFiltersPriceData();
     }
+
+    /**
+     * This method updates the price filter value and the seekbar when its called.
+     * It is used when the user applies or restores the filters.
+     * It calls the view to update al the data.
+     */
+    private void updateFiltersPriceData() {
+        // Actualizamos el precio.
+        view.updateFiltersPopupTextViewsMaxPrice(tempFilter.getMaxPrice() == Float.MAX_VALUE ? maxPriceLimit : tempFilter.getMaxPrice());
+        // Actualizamos el seekbar.
+        if (tempFilter.getMaxPrice() == Float.MAX_VALUE) {
+            view.updateFiltersPopupSeekBarProgressMaxPrice(Integer.parseInt(calculateSeekbarProgress()));
+        }
+
+    }
+
 
     /**
      * @see IMainContract.Presenter#onFiltersClicked()
