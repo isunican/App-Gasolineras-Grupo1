@@ -8,11 +8,7 @@ import es.unican.gasolineras.common.database.IInterestPointsDAO;
 import es.unican.gasolineras.common.database.InterestPointsDatabase;
 import lombok.Getter;
 
-/**
- * Singleton class, whose instance is used to access the database.
- *
- * @Author Lucia Fernandez Mancebo
- */
+
 public class InterestPointsDAO  {
 
     protected static InterestPointsDAO myInstance;
