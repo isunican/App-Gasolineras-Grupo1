@@ -2,9 +2,10 @@ package es.unican.gasolineras.activities.points;
 
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertThrows;
+import static org.mockito.Mockito.never;
 
 import android.content.Context;
 
@@ -13,15 +14,21 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 
 import es.unican.gasolineras.common.database.IInterestPointsDAO;
+import es.unican.gasolineras.common.exceptions.LatitudInvalidaException;
+import es.unican.gasolineras.common.exceptions.LongitudInvalidaException;
+import es.unican.gasolineras.common.exceptions.RadioInvalidoException;
 import es.unican.gasolineras.model.InterestPoint;
 import es.unican.gasolineras.roomDAO.InterestPointsDAO;
 
@@ -35,6 +42,18 @@ public class PointsPresenterTest {
     private InterestPointsDAO pointsDAO;
     @Mock
     private IInterestPointsDAO iPointsDAO;
+
+    //Mocks de la vista y de la DAO, para las pruebas de crear.
+
+    private PointsPresenter presenter;
+    @Mock
+    private IPointsContract.View mockView;
+
+    @Mock
+    private InterestPointsDAO mockDAO;
+
+    @Mock
+    private IInterestPointsDAO IMockDAO;
 
     private ArrayList<InterestPoint> listaConPuntos;
     private ArrayList<InterestPoint> listaVacia;
@@ -58,6 +77,17 @@ public class PointsPresenterTest {
         listaConPuntos.add(point3);
 
         sut = new PointsPresenter();
+
+        MockitoAnnotations.openMocks(this);
+
+        // Configuramos mockView para que devuelva mockDAO cuando se llame a getPointsDao()
+        when(mockView.getPointsDao()).thenReturn(mockDAO);
+        when(mockDAO.getMyInterestPointsDAO()).thenReturn(IMockDAO);
+        // Configuramos mockDAO para devolver un mock del método interno si es necesario
+
+        // En este caso es el sut.
+        presenter = new PointsPresenter();
+        presenter.init(mockView);
 
 
     }
@@ -107,74 +137,17 @@ public class PointsPresenterTest {
 
     }
 
-}
-
-
-
-package es.unican.gasolineras.activities.points;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-import static org.mockito.Mockito.never;
-
-import com.google.common.base.Supplier;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import es.unican.gasolineras.common.database.IInterestPointsDAO;
-import es.unican.gasolineras.common.exceptions.LatitudInvalidaException;
-import es.unican.gasolineras.common.exceptions.LongitudInvalidaException;
-import es.unican.gasolineras.common.exceptions.RadioInvalidoException;
-import es.unican.gasolineras.model.InterestPoint;
-import es.unican.gasolineras.roomDAO.InterestPointsDAO;
-
-public class PointsPresenterTest {
-
-    private PointsPresenter presenter;
-
-    //Mocks de la vista y de la DAO.
-    @Mock
-    private IPointsContract.View mockView;
-
-    @Mock
-    private InterestPointsDAO mockDAO;
-
-    @Mock
-    private IInterestPointsDAO IMockDAO;
-
-    @Before
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-
-        // Configuramos mockView para que devuelva mockDAO cuando se llame a getPointsDao()
-        Mockito.when(mockView.getPointsDao()).thenReturn(mockDAO);
-        Mockito.when(mockDAO.getMyInterestPointsDAO()).thenReturn(IMockDAO);
-        // Configuramos mockDAO para devolver un mock del método interno si es necesario
-      
-        presenter = new PointsPresenter();
-        presenter.init(mockView);
-    }
-
     // Test de exito
     @Test
     public void testOnAcceptNewPointOfInterestClicked_withValidPoint() {
         // TOASK: Preguntar a Patri
-        InterestPoint validPoint = new InterestPoint("Punto", "AZUL", 40.0637, -82.3467, 20);
+        InterestPoint validPoint = new InterestPoint("Punto", "#0000ff", 40.0637, -82.3467, 20);
 
         // Creamos un mock para la lista de InterestPoints
         List<InterestPoint> interestPointsList = new ArrayList<>();
 
         // Simulamos que getInterestPoints() devuelve una lista vacía inicialmente
-        Mockito.when(mockDAO.getMyInterestPointsDAO().getInterestPoints()).thenReturn(interestPointsList);
+        when(mockDAO.getMyInterestPointsDAO().getInterestPoints()).thenReturn(interestPointsList);
 
         // Act
         presenter.onAcceptNewPointOfInterestClicked(validPoint);
@@ -197,7 +170,7 @@ public class PointsPresenterTest {
     // Test de fracaso por la latitud  >90
     @Test(expected = LatitudInvalidaException.class)
     public void testOnAcceptNewPointOfInterestClicked_withInvalidLatitudeAbove() {
-        InterestPoint invalidPoint = new InterestPoint("Punto", "AZUL", 100, -82.3467, 20);
+        InterestPoint invalidPoint = new InterestPoint("Punto", "#0000ff", 100, -82.3467, 20);
         presenter.onAcceptNewPointOfInterestClicked(invalidPoint);
         Mockito.verify(mockDAO.getMyInterestPointsDAO(), never()).addInterestPoint(invalidPoint);
         assertThrows(LatitudInvalidaException.class,
@@ -207,7 +180,7 @@ public class PointsPresenterTest {
     // Test de fracaso por la latitud inferior <(-90)
     @Test(expected = LatitudInvalidaException.class)
     public void testOnAcceptNewPointOfInterestClicked_withInvalidLatitudeBelow() {
-        InterestPoint invalidPoint = new InterestPoint("Punto", "AZUL", -96, -82.3467, 20);
+        InterestPoint invalidPoint = new InterestPoint("Punto", "#0000ff", -96, -82.3467, 20);
         presenter.onAcceptNewPointOfInterestClicked(invalidPoint);
         Mockito.verify(mockDAO.getMyInterestPointsDAO(), never()).addInterestPoint(invalidPoint);
         assertThrows(LatitudInvalidaException.class,
@@ -217,7 +190,7 @@ public class PointsPresenterTest {
     // Test de fracaso por latitud == null, no se prueba al ser double primitivo
     //@Test(expected = LatitudInvalidaException.class)
     //public void testOnAcceptNewPointOfInterestClicked_withNullLatitude() {
-    //    InterestPoint invalidPoint = new InterestPoint("Punto", "AZUL", null, 40.0637, 20);
+    //    InterestPoint invalidPoint = new InterestPoint("Punto", "#0000ff", null, 40.0637, 20);
     //    presenter.onAcceptNewPointOfInterestClicked(invalidPoint);
     //    Mockito.verify(mockDAO.getMyInterestPointsDAO(), never()).addInterestPoint(invalidPoint);
     //    assertThrows(LatitudInvalidaException.class,
@@ -227,7 +200,7 @@ public class PointsPresenterTest {
     // Test de fracaso por la longitud  >180
     @Test(expected = LongitudInvalidaException.class)
     public void testOnAcceptNewPointOfInterestClicked_withInvalidLongitudeAbove() {
-        InterestPoint invalidPoint = new InterestPoint("Punto", "AZUL", 40.0637, 300, 20);
+        InterestPoint invalidPoint = new InterestPoint("Punto", "#0000ff", 40.0637, 300, 20);
         presenter.onAcceptNewPointOfInterestClicked(invalidPoint);
         Mockito.verify(mockDAO.getMyInterestPointsDAO(), never()).addInterestPoint(invalidPoint);
         assertThrows(LongitudInvalidaException.class,
@@ -237,7 +210,7 @@ public class PointsPresenterTest {
     // Test de fracaso por la longitud  <(-180)
     @Test(expected = LongitudInvalidaException.class)
     public void testOnAcceptNewPointOfInterestClicked_withInvalidLongitudeBelow() {
-        InterestPoint invalidPoint = new InterestPoint("Punto", "AZUL", 40.0637, -234, 20);
+        InterestPoint invalidPoint = new InterestPoint("Punto", "#0000ff", 40.0637, -234, 20);
         presenter.onAcceptNewPointOfInterestClicked(invalidPoint);
         Mockito.verify(mockDAO.getMyInterestPointsDAO(), never()).addInterestPoint(invalidPoint);
         assertThrows(LongitudInvalidaException.class,
@@ -247,7 +220,7 @@ public class PointsPresenterTest {
     // Test de fracaso, por longitud == null, al ser un double primitivo no se prueba.
     //@Test(expected = LongitudInvalidaException.class)
     //public void testOnAcceptNewPointOfInterestClicked_withNullLongitude() {
-    //    InterestPoint invalidPoint = new InterestPoint("Punto", "AZUL", 40.0637, null, 20);
+    //    InterestPoint invalidPoint = new InterestPoint("Punto", "#0000ff", 40.0637, null, 20);
     //    presenter.onAcceptNewPointOfInterestClicked(invalidPoint);
     //    Mockito.verify(mockDAO.getMyInterestPointsDAO(), never()).addInterestPoint(invalidPoint);
     //    assertThrows(LongitudInvalidaException.class,
@@ -257,7 +230,7 @@ public class PointsPresenterTest {
     // Test de fracaso radio igual que cero.
     @Test(expected = RadioInvalidoException.class)
     public void testOnAcceptNewPointOfInterestClicked_withZeroRadius() {
-        InterestPoint invalidPoint = new InterestPoint("Punto", "AZUL", 40.0637, -82.3467, 0);
+        InterestPoint invalidPoint = new InterestPoint("Punto", "#0000ff", 40.0637, -82.3467, 0);
         presenter.onAcceptNewPointOfInterestClicked(invalidPoint);
         Mockito.verify(mockDAO.getMyInterestPointsDAO(), never()).addInterestPoint(invalidPoint);
         assertThrows(RadioInvalidoException.class,
@@ -267,7 +240,7 @@ public class PointsPresenterTest {
     // Test de fracaso radio negativo.
     @Test(expected = RadioInvalidoException.class)
     public void testOnAcceptNewPointOfInterestClicked_withNegativeRadius() {
-        InterestPoint invalidPoint = new InterestPoint("Punto", "AZUL", 40.0637, -82.3467, -10);
+        InterestPoint invalidPoint = new InterestPoint("Punto", "#0000ff", 40.0637, -82.3467, -10);
         presenter.onAcceptNewPointOfInterestClicked(invalidPoint);
         Mockito.verify(mockDAO.getMyInterestPointsDAO(), never()).addInterestPoint(invalidPoint);
         assertThrows(RadioInvalidoException.class,
@@ -277,7 +250,7 @@ public class PointsPresenterTest {
     // Test de fracaso por radio == null, al ser un double primitivo estos no se prueban.
     // @Test (expected = RadioInvalidoException.class)
    // public void testOnAcceptNewPointOfInterestClicked_withNullRadius() {
-    //  InterestPoint invalidPoint = new InterestPoint("Punto", "AZUL", 82.3467, 40.0637, null);
+    //  InterestPoint invalidPoint = new InterestPoint("Punto", "#0000ff", 82.3467, 40.0637, null);
     //  presenter.onAcceptNewPointOfInterestClicked(invalidPoint);
     //  Mockito.verify(mockDAO.getMyInterestPointsDAO(), never()).addInterestPoint(invalidPoint);
     //  assertThrows(RadioInvalidoException.class,
