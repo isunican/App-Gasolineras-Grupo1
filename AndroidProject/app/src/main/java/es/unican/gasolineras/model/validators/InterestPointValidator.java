@@ -22,7 +22,7 @@ public class InterestPointValidator {
         }
     }
     private static void checkRadius(double radius) throws RadioInvalidoException {
-        if(radius == 0){
+        if(radius <= 0){
             throw new RadioInvalidoException();
         }
     }
