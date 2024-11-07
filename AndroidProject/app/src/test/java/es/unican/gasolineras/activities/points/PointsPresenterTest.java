@@ -42,7 +42,7 @@ public class PointsPresenterTest {
 
     //Mocks de la vista y de la DAO, para las pruebas de crear.
     @Mock
-    private IPointsContract.View mockView;
+    private PointsView mockView;
 
     @Mock
     private InterestPointsDAO mockDAO;
@@ -170,7 +170,7 @@ public class PointsPresenterTest {
         point1.setCreationDate(calendar.getTime());
 
         // Crear el segundo punto con la fecha actual (automáticamente)
-        InterestPoint point2 = new InterestPoint("Punto 2", "#fff000", 41.0, -3.0, 60);
+        InterestPoint point2 = new InterestPoint("Punto 2", "#5e5f5f", 41.0, -3.0, 60);
 
         // Simular la obtención de los puntos desde la base de datos (no ordenados)
         List<InterestPoint> pointsList = new ArrayList<>();

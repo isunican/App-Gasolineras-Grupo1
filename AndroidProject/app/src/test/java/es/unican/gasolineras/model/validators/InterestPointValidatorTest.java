@@ -21,7 +21,6 @@ public class InterestPointValidatorTest {
     public void setUp() {
 
         interestPoint = new InterestPoint("Punto", "#0000ff", 40.0637, -82.3467, 20);
-
     }
 
     @Test
@@ -71,7 +70,5 @@ public class InterestPointValidatorTest {
         assertThrows(RadioInvalidoException.class,
                 () -> InterestPointValidator.checkFields(interestPoint));
     }
-
-
 
 }
