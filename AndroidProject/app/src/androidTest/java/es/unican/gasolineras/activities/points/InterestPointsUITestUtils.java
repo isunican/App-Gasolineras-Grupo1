@@ -30,7 +30,7 @@ public class InterestPointsUITestUtils {
 
         // Check color of R.id.ivLocation drawable
         element.onChildView(withId(R.id.ivLocation))
-                .check(matches(withTintColor(expectedPoint.getStringColor())));   // Custom matcher
+                .check(matches(withTintColor(expectedPoint.getColorArgb())));   // Custom matcher
 
         element.onChildView(withId(R.id.tvLatitude))
                 .check(matches(withText(String.valueOf(expectedPoint.getLatitude()))));
@@ -62,13 +62,13 @@ public class InterestPointsUITestUtils {
                 .perform(ViewActions.typeText(radius));
     }
 
-    private static Matcher<View> withTintColor(final String expectedColod) {
+    private static Matcher<View> withTintColor(final int expectedColod) {
         return new BoundedMatcher<View, ImageView>(ImageView.class) {
             @Override
             protected boolean matchesSafely(ImageView imageView) {
                 // Get the tint color of the drawable stored as Tag
-                String actualColor = (String) imageView.getTag();
-                return (Objects.equals(actualColor, expectedColod));
+                Color actualColor = (Color) imageView.getTag();
+                return (Objects.equals(actualColor.toArgb(), expectedColod));
             }
 
             @Override
