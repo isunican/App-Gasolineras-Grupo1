@@ -299,10 +299,13 @@ public class MainPresenter implements IMainContract.Presenter {
         view.updateFiltersPopupSeekBarProgressMaxPrice(progress);
     }
 
-    /*
-     * Actualizamos los valores máximos y mínimos del SeekBar para que sean float,
+
+    /**
+     * ctualizamos los valores máximos y mínimos del SeekBar para que sean float,
      * aunque la implementación seekbar original solo permita valores int.
      * Esto se consigue mediante la siguiente fórmula.
+     *
+     * @see IMainContract.Presenter#onFiltersPopUpCancelClicked()
      */
     @Override
     public String calculateSeekbarProgress() {
@@ -406,7 +409,6 @@ public class MainPresenter implements IMainContract.Presenter {
     /**
      * @see IMainContract.Presenter#onFuelTypeSelected(FuelTypeEnum)
      */
-
     public void onFuelTypeSelected(FuelTypeEnum type) {
         orderByPrice.setFuelType(type);
     }
@@ -414,7 +416,6 @@ public class MainPresenter implements IMainContract.Presenter {
     /**
      * @see IMainContract.Presenter#onMethodOrderSelected(OrderMethodsEnum)
      */
-
     public void onMethodOrderSelected(OrderMethodsEnum orderMethod) {
         switch (orderMethod) {
             case ASCENDING:
@@ -492,8 +493,7 @@ public class MainPresenter implements IMainContract.Presenter {
     }
 
     /**
-     * This public method obtains the max price for all the gasStations when the view calls it.
-     * @return the max price obtained between the gas stations
+     * @see IMainContract.Presenter#getMaxPrice()
      */
     public double getMaxPrice(){
         double maxPrice = 0.0;
@@ -511,9 +511,8 @@ public class MainPresenter implements IMainContract.Presenter {
         return maxPrice;
     }
 
-    /*
-     * This public method obtains the min price for all the gasStations when the view calls it.
-     * @return the min price obtained between the gas stations
+    /**
+     * @see IMainContract.Presenter#getMinPrice()
      */
     public double getMinPrice(){
         double minPrice = Double.MAX_VALUE;
