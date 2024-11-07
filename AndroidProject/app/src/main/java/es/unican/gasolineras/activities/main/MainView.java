@@ -275,10 +275,14 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
             }
             
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // No se requieren acciones
+            }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // No se requiere acciones
+            }
 
         });
 
