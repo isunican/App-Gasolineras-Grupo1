@@ -24,6 +24,7 @@ public class InterestPointsDAO  {
         Context appContext = context.getApplicationContext();
         // Create the database with the entity class, without creating a parallel execution thread
         InterestPointsDatabase database = Room.databaseBuilder(appContext, InterestPointsDatabase.class, "interestpoints")
+                .fallbackToDestructiveMigrationFrom(1)
                 .allowMainThreadQueries().build();
         myInterestPointsDAO = database.getInterestPointsDAO();
     }
