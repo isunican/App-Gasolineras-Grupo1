@@ -10,7 +10,7 @@ public class RadiusInputFilter implements InputFilter {
     private Pattern coordPattern;
 
     public RadiusInputFilter() {
-        coordPattern = Pattern.compile("\\d*(\\.\\d{0,2})?");
+        coordPattern = Pattern.compile("\\d*(\\.\\d{0,1})?");
     }
 
     @Override

@@ -6,6 +6,7 @@
     android:id="@+id/new_point_of_interest_main"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:gravity="center"
     android:orientation="vertical">
 
@@ -30,8 +31,8 @@
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
-                android:gravity="left|center_vertical"
-                android:text="Nombre"
+                android:gravity="start|center_vertical"
+                android:text="@string/nombre"
                 android:textColor="#000000"
                 android:textSize="14sp" />
 
@@ -42,7 +43,10 @@
                 android:layout_gravity="center"
                 android:layout_weight="2"
                 android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789;,.:-_áéíóü¿?¡! "
-                android:gravity="start|center_vertical" />
+                android:gravity="start|center_vertical"
+                android:hint="@string/nombre"
+                android:inputType="text"
+                android:maxLength="15" />
         </LinearLayout>
 
         <LinearLayout
@@ -57,8 +61,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="5dp"
-                android:gravity="left|center_vertical"
-                android:text="Color"
+                android:gravity="start|center_vertical"
+                android:text="@string/color"
                 android:textColor="#000000"
                 android:textSize="14sp" />
 
@@ -73,7 +77,8 @@
                     android:id="@+id/btColorPicker"
                     style="@style/CircularButtonStyle"
                     android:foreground="@drawable/palette"
-                    app:backgroundTint="@color/gray" />
+                    app:backgroundTint="@color/gray"
+                    android:contentDescription="@string/selector_de_color"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -91,8 +96,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="5dp"
-                android:gravity="left|center_vertical"
-                android:text="Latitud"
+                android:gravity="start|center_vertical"
+                android:text="@string/latitud"
                 android:textColor="#000000"
                 android:textSize="14sp" />
 
@@ -103,7 +108,8 @@
                 android:layout_gravity="center"
                 android:layout_weight="2"
                 android:gravity="start|center_vertical"
-                android:inputType="number|numberDecimal|numberSigned" />
+                android:inputType="number|numberDecimal|numberSigned"
+                android:hint="@string/_0_0"/>
         </LinearLayout>
 
         <LinearLayout
@@ -118,8 +124,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="5dp"
-                android:gravity="left|center_vertical"
-                android:text="Longitud"
+                android:gravity="start|center_vertical"
+                android:text="@string/longitud"
                 android:textColor="#000000"
                 android:textSize="14sp" />
 
@@ -130,7 +136,8 @@
                 android:layout_gravity="center"
                 android:layout_weight="2"
                 android:gravity="start|center_vertical"
-                android:inputType="number|numberDecimal|numberSigned" />
+                android:inputType="number|numberDecimal|numberSigned"
+                android:hint="@string/_0_0"/>
         </LinearLayout>
 
         <LinearLayout
@@ -145,10 +152,11 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="5dp"
-                android:gravity="left|center_vertical"
-                android:text="Radio"
+                android:gravity="start|center_vertical"
+                android:text="@string/radio"
                 android:textColor="#000000"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                />
 
             <EditText
                 android:id="@+id/tvPIRadio"
@@ -157,7 +165,8 @@
                 android:layout_gravity="center"
                 android:layout_weight="2"
                 android:gravity="start|center_vertical"
-                android:inputType="number|numberDecimal" />
+                android:inputType="number|numberDecimal"
+                android:hint="@string/_0_0"/>
         </LinearLayout>
 
     </LinearLayout>

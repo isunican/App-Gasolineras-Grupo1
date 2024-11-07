@@ -138,6 +138,7 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         View cancelButton = newPIView.findViewById(R.id.newPI_cancel_button);
         cancelButton.setOnClickListener(v -> newPIDialog.cancel());
 
+        //Obtiene los edit texts para poder crear luego el objeto
         EditText nameTextView = newPIView.findViewById(R.id.tvPIName);
         EditText longTextView = newPIView.findViewById(R.id.tvPILongitud);
         longTextView.setFilters(new InputFilter[]{new LongitudInputFilter()});
@@ -149,25 +150,44 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         View acceptButton = newPIView.findViewById(R.id.newPI_accept_button);
 
         acceptButton.setOnClickListener(v -> {
-            InterestPoint newPointOfInterest = new InterestPoint(
-                    nameTextView.getText().toString(),
-                    (Color) colorPickerButton.getTag(),
-                    Double.parseDouble(latTextView.getText().toString()),
-                    Double.parseDouble(longTextView.getText().toString()),
-                    Double.parseDouble(radiusTextView.getText().toString())
-            );
-            try{
-                presenter.onAcceptNewPointOfInterestClicked(newPointOfInterest);
-                newPIDialog.cancel();
-            }catch(LongitudInvalidaException | RadioInvalidoException |
-                   LatitudInvalidaException exception){
-                Toast.makeText(this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+
+            //Comprueba que los campos no esten vacios
+            if(nameTextView.getText().length() == 0){
+                nameTextView.setError("El campo nombre es necesario");
+            }else if(latTextView.getText().length() == 0){
+                latTextView.setError("El campo latitud es necesario");
+            }else if(longTextView.getText().length() == 0){
+                longTextView.setError("El campo longitud es necesario");
+            }else if(radiusTextView.getText().length() == 0){
+                radiusTextView.setError("El campo radio es necesario");
+            }else {
+
+                //Si los campos no estan vacios crea el punto de interes
+                InterestPoint newPointOfInterest = new InterestPoint(
+                        nameTextView.getText().toString(),
+                        (Color) colorPickerButton.getTag(),
+                        Double.parseDouble(latTextView.getText().toString()),
+                        Double.parseDouble(longTextView.getText().toString()),
+                        Double.parseDouble(radiusTextView.getText().toString())
+                );
+                try{
+                    presenter.onAcceptNewPointOfInterestClicked(newPointOfInterest);
+                    newPIDialog.cancel();
+                }catch(LongitudInvalidaException | RadioInvalidoException |
+                       LatitudInvalidaException exception){
+                    Toast.makeText(this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         newPIDialog.show();
+        newPIDialog.setCancelable(false);
         newPIDialog.getWindow().setLayout(WRAP_CONTENT,WRAP_CONTENT);
     }
+
+    /**
+     * Crea y lanza la ventana de seleccion de color
+     */
     private void showColorPickerPopUp() {
         AlertDialog.Builder builder = new AlertDialog.Builder(PointsView.this);
         LayoutInflater inflater = getLayoutInflater();
@@ -222,17 +242,23 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         cancelButton.setOnClickListener(v -> colorPickerDialog.cancel());
 
         colorPickerDialog.show();
-        colorPickerDialog.getWindow().setLayout(750,750);
+
     }
 
-    private void onColorSelected(int colorResourceID, boolean needWhitePalette, AlertDialog colorPickerDialog) {
+    /**
+     * Cambia el color del boton del color picker e incluye en el tag el color
+     * @param colorArgb valor del color seleccionado en formato argb
+     * @param needWhitePalette booleano de control del color del icono de la paleta
+     * @param colorPickerDialog dialog para cerrarlo una vez terminado
+     */
+    private void onColorSelected(int colorArgb, boolean needWhitePalette, AlertDialog colorPickerDialog) {
         View btColorPicker = newPIView.findViewById(R.id.btColorPicker);
-        btColorPicker.setBackgroundColor(colorResourceID);
+        btColorPicker.setBackgroundColor(colorArgb);
         btColorPicker.setForeground(
                 needWhitePalette
                         ? getResources().getDrawable(R.drawable.white_palette, getTheme())
                         : getResources().getDrawable(R.drawable.palette, getTheme()));
-        Color color = Color.valueOf(colorResourceID);
+        Color color = Color.valueOf(colorArgb);
         btColorPicker.setTag(color);
         colorPickerDialog.cancel();
     }

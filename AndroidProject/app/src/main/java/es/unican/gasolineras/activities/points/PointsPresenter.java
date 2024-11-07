@@ -1,16 +1,10 @@
 package es.unican.gasolineras.activities.points;
 
-import android.graphics.Color;
-
 import android.database.sqlite.SQLiteException;
 
 import java.util.Comparator;
 import java.util.List;
 
-import es.unican.gasolineras.common.exceptions.LatitudInvalidaException;
-import es.unican.gasolineras.common.exceptions.LongitudInvalidaException;
-import es.unican.gasolineras.common.exceptions.RadioInvalidoException;
-import es.unican.gasolineras.common.database.IInterestPointsDAO;
 import es.unican.gasolineras.common.exceptions.LatitudInvalidaException;
 import es.unican.gasolineras.common.exceptions.LongitudInvalidaException;
 import es.unican.gasolineras.common.exceptions.RadioInvalidoException;
@@ -47,13 +41,16 @@ public class PointsPresenter implements IPointsContract.Presenter {
         view.showMainPage();
     }
 
+
+    /**
+     * @see IPointsContract.Presenter#onCreatePointOfInterestClicked()
+     */
     @Override
     public void onCreatePointOfInterestClicked() {
         view.showPointOfInterestPopUp();
     }
 
     /**
-     *
      * @see IPointsContract.Presenter#onAcceptNewPointOfInterestClicked(InterestPoint newInterestPoint)
      */
     @Override
