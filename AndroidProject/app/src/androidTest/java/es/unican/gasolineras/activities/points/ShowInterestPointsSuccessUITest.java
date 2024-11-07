@@ -110,39 +110,9 @@ public class ShowInterestPointsSuccessUITest {
                     .atPosition(i);
 
             // Check each attribute in the list item
-            elto.onChildView(withId(R.id.tvName))
-                    .check(matches(withText(expectedPoint.getName())));
-
-            // Check color of R.id.ivLocation drawable
-            elto.onChildView(withId(R.id.ivLocation))
-                    .check(matches(withTintColor(expectedPoint.getStringColor())));   // Custom matcher
-
-            elto.onChildView(withId(R.id.tvLatitude))
-                   .check(matches(withText(String.valueOf(expectedPoint.getLatitude()))));
-
-            elto.onChildView(withId(R.id.tvLongitude))
-                    .check(matches(withText(String.valueOf(expectedPoint.getLongitude()))));
-
-            elto.onChildView(withId(R.id.tvRadiusValue))
-                    .check(matches(withText(String.valueOf(expectedPoint.getRadius()))));
+            InterestPointsUITestUtils.checkInterestPointToUI(expectedPoint, elto);
         }
         Espresso.pressBack();
     }
 
-    // Custom matcher to check drawable color
-    public static Matcher<View> withTintColor(final String expectedColod) {
-        return new BoundedMatcher<View, ImageView>(ImageView.class) {
-            @Override
-            protected boolean matchesSafely(ImageView imageView) {
-                // Get the tint color of the drawable stored as Tag
-                String actualColor = (String) imageView.getTag();
-                return (Objects.equals(actualColor, expectedColod));
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("with tint color: " + expectedColod);
-            }
-        };
-    }
 }

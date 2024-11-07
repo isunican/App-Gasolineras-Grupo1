@@ -28,7 +28,7 @@ public class InterestPoint {
     private String name;
 
     @ColumnInfo (name = "color")
-    private String color;
+    private String stringColor;
 
     @ColumnInfo (name = "latitude")
     @NonNull
@@ -48,9 +48,9 @@ public class InterestPoint {
     private Date creationDate;
 
 
-    public InterestPoint(String name, String color, double latitude, double longitude, double radius) {
+    public InterestPoint(String name, String stringColor, double latitude, double longitude, double radius) {
         this.name = name;
-        this.color = color;
+        this.stringColor = stringColor;
         this.latitude = latitude;
         this.longitude = longitude;
         this.radius = radius;
@@ -101,7 +101,7 @@ public class InterestPoint {
      * @return the color of the interest point.
      */
     public String getStringColor() {
-        return color;
+        return stringColor;
     }
 
     /**
@@ -118,8 +118,8 @@ public class InterestPoint {
      *
      * @param color the new color of the interest point.
      */
-    public void setColor(String color) {
-        this.color = color;
+    public void setStringColor(String color) {
+        this.stringColor = color;
     }
 
     /**
