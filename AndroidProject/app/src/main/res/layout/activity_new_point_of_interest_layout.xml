@@ -41,7 +41,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_weight="2"
-                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789;,.:-_áéíóü¿?¡!"
+                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789;,.:-_áéíóü¿?¡! "
                 android:gravity="start|center_vertical" />
         </LinearLayout>
 

@@ -90,7 +90,7 @@ public class CreateInterestPointsSuccessUITest {
 
         // Write the data
         InterestPointsUITestUtils.writeDataToCreateInterestPoint(
-                "Zona-norte", "40.0637", "82.3467", "20"
+                "Zona norte", "40.0637", "82.3467", "20"
         );
 
         // Click the button to create
@@ -104,7 +104,7 @@ public class CreateInterestPointsSuccessUITest {
 
         // Add the point to the list
         expectedPoints.add(
-                new InterestPoint("Zona-norte", "#808080", 40.0637, 82.3467, 20)
+                new InterestPoint("Zona norte", "#808080", 40.0637, 82.3467, 20)
         );
 
         // Verify each interest point meets the requirements using a loop
