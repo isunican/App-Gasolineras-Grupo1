@@ -81,22 +81,19 @@ public class PointsPresenterTest {
 
         // En este caso es el sut.
         sut= new PointsPresenter();
-        sut.init(mockView);
 
     }
 
     @Test
     public void initWithPointsTest() {
         //Comprobamos la lista con los puntos
-        when(mockView.getPointsDao()).thenReturn(mockDAO);
-        when(mockDAO.getMyInterestPointsDAO()).thenReturn(IMockDAO);
         when(IMockDAO.getInterestPoints()).thenReturn(listaConPuntos);
 
         // Llama al método init
         sut.init(mockView);
 
         // Verifica que se llama a view.init()
-        verify(mockView, times(2)).init();
+        verify(mockView).init();
 
         // Verifica que se llama a showPoints()
         verify(mockView).showPoints(listaConPuntos);
@@ -108,27 +105,44 @@ public class PointsPresenterTest {
 
     @Test
     public void initWithOutPointsTest() {
-        //Comprobamos la lista con los puntos
 
-        when(mockView.getPointsDao()).thenReturn(mockDAO);
-        when(mockDAO.getMyInterestPointsDAO()).thenReturn(IMockDAO);
-        when(IMockDAO.getInterestPoints()).thenReturn(listaConPuntos);
+        //Comprobamos la lista con los puntos
+        when(IMockDAO.getInterestPoints()).thenReturn(listaVacia);
 
         // Llama al método init
         sut.init(mockView);
 
         // Verifica que se llama a view.init()
-        verify(mockView, times(2)).init();
-        when(IMockDAO.getInterestPoints()).thenReturn(listaVacia);
+        verify(mockView).init();
 
         // Verifica que se llama a showPoints()
         verify(mockView).showPoints(listaVacia);
 
     }
 
+    @Test
+    public void initWithOutConexionBDPointsTest() {
+
+        //Comprobamos la lista con los puntos
+        when(IMockDAO.getInterestPoints()).thenThrow(new SQLiteException());
+
+        //Realizamos la inicialización
+        sut.init(mockView);
+
+        // Verifica que se llama a view.init()
+        verify(mockView).init();
+
+        // Verifica que se llama a showLoadError()
+        verify(mockView).showLoadError();
+    }
+
     // Test de exito: no hay puntos en la BBDD
     @Test
     public void testOnAcceptNewPointOfInterestClicked_withValidPoint() {
+
+        // Iniciar el presenter
+        sut.init(mockView);
+
         // Configuramos el punto válido
         InterestPoint validPoint = new InterestPoint("Punto", "#0000ff", 40.0637, -82.3467, 20);
 
@@ -166,6 +180,10 @@ public class PointsPresenterTest {
     // Test de exito II: Se anhade un nuevo punto, por antiguedad y se comprueba que se ha anhadido en la posicion correcta
     @Test
     public void testAddNewPointWithSortingByAge() {
+
+        // Iniciar el presenter
+        sut.init(mockView);
+
         // Crear el primer punto con una fecha antigua
         InterestPoint point1 = new InterestPoint("Punto", "#0000ff", 40.0637, -82.3467, 20);
         Calendar calendar = Calendar.getInstance();
@@ -209,6 +227,10 @@ public class PointsPresenterTest {
     // Test de fracaso por la latitud  >90
     @Test(expected = LatitudInvalidaException.class)
     public void testOnAcceptNewPointOfInterestClicked_withInvalidLatitudeAbove() {
+
+        // Iniciar el presenter
+        sut.init(mockView);
+
         // Creamos la lista de InterestPoints y programamos el mock de la DAO para devolverla.
         List<InterestPoint> interestPointsList = new ArrayList<>();
         when(mockDAO.getMyInterestPointsDAO().getInterestPoints()).thenReturn(interestPointsList);
@@ -229,6 +251,10 @@ public class PointsPresenterTest {
     // Test de fracaso por la latitud inferior <(-90)
     @Test(expected = LatitudInvalidaException.class)
     public void testOnAcceptNewPointOfInterestClicked_withInvalidLatitudeBelow() {
+
+        // Iniciar el presenter
+        sut.init(mockView);
+
         // Creamos la lista de InterestPoints y programamos el mock de la DAO para devolverla.
         List<InterestPoint> interestPointsList = new ArrayList<>();
         when(mockDAO.getMyInterestPointsDAO().getInterestPoints()).thenReturn(interestPointsList);
@@ -250,6 +276,10 @@ public class PointsPresenterTest {
     // Test de fracaso por la longitud  >180
     @Test(expected = LongitudInvalidaException.class)
     public void testOnAcceptNewPointOfInterestClicked_withInvalidLongitudeAbove() {
+
+        // Iniciar el presenter
+        sut.init(mockView);
+
         // Creamos la lista de InterestPoints y programamos el mock de la DAO para devolverla.
         List<InterestPoint> interestPointsList = new ArrayList<>();
         when(mockDAO.getMyInterestPointsDAO().getInterestPoints()).thenReturn(interestPointsList);
@@ -270,6 +300,10 @@ public class PointsPresenterTest {
     // Test de fracaso por la longitud  <(-180)
     @Test(expected = LongitudInvalidaException.class)
     public void testOnAcceptNewPointOfInterestClicked_withInvalidLongitudeBelow() {
+
+        // Iniciar el presenter
+        sut.init(mockView);
+
         // Creamos la lista de InterestPoints y programamos el mock de la DAO para devolverla.
         List<InterestPoint> interestPointsList = new ArrayList<>();
         when(mockDAO.getMyInterestPointsDAO().getInterestPoints()).thenReturn(interestPointsList);
@@ -290,6 +324,10 @@ public class PointsPresenterTest {
     // Test de fracaso radio igual que cero.
     @Test(expected = RadioInvalidoException.class)
     public void testOnAcceptNewPointOfInterestClicked_withZeroRadius() {
+
+        // Iniciar el presenter
+        sut.init(mockView);
+
         // Creamos la lista de InterestPoints y programamos el mock de la DAO para devolverla.
         List<InterestPoint> interestPointsList = new ArrayList<>();
         when(mockDAO.getMyInterestPointsDAO().getInterestPoints()).thenReturn(interestPointsList);
@@ -310,6 +348,10 @@ public class PointsPresenterTest {
     // Test de fracaso radio negativo.
     @Test(expected = RadioInvalidoException.class)
     public void testOnAcceptNewPointOfInterestClicked_withNegativeRadius() {
+
+        // Iniciar el presenter
+        sut.init(mockView);
+
         // Creamos la lista de InterestPoints y programamos el mock de la DAO para devolverla.
         List<InterestPoint> interestPointsList = new ArrayList<>();
         when(mockDAO.getMyInterestPointsDAO().getInterestPoints()).thenReturn(interestPointsList);
@@ -325,27 +367,6 @@ public class PointsPresenterTest {
         List<InterestPoint> pointsListDAO = mockDAO.getMyInterestPointsDAO().getInterestPoints();
         // Verificamos que la lista de puntos de interés esté vacía
         assertEquals(0, pointsListDAO.size());
-    }
-
-    @Test
-    public void initWithOutConexionBDPointsTest() {
-        //Comprobamos la lista con los puntos
-        when(view.getPointsDao()).thenReturn(pointsDAO);
-        when(pointsDAO.getMyInterestPointsDAO()).thenReturn(iPointsDAO);
-        when(iPointsDAO.getInterestPoints()).thenThrow(new SQLiteException());
-
-        //Realizamos la inicialización
-        sut.init(view);
-
-        // Verifica que se llama a view.init()
-        verify(view).init();
-
-        // Verifica que se llama a showLoadError()
-        verify(view).showLoadError();
-
-
-
-
     }
 
 }

@@ -21,24 +21,24 @@ import es.unican.gasolineras.model.InterestPoint;
 public interface IInterestPointsDAO {
 
     @Query("SELECT * FROM InterestPoint")
-    List<InterestPoint> getInterestPoints();
+    public List<InterestPoint> getInterestPoints();
 
     @Query("SELECT * FROM InterestPoint WHERE name = :name")
-    InterestPoint getInterestPointByName(String name);
+    public InterestPoint getInterestPointByName(String name);
 
     @Query("SELECT * FROM InterestPoint WHERE id = :id")
-    InterestPoint getInterestPointById(int id);
+    public InterestPoint getInterestPointById(int id);
 
     @Insert
-    void addInterestPoint(InterestPoint interestPoint);
+    public void addInterestPoint(InterestPoint interestPoint);
 
     @Delete
-    void deleteInterestPoint(InterestPoint interestPoint);
+    public void deleteInterestPoint(InterestPoint interestPoint);
 
     @Update
-    void updateInterestPoint(InterestPoint interestPoint);
+    public void updateInterestPoint(InterestPoint interestPoint);
 
     @Query("DELETE FROM InterestPoint")
-    void deleteAll();
+    public void deleteAll();
 
 }
