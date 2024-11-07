@@ -273,17 +273,12 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 presenter.onFiltersPopUpMaxPriceSeekBarChanged(progress);
             }
-
+            
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                throw new UnsupportedOperationException("onStartTrackingTouch not supported");
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                throw new UnsupportedOperationException("onStopTrackingTouch not supported");
-            }
+            public void onStopTrackingTouch(SeekBar seekBar) {}
 
         });
 
