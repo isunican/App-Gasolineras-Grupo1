@@ -152,7 +152,7 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
             InterestPoint newPointOfInterest = new InterestPoint(
                     nameTextView.getText().toString(),
                     //(Color) colorPickerButton.getTag(),
-                    "",
+                    "#ff00ff",
                     Double.parseDouble(latTextView.getText().toString()),
                     Double.parseDouble(longTextView.getText().toString()),
                     Double.parseDouble(radiusTextView.getText().toString())

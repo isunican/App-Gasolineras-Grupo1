@@ -72,9 +72,7 @@ public class PointsPresenter implements IPointsContract.Presenter {
         } catch (SQLiteException e) {
             view.showLoadError();
         }
-        //points.add(new InterestPoint("Prueba 1", "#ff0000", 20, 20, 20));
-        //points.add(new InterestPoint("Prueba 2", "#00ff00", 20, 20, 20));
-        //points.add(new InterestPoint("Prueba 3", "#0000ff", 20, 20, 20));
+
         points.sort(Comparator.comparing(InterestPoint::getCreationDate));
         view.showPoints(points);
     }

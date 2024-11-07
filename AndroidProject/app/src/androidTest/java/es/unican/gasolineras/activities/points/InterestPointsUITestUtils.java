@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.ImageView;
 
 import androidx.test.espresso.DataInteraction;
+import androidx.test.espresso.Espresso;
+import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.matcher.BoundedMatcher;
 
 import org.hamcrest.Description;
@@ -37,6 +39,26 @@ public class InterestPointsUITestUtils {
 
         element.onChildView(withId(R.id.tvRadiusValue))
                 .check(matches(withText(String.valueOf(expectedPoint.getRadius()))));
+    }
+
+    public static void writeDataToCreateInterestPoint(
+            String name, String latitude, String longitude, String radius
+    ) {
+        // Write the name
+        Espresso.onView(withId(R.id.tvPIName))
+                .perform(ViewActions.typeText(name));
+
+        // Write the latitude
+        Espresso.onView(withId(R.id.tvPILatitud))
+                .perform(ViewActions.typeText(latitude));
+
+        // Write the longitude
+        Espresso.onView(withId(R.id.tvPILongitud))
+                .perform(ViewActions.typeText(longitude));
+
+        // Write the radius
+        Espresso.onView(withId(R.id.tvPIRadio))
+                .perform(ViewActions.typeText(radius));
     }
 
     private static Matcher<View> withTintColor(final String expectedColod) {
