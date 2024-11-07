@@ -164,13 +164,13 @@ public class PointsPresenterTest {
     @Test
     public void testAddNewPointWithSortingByAge() {
         // Crear el primer punto con una fecha antigua
-        InterestPoint point1 = new InterestPoint("Point 1", "#0000ff", 40.0, -3.0, 100);
+        InterestPoint point1 = new InterestPoint("Punto", "#0000ff", 40.0637, -82.3467, 20);
         Calendar calendar = Calendar.getInstance();
         calendar.set(2020, Calendar.JANUARY, 1); // Fecha antigua
         point1.setCreationDate(calendar.getTime());
 
         // Crear el segundo punto con la fecha actual (automáticamente)
-        InterestPoint point2 = new InterestPoint("Point 2", "#fff000", 41.0, -3.0, 60);
+        InterestPoint point2 = new InterestPoint("Punto 2", "#fff000", 41.0, -3.0, 60);
 
         // Simular la obtención de los puntos desde la base de datos (no ordenados)
         List<InterestPoint> pointsList = new ArrayList<>();
