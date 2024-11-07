@@ -69,12 +69,10 @@ public class CreateInterestPointsSuccessUITest {
 
         InterestPoint point1 = new InterestPoint("punto 1", "#ff0000", 45.0000, -123.3450, 12.4);
         point1.setCreationDate(Date.valueOf("2024-07-12"));
-        point1.setId(1);
         expectedPoints.add(point1);
 
         InterestPoint point2 = new InterestPoint("punto 2", "#00ff00", 65.0400, 23.3770, 6.0);
         point2.setCreationDate(Date.valueOf("2024-08-10"));
-        point2.setId(2);
         expectedPoints.add(point2);
 
         // Insert expected points into the DAO
@@ -92,7 +90,7 @@ public class CreateInterestPointsSuccessUITest {
 
         // Write the data
         InterestPointsUITestUtils.writeDataToCreateInterestPoint(
-                "Zona norte", "40.0637", "82.3467", "20"
+                "Zona-norte", "40.0637", "82.3467", "20"
         );
 
         // Click the button to create
@@ -103,7 +101,12 @@ public class CreateInterestPointsSuccessUITest {
         Espresso.onView(withId(R.id.lvPoints))
                 .check(matches(withListSize(3)));
 
-        /*
+
+        // Add the point to the list
+        expectedPoints.add(
+                new InterestPoint("Zona-norte", "#808080", 40.0637, 82.3467, 20)
+        );
+
         // Verify each interest point meets the requirements using a loop
         for (int i = 0; i < expectedPoints.size(); i++) {
             InterestPoint expectedPoint = expectedPoints.get(i);
@@ -115,8 +118,6 @@ public class CreateInterestPointsSuccessUITest {
             // Check each attribute in the list item
             InterestPointsUITestUtils.checkInterestPointToUI(expectedPoint, elto);
         }
-
-         */
 
         Espresso.pressBack();
     }
