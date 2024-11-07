@@ -66,12 +66,16 @@ public class PointsPresenter implements IPointsContract.Presenter {
      * Loads the interest points from the DDBB, and sends them to the view
      */
     private void load() {
+<<<<<<< HEAD
         try {
             IInterestPointsDAO ddbb = view.getPointsDao().getMyInterestPointsDAO();
             points = ddbb.getInterestPoints();
         } catch (SQLiteException e) {
             view.showLoadError();
         }
+=======
+        points = ddbb.getMyInterestPointsDAO().getInterestPoints();
+>>>>>>> 47b19d91c846712ff14dd6483b1b4818ded9ae49
         //points.add(new InterestPoint("Prueba 1", "#ff0000", 20, 20, 20));
         //points.add(new InterestPoint("Prueba 2", "#00ff00", 20, 20, 20));
         //points.add(new InterestPoint("Prueba 3", "#0000ff", 20, 20, 20));
