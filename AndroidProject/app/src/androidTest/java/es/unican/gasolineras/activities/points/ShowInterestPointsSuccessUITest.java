@@ -74,17 +74,14 @@ public class ShowInterestPointsSuccessUITest {
         List<InterestPoint> expectedPoints = new ArrayList<>();
 
         InterestPoint point2 = new InterestPoint("punto 2", "#00ff00", 65.0400, 23.3770, 6.0);
-        point2.setId(2);
         point2.setCreationDate(Date.valueOf("2024-07-10"));
         expectedPoints.add(point2);
 
         InterestPoint point1 = new InterestPoint("punto 1", "#ff0000", 45.0000, -123.3450, 12.4);
-        point1.setId(1);
         point1.setCreationDate(Date.valueOf("2024-08-12"));
         expectedPoints.add(point1);
 
         InterestPoint point3 = new InterestPoint("punto 3", "#0000ff", -25.6783, 3.3422, 53.2);
-        point3.setId(3);
         point3.setCreationDate(Date.valueOf("2024-10-01"));
         expectedPoints.add(point3);
 
