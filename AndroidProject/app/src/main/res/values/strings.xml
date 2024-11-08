@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Gasolineras</string>
+    <string name="app_name">MyFuel</string>
     <string name="gasolina95label">Gasolina</string>
     <string name="dieselAlabel">Diesel</string>
     <string name="refresh">Recargar</string>
@@ -21,7 +21,7 @@
     <string name="all_selections">Todos</string>
 
     <!-- Strings para el ordenamiento -->
-    <string name="order_title">Ordenar por precio:</string>
+    <string name="order_title">Ordenar por precio</string>
     <string name= "order_type">Combustible:</string>
     <string name="order_price">Tipo orden:</string>
     <!--TODO: Definir los strings-->
@@ -29,5 +29,23 @@
     <string name="order_price_selection">Seleccione ▼</string>
     <string name="order_cross_description">Cancelar</string>"
     <string name="order_tick_description">Aceptar</string>
+
+    <!-- Strings para puntos de interes -->
+    <!-- Lista -->
+    <string name="point_add_button">Añadir</string>
+    <string name="point_sort_generic_description">Ordenar</string>
+    <string name="point_remove_button">Eliminar</string>
+    <!-- Item -->
+    <string name="point_location_description">Localizar</string>
+    <string name="point_radio">Radio:</string>
+    <string name="back_home">MenuPuntos</string>
+    <string name="selector_de_color">Selector de color</string>
+    <string name="latitud">Latitud</string>
+    <string name="latitud_hint">00.0000</string>
+    <string name="longitud">Longitud</string>
+    <string name="radio">Radio</string>
+    <string name="color">Color</string>
+    <string name="_0_0">0.0</string>
+    <string name="nombre">Nombre</string>
 
 </resources>

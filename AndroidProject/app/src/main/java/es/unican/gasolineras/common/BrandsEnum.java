@@ -9,7 +9,7 @@ public enum BrandsEnum {
     PETRONOR("Petronor"),
     CAMPSA("Campsa"),
     GALP("Galp"),
-    SHELL("Carrefour"),
+    SHELL("Shell"),
     BALLENOIL("Ballenoil"),
     CARREFOUR("Carrefour"),
     EROSKI("Eroski"),

@@ -39,11 +39,14 @@ public class MainPresenter implements IMainContract.Presenter {
     private IFilter tempFilter;
     @Setter
     private List<Selection> tempListSelection;
+
+    private List<Gasolinera> gasStations;
     // get values from LimitePricesEnum converted to float and integer
-    float minPriceLimit = Float.parseFloat(LimitPricesEnum.MIN_PRICE.toString());
-    float maxPriceLimit = Float.parseFloat(LimitPricesEnum.MAX_PRICE.toString());
-    int scalingFactor = Integer.parseInt(LimitPricesEnum.SCALING_FACTOR.toString());
-    int staticSeekBarProgress = Integer.parseInt(LimitPricesEnum.STATIC_SEEKBAR_PROGRESS.toString());
+    float minPriceLimit;
+    float maxPriceLimit;
+
+    int staticSeekBarProgress;
+    private static final int SCALING_FACTOR = 100;
 
     // Orden by price:
     private OrderByPrice orderByPrice = new OrderByPrice();
@@ -79,27 +82,18 @@ public class MainPresenter implements IMainContract.Presenter {
         view.showInfoActivity();
     }
 
-    private List<Selection> getFuelTypesSelections(IFilter f) {
-        List<Selection> s = new ArrayList<>();
-        boolean allSelected = f.getFuelTypes().size() == FuelTypeEnum.values().length;
-        s.add(new Selection(view.getConstantString(R.string.all_selections), allSelected));
-        for (FuelTypeEnum t: FuelTypeEnum.values()) {
-            s.add(
-                    new Selection(t.toString(), !allSelected && f.getFuelTypes().contains(t))
-            );
-        }
-        return s;
+    @Override
+    public void onPointsClicked() {
+        view.showPointsActivity();
     }
 
-
-
-    private List<Selection> getBrandsSelections(IFilter f) {
+    private <E> List<Selection> getSelections(List<E> selections, E[] allValues) {
         List<Selection> s = new ArrayList<>();
-        boolean allSelected = f.getGasBrands().size() == BrandsEnum.values().length;
+        boolean allSelected = selections.size() == allValues.length;
         s.add(new Selection(view.getConstantString(R.string.all_selections), allSelected));
-        for (BrandsEnum t: BrandsEnum.values()) {
+        for (E t : allValues) {
             s.add(
-                    new Selection(t.toString(), !allSelected && f.getGasBrands().contains(t))
+                    new Selection(t.toString(), !allSelected && selections.contains(t))
             );
         }
         return s;
@@ -122,18 +116,35 @@ public class MainPresenter implements IMainContract.Presenter {
         return text;
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////
 
-    private void setFiltersPopupTextViewsSelections() {
+    private void setFiltersPopupData() {
         // Obtener la lista de selecciones de fuelTypes
         String fuelTypes = getStringOfSelections(
-                getFuelTypesSelections(tempFilter));
+                getSelections(tempFilter.getFuelTypes(), FuelTypeEnum.values()));
         // Obtener la lista de selecciones de fuelBrands
         String fuelBrands = getStringOfSelections(
-                getBrandsSelections(tempFilter));
+                getSelections(tempFilter.getGasBrands(), BrandsEnum.values()));
 
+        // Update the view
         view.updateFiltersPopupTextViewsSelections(fuelTypes, fuelBrands);
+        updateFiltersPriceData();
     }
+
+    /**
+     * This method updates the price filter value and the seekbar when its called.
+     * It is used when the user applies or restores the filters.
+     * It calls the view to update al the data.
+     */
+    private void updateFiltersPriceData() {
+        // Actualizamos el precio.
+        view.updateFiltersPopupTextViewsMaxPrice(tempFilter.getMaxPrice() == Float.MAX_VALUE ? maxPriceLimit : tempFilter.getMaxPrice());
+        // Actualizamos el seekbar.
+        if (tempFilter.getMaxPrice() == Float.MAX_VALUE) {
+            view.updateFiltersPopupSeekBarProgressMaxPrice(Integer.parseInt(calculateSeekbarProgress()));
+        }
+
+    }
+
 
     /**
      * @see IMainContract.Presenter#onFiltersClicked()
@@ -145,9 +156,7 @@ public class MainPresenter implements IMainContract.Presenter {
         // Generar la ventana
         view.showFiltersPopUp();
         // Actualizar los datos de seleccion
-        setFiltersPopupTextViewsSelections();
-        // Actualiza los datos del precio maximo
-        view.updateFiltersPopupTextViewsMaxPrice(tempFilter.getMaxPrice());
+        setFiltersPopupData();
     }
 
     /**
@@ -155,7 +164,7 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onFiltersPopUpFuelTypesSelected() {
-        tempListSelection = getFuelTypesSelections(tempFilter);
+        tempListSelection = getSelections(tempFilter.getFuelTypes(), FuelTypeEnum.values());
         view.showFiltersPopUpFuelTypesSelector(tempListSelection);
     }
 
@@ -164,46 +173,59 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onFiltersPopUpBrandsSelected() {
-        tempListSelection = getBrandsSelections(tempFilter);
+        tempListSelection = getSelections(tempFilter.getGasBrands(), BrandsEnum.values());
         view.showFiltersPopUpBrandSelector(tempListSelection);
     }
 
-    private void filtersAlertDialogControler(int index, boolean value, int length) {
+    private boolean filtersSelectionsPopUpCheckAllClicked(boolean value) {
         boolean update = true;
-        if (index == 0) {
-            // Si se selecciona "Todos", desmarcar todas las demas opciones
-            if (value) {
-                for (int i = 1; i < tempListSelection.size(); i++) {
-                    tempListSelection.get(i).setSelected(false);
-                    view.updateFiltersPopUpFuelTypesSelection(i, false);
-                }
-                // No se puede desmarcar todos
-            } else {
-                update = false;
-                view.updateFiltersPopUpFuelTypesSelection(0, true);
-            }
+        if (value) {
+            filtersSelectionsPopUpUnSelectOptions();
         } else {
-            int numActivated = (int) tempListSelection.stream()
-                    .skip(1)
-                    .filter(Selection::isSelected)
-                    .count();
-            if (value && numActivated < length - 1) {
-                // Si se selecciona una opcion distinta de "Todos", y no esta marcando todas
-                tempListSelection.get(0).setSelected(false);
-                view.updateFiltersPopUpFuelTypesSelection(0, false);
-            } else if (value && numActivated == length - 1) {
-                // Si se selecciona una opcion distinta de "Todos" y se marcan todas
-                tempListSelection.get(0).setSelected(true);
-                view.updateFiltersPopUpFuelTypesSelection(0, true);
-                for (int i = 1; i < tempListSelection.size(); i++) {
-                    tempListSelection.get(i).setSelected(false);
-                    view.updateFiltersPopUpFuelTypesSelection(i, false);
-                }
-                update = false;
-            } else if (!value && numActivated == 1) {
-                tempListSelection.get(0).setSelected(true);
-                view.updateFiltersPopUpFuelTypesSelection(0, true);
-            }
+            update = false;
+            view.updateFiltersPopUpSelection(0, true);
+        }
+        return update;
+    }
+
+    private boolean filtersSelectionsPopUpCheckOtherClicked(boolean value) {
+        boolean update = true;
+        int numActivated = (int) tempListSelection.stream()
+                .skip(1)
+                .filter(Selection::isSelected)
+                .count();
+        if (value && numActivated < tempListSelection.size() - 2) {
+            // Si se selecciona una opcion distinta de "Todos", y no esta marcando todas
+            filtersSelectionsPopUpSelectAllOption(false);
+        } else if (value && numActivated == tempListSelection.size() - 2) {
+            // Si se selecciona una opcion distinta de "Todos" y se marcan todas
+            filtersSelectionsPopUpSelectAllOption(true);
+            filtersSelectionsPopUpUnSelectOptions();
+            update = false;
+        } else if (!value && numActivated == 1) {
+            filtersSelectionsPopUpSelectAllOption(true);
+        }
+        return update;
+    }
+
+    private void filtersSelectionsPopUpSelectAllOption(boolean value) {
+        tempListSelection.get(0).setSelected(value);
+        view.updateFiltersPopUpSelection(0, value);
+    }
+
+    private void filtersSelectionsPopUpUnSelectOptions() {
+        for (int i = 1; i < tempListSelection.size(); i++) {
+            tempListSelection.get(i).setSelected(false);
+            view.updateFiltersPopUpSelection(i, false);
+        }
+    }
+
+    private void filtersAlertDialogControler(int index, boolean value) {
+        boolean update;
+        if (index == 0) {
+            update = filtersSelectionsPopUpCheckAllClicked(value);
+        } else {
+            update = filtersSelectionsPopUpCheckOtherClicked(value);
         }
         if (update)
             tempListSelection.get(index).setSelected(value);
@@ -214,53 +236,15 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onFiltersPopUpFuelTypesOneSelected(int index, boolean value) {
-        filtersAlertDialogControler(index, value, FuelTypeEnum.values().length);
+        filtersAlertDialogControler(index, value);
     }
-
 
     /**
      * @see IMainContract.Presenter#onFiltersPopUpBrandsOneSelected(int, boolean)
      */
     @Override
     public void onFiltersPopUpBrandsOneSelected(int index, boolean value) {
-        boolean update = true;
-        if (index == 0) {
-            // Si se selecciona "Todos", desmarcar todas las demas opciones
-            if (value) {
-                for (int i = 1; i < tempListSelection.size(); i++) {
-                    tempListSelection.get(i).setSelected(false);
-                    view.updateFiltersPopUpBrandsSelection(i, false);
-                }
-                // No se puede desmarcar todos
-            } else {
-                update = false;
-                view.updateFiltersPopUpBrandsSelection(0, true);
-            }
-        } else {
-            int numActivated = (int) tempListSelection.stream()
-                    .skip(1)
-                    .filter(Selection::isSelected)
-                    .count();
-            if (value && numActivated < tempListSelection.size() - 2) {
-                // Si se selecciona una opcion distinta de "Todos", y no esta marcando todas
-                tempListSelection.get(0).setSelected(false);
-                view.updateFiltersPopUpBrandsSelection(0, false);
-            } else if (value && numActivated == tempListSelection.size() - 2) {
-                // Si se selecciona una opcion distinta de "Todos" y se marcan todas
-                tempListSelection.get(0).setSelected(true);
-                view.updateFiltersPopUpBrandsSelection(0, true);
-                for (int i = 1; i < tempListSelection.size(); i++) {
-                    tempListSelection.get(i).setSelected(false);
-                    view.updateFiltersPopUpBrandsSelection(i, false);
-                }
-                update = false;
-            } else if (!value && numActivated == 1) {
-                tempListSelection.get(0).setSelected(true);
-                view.updateFiltersPopUpBrandsSelection(0, true);
-            }
-        }
-        if (update)
-            tempListSelection.get(index).setSelected(value);
+        filtersAlertDialogControler(index, value);
     }
 
     private <T> void updateSelectionToFilter(List<T> allElements,
@@ -295,16 +279,10 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onFiltersPopUpBrandsAccepted() {
-        if (tempListSelection.get(0).isSelected()) {
-            tempFilter.setGasBrands(Arrays.asList(BrandsEnum.values()));
-        } else {
-            tempFilter.setGasBrands(
-                    tempListSelection.stream()
-                            .filter(Selection::isSelected)
-                            .map(e -> BrandsEnum.fromString(e.getValue()))
-                            .collect(Collectors.toList())
-            );
-        }
+        updateSelectionToFilter(
+                Arrays.asList(BrandsEnum.values()),
+                tempFilter::setGasBrands,
+                e -> BrandsEnum.fromString(e.getValue()));
         view.updateFiltersPopupTextViewsSelections(null, getStringOfSelections(tempListSelection));
 
     }
@@ -315,11 +293,11 @@ public class MainPresenter implements IMainContract.Presenter {
     @Override
     public void onFiltersPopUpMaxPriceSeekBarChanged(int progress) {
         // Calcular el valor decimal del progress tipo int
-        float maxPrice = minPriceLimit + (progress / (float) scalingFactor);
+        float maxPrice = minPriceLimit + (progress / (float) SCALING_FACTOR);
         // Establecer el valor maximo del filtro
         tempFilter.setMaxPrice(maxPrice);
         // Solo se muestran dos decimales en la vista
-        float truncatedMaxPrice = (float) Math.round(maxPrice * 100) / 100;
+        float truncatedMaxPrice = (float) Math.floor(maxPrice * 100) / 100;
         view.updateFiltersPopupTextViewsMaxPrice(truncatedMaxPrice);
     }
 
@@ -328,11 +306,26 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     public void onFiltersPopUpMaxPriceSeekBarLoaded() {
         // Una regla de tres para obtener el porcentaje del valor maximo actual
+
+        staticSeekBarProgress = Integer.parseInt(calculateSeekbarProgress());
         float limitPercent = staticSeekBarProgress;
         float result = (tempFilter.getMaxPrice() - minPriceLimit) / (maxPriceLimit - minPriceLimit) * limitPercent;
         // conver the float to int
         int progress = (int) result;
         view.updateFiltersPopupSeekBarProgressMaxPrice(progress);
+    }
+
+
+    /**
+     * ctualizamos los valores máximos y mínimos del SeekBar para que sean float,
+     * aunque la implementación seekbar original solo permita valores int.
+     * Esto se consigue mediante la siguiente fórmula.
+     *
+     * @see IMainContract.Presenter#onFiltersPopUpCancelClicked()
+     */
+    @Override
+    public String calculateSeekbarProgress() {
+        return String.valueOf((int) ((Math.ceil((maxPriceLimit - minPriceLimit) * 100) / 100) * SCALING_FACTOR));
     }
 
     /**
@@ -360,11 +353,9 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     public void onFiltersPopUpClearFiltersClicked() {
         tempFilter.clear();
-        setFiltersPopupTextViewsSelections();
+        setFiltersPopupData();
         view.showInfoMessage("Se han limpiado los filtros");
     }
-
-    ///////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Loads the gas stations from the repository, and sends them to the view
@@ -378,12 +369,17 @@ public class MainPresenter implements IMainContract.Presenter {
             public void onSuccess(List<Gasolinera> stations) {
                 List<Gasolinera> filtered = null;
                 List<Gasolinera> originalFiltered = null;
+                gasStations = stations;
+
+                // set the min and the max price for the slider
+                minPriceLimit = (float) getMinPrice();
+                maxPriceLimit = (float) getMaxPrice();
+
                 try {
                     filtered = filter.toFilter(stations);
                     originalFiltered = new ArrayList<>(filtered);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
-                } finally {
                 }
 
                 if(filtered.isEmpty()){
@@ -395,17 +391,11 @@ public class MainPresenter implements IMainContract.Presenter {
                         view.showLoadCorrect(originalFiltered.size());
                     }
                     else {
-                        Collections.sort(filtered,orderByPrice );
+                        Collections.sort(filtered,orderByPrice);
                         view.showStations(filtered);
                         view.showLoadCorrect(filtered.size());
                     }
-
-
-                    // Llamamos al metodo de ordenar
-                    // TODO: Implementar el tipo de orden NONE.
-
                 }
-
             }
 
             @Override
@@ -435,7 +425,6 @@ public class MainPresenter implements IMainContract.Presenter {
     /**
      * @see IMainContract.Presenter#onFuelTypeSelected(FuelTypeEnum)
      */
-
     public void onFuelTypeSelected(FuelTypeEnum type) {
         orderByPrice.setFuelType(type);
     }
@@ -443,13 +432,12 @@ public class MainPresenter implements IMainContract.Presenter {
     /**
      * @see IMainContract.Presenter#onMethodOrderSelected(OrderMethodsEnum)
      */
-
     public void onMethodOrderSelected(OrderMethodsEnum orderMethod) {
         switch (orderMethod) {
-            case Ascending:
+            case ASCENDING:
                 orderByPrice.setAscending(true);  // Asigna directamente si es ascendente
                 break;
-            case Descending:
+            case DESCENDING:
                 orderByPrice.setAscending(false); // Asigna directamente si es descendente
                 break;
             default:
@@ -518,6 +506,49 @@ public class MainPresenter implements IMainContract.Presenter {
             return true;
         }
         return false;
+    }
+
+    /**
+     * @see IMainContract.Presenter#getMaxPrice()
+     */
+    public double getMaxPrice(){
+        double maxPrice = 0.0;
+        for (Gasolinera gasStation : gasStations) {
+            if (gasStation.getGasolina95E5() > maxPrice) {
+                maxPrice = gasStation.getGasolina95E5();
+            } else if (gasStation.getGasoleoA() > maxPrice) {
+                maxPrice = gasStation.getGasoleoA();
+            }
+        }
+
+        //round to two decimal places
+        maxPrice =Math.ceil(maxPrice * 100.00) /100.00;
+
+        return maxPrice;
+    }
+
+    /**
+     * @see IMainContract.Presenter#getMinPrice()
+     */
+    public double getMinPrice(){
+        double minPrice = Double.MAX_VALUE;
+        for (Gasolinera gasStation : gasStations) {
+                if (gasStation.getGasolina95E5() < minPrice && gasStation.getGasolina95E5() != 0.0) {
+                    minPrice = gasStation.getGasolina95E5();
+                } else if (gasStation.getGasoleoA() < minPrice && gasStation.getGasoleoA() != 0.0) {
+                    minPrice = gasStation.getGasoleoA();
+                }
+        }
+
+        if (minPrice == Double.MAX_VALUE){
+            minPrice = 0.0;
+        }
+
+        //round to two decimal places
+        minPrice = Math.ceil(minPrice * 100.00) /100.00;
+
+
+        return minPrice;
     }
 
     @Override

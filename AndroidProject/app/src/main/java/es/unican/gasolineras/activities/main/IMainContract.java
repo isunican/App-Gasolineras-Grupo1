@@ -42,6 +42,12 @@ public interface IMainContract {
         public void onMenuInfoClicked();
 
         /**
+         * The presenter is informed that the Info item in the menu has been clicked
+         * Only the View should call this method
+         */
+        public void onPointsClicked();
+
+        /**
          * The presenter is informed that the filter item in the toolbar has been clicked
          * Only the View should call this method
          */
@@ -190,6 +196,26 @@ public interface IMainContract {
          * This method is for the tests
          */
         public List<Selection> getTempListSelection();
+
+        /**
+         * The presenter is requested to calculate the actual progress of the price seekbar.
+         * @return a string with the actual progress.
+         */
+        public String calculateSeekbarProgress();
+
+        /**
+         * This public method obtains the max price for all the gasStations when the view calls it
+         * @return the max price obtained between the gas stations
+         */
+
+        public double getMaxPrice();
+
+        /**
+         * This public method obtains the min price for all the gasStations when the view calls it
+         * @return the min price obtained between the gas stations
+         */
+
+        public double getMinPrice();
     }
 
     /**
@@ -258,6 +284,12 @@ public interface IMainContract {
         public void showInfoActivity();
 
         /**
+         * The view is requested to open the point activity.
+         * Only the Presenter should call this method
+         */
+        public void showPointsActivity();
+
+        /**
          * The view is requested to open the filters popup.
          * Only the Presenter should call this method
          */
@@ -305,18 +337,7 @@ public interface IMainContract {
          * @param position the position of the selection
          * @param value the new value
          */
-        public void updateFiltersPopUpFuelTypesSelection(int position, boolean value);
-
-
-        /**
-         * The view is requested to to update the selection of a fuel type selector.
-         * Only the Presenter should call this method
-         * @param position the position of the selection
-         * @param value the new value
-         */
-        public void updateFiltersPopUpBrandsSelection(int position, boolean value);
-
-
+        public void updateFiltersPopUpSelection(int position, boolean value);
 
         /**
          * The view is requested to close the filters popup.
@@ -341,6 +362,8 @@ public interface IMainContract {
         public void closeOrderPopUp();
 
         public String getConstantString(int id);
+
+
 
     }
 }

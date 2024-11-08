@@ -35,6 +35,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 import es.unican.gasolineras.R;
 import es.unican.gasolineras.activities.info.InfoView;
 import es.unican.gasolineras.activities.details.DetailsView;
+import es.unican.gasolineras.activities.points.PointsView;
 import es.unican.gasolineras.common.LimitPricesEnum;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.OrderMethodsEnum;
@@ -53,9 +54,9 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     private AlertDialog alertDialog;
     boolean[] selectcionArray;
     // get values from LimitePricesEnum converted to float and integer
-    float minPriceLimit = Float.parseFloat(LimitPricesEnum.MIN_PRICE.toString());
-    float maxPriceLimit = Float.parseFloat(LimitPricesEnum.MAX_PRICE.toString());
-    int staticSeekBarProgress = Integer.parseInt(LimitPricesEnum.STATIC_SEEKBAR_PROGRESS.toString());
+    float minPriceLimit;
+    float maxPriceLimit;
+
 
     /** The presenter of this view */
     private MainPresenter presenter;
@@ -108,11 +109,20 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         if (itemId == R.id.menuItemInfo) {
             presenter.onMenuInfoClicked();
             return true;
-        } if (itemId == R.id.menuFilterButton) {
+        }
+
+        if (itemId == R.id.menuFilterButton) {
             presenter.onFiltersClicked();
             return true;
-        } if (itemId == R.id.menuOrderButton)  {
+        }
+
+        if (itemId == R.id.menuOrderButton)  {
             presenter.onOrderClicked();
+            return true;
+        }
+
+        if (itemId == R.id.menuPointButton) {
+           presenter.onPointsClicked();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -195,6 +205,16 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         startActivity(intent);
     }
 
+    /**
+     * @see IMainContract.View#showPointsActivity()
+     */
+    @Override
+    public void showPointsActivity() {
+        Intent intent = new Intent(this, PointsView.class);
+        startActivity(intent);
+    }
+
+
     private void createPopUp(int layoutId) {
         // Crear el layout del Popup
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -232,9 +252,12 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         // Buscar el SeekBar en el layout
         SeekBar maxPriceSeekBar = popupView.findViewById(R.id.MaxPriceSeekBar);
         // Establece el rango del seekbar
-        maxPriceSeekBar.setMax(staticSeekBarProgress);
+        maxPriceSeekBar.setMax(Integer.parseInt(presenter.calculateSeekbarProgress()));
 
         // Ajusta el texto de los TextView minPriceLabel y maxPriceLabel
+        minPriceLimit =  (float) presenter.getMinPrice();
+        maxPriceLimit =  (float) presenter.getMaxPrice();
+
         TextView minPriceLabel = popupView.findViewById(R.id.minPriceLabel);
         TextView maxPriceLabel = popupView.findViewById(R.id.maxPriceLabel);
         minPriceLabel.setText(String.valueOf(minPriceLimit));
@@ -250,12 +273,17 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 presenter.onFiltersPopUpMaxPriceSeekBarChanged(progress);
             }
+            
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // No se requieren acciones
+            }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // No se requiere acciones
+            }
 
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
         // Fijar listener al boton de limpiar filtros
@@ -276,6 +304,8 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
             presenter.onFiltersPopUpAcceptClicked();
         });
     }
+
+
 
     /**
      * @see IMainContract.View#updateFiltersPopupTextViewsSelections(String, String)
@@ -315,19 +345,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
-     * @see IMainContract.View#updateFiltersPopUpFuelTypesSelection(int, boolean)
+     * @see IMainContract.View#updateFiltersPopUpSelection(int, boolean)
      */
     @Override
-    public void updateFiltersPopUpFuelTypesSelection(int position, boolean value) {
-        selectcionArray[position] = value;
-        alertDialog.getListView().setItemChecked(position, value);
-    }
-
-    /**
-     * @see IMainContract.View#updateFiltersPopUpBrandsSelection(int, boolean)
-     */
-    @Override
-    public void updateFiltersPopUpBrandsSelection(int position, boolean value) {
+    public void updateFiltersPopUpSelection(int position, boolean value) {
         selectcionArray[position] = value;
         alertDialog.getListView().setItemChecked(position, value);
     }
@@ -490,5 +511,9 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
     public String getConstantString(int id) {
         return getString(id);
+    }
+
+    public MainPresenter getMainPresenter() {
+        return presenter;
     }
 }

@@ -55,6 +55,7 @@ android {
     compileSdk 34
 
     testOptions {
+        animationsDisabled = true
         unitTests {
             includeAndroidResources = true
         }
@@ -75,6 +76,12 @@ android {
         // I need a custom test runner to support Hilt
         // testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner
         testInstrumentationRunner "es.unican.gasolineras.utils.CustomTestRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     buildTypes {
@@ -98,6 +105,7 @@ dependencies {
     implementation libs.material
     implementation libs.activity
     implementation libs.constraintlayout
+    implementation libs.room.runtime
     testImplementation libs.junit
     testImplementation libs.junit.jupiter
     androidTestImplementation libs.ext.junit
@@ -106,12 +114,9 @@ dependencies {
     // Parceler (automatically implements methods to create parcels)
     implementation libs.parceler.api
     annotationProcessor libs.parceler
+    annotationProcessor libs.room.compiler
 
-    // Lombok (auto generate getters, etc.)
-    compileOnly libs.lombok
-    annotationProcessor libs.lombok
-    testCompileOnly libs.lombok
-    testAnnotationProcessor libs.lombok
+
 
     // GSON (for json (de)serialization)
     implementation libs.gson
@@ -134,4 +139,14 @@ dependencies {
 
     // Roboelectric (to get a proper Context object in unit tests)
     testImplementation libs.roboelectric
+
+    // Lombok (auto generate getters, etc.)
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+    testCompileOnly libs.lombok
+    testAnnotationProcessor libs.lombok
+
+    // Room for creating a database
+    implementation libs.room.runtime
+    annotationProcessor libs.room.compiler
 }

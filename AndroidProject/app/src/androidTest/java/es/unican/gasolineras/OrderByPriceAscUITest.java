@@ -60,8 +60,6 @@ public class OrderByPriceAscUITest {
 
     @Test
     public void OrderByPriceAscSuccessTest() {
-        onView(withId(R.id.toolbar)).perform(click());
-
         // Click on menuOrderButton
         onView(withId(R.id.menuOrderButton)).perform(click());
 
@@ -77,7 +75,7 @@ public class OrderByPriceAscUITest {
         // Selecting in the price method spinner the price type
         onView(withId(R.id.orderPriceMethodSpinner)).perform(click());
         onData(allOf(is(instanceOf(OrderMethodsEnum.class)),
-                equalTo(OrderMethodsEnum.Ascending)))
+                equalTo(OrderMethodsEnum.ASCENDING)))
                 .inRoot(isPlatformPopup())
                 .perform(click());
 

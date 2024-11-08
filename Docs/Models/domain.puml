@@ -61,6 +61,37 @@ class OrderByPrice{
 + compare(Gasolinera g1, Gasolinera g2)  : int
 }
 
+class InterestPoint {
+    - Int id
+    - String name
+    - Int colorArgb
+    - Double latitude
+    - Double longitude
+    - Double radius
+    - Date creationDate
+    - Color color
+    
+    - inicializateData(String name, Color color, double latitude, double longitude, double radius)
+    + name, Color color, double latitude, double longitude, double radius)  : InterestPoint(String
+    + name, int colorArgb, double latitude, double longitude, double radius)  : InterestPoint(String
+    + name, String colorString, double latitude, double longitude, double radius)  : InterestPoint(String
+    + getId()  : int
+    + setId(int id)
+    + getName()  : String
+    + setName(String name)
+    + getColorArgb()  : int
+    + getLatitude()  : double
+    + setLatitude(double latitude)
+    + getLongitude()  : double
+    + setLongitude(double longitude)
+    + getRadius()  : double
+    + setRadius(double radius)
+    + getCreationDate()  : Date
+    + setCreationDate(Date creationDate)
+    + getColor() : Color
+    + setColor(Color color)
+}
+
 IFilter <|.. Filter
 
 Comparator <|-- OrderByPrice

@@ -6,12 +6,19 @@ skinparam arrowLollipopColor #ADD1B2
 
 MainView -right(0- MainPresenter : IMainContract.Presenter
 MainView -right0)- MainPresenter : IMainContract.View
+PointsView -right(0- PointsPresenter : IPointsContract.Presenter
+PointsView -right0)- PointsPresenter  : IPointsContract.View
 MainView -up..-> InfoView : <<use>>
-MainView -down..> DetailsView : <<use>>
+MainView -left..> DetailsView : <<use>>
+MainView -down..> PointsView : <<use>>
 MainPresenter -right(0- GasolinerasRepository : IGasolinerasRepository
-
+PointsPresenter -right(0- InterestPointsDAO : IInterestPointsDAO
 
 class MainPresenter {
+    -load()
+}
+
+class PointsPresenter {
     -load()
 }
 
@@ -68,8 +75,33 @@ interface IMainContract#Presenter {
     + getTempListSelection() : List<Selection>
 }
 
+interface IPointsContract#Presenter {
+    + init(View view)
+    + onHomeClicked()
+    + onCreatePointOfInterestClicked()    
+}
+
+interface IPointsContract#View {
++ init()
++ getPointsDao() : InterestPointsDAO    
++ showPoints(List<InterestPoint> points)
++ showLoadCorrect(int numPoints)        
++ showLoadError()
++ showInfoMessage(String message)
+}
+
 interface IGasolinerasRepository {
     + requestGasolineras(ICallBack cb, String ccaa)
+}
+
+interface IInterestPointsDAO {
+    + getInterestPoints() : List<InterestPoint>
+    + getInterestPointByName(String name) : InterestPoint
+    + getInterestPointById(int id) : InterestPoint       
+    + addInterestPoint(InterestPoint interestPoint)      
+    + deleteInterestPoint(InterestPoint interestPoint)   
+    + updateInterestPoint(InterestPoint interestPoint)   
+    + deleteAll()
 }
 
 interface ICallBack {

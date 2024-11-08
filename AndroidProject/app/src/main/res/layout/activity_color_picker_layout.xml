@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_margin="15dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btColorGray"
+                style="@style/CircularButtonStyle"
+                android:backgroundTint="@color/gray" />
+
+            <Button
+                android:id="@+id/btColorBlue"
+                style="@style/CircularButtonStyle"
+                android:backgroundTint="@color/blue" />
+
+            <Button
+                android:id="@+id/btColorRed"
+                style="@style/CircularButtonStyle"
+                android:backgroundTint="@color/red" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btColorYellow"
+                style="@style/CircularButtonStyle"
+                android:backgroundTint="@color/yellow" />
+
+            <Button
+                android:id="@+id/btColorGreen"
+                style="@style/CircularButtonStyle"
+                android:backgroundTint="@color/green" />
+
+            <Button
+                android:id="@+id/btColorPurple"
+                style="@style/CircularButtonStyle"
+                android:backgroundTint="@color/purple" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btColorOrange"
+                style="@style/CircularButtonStyle"
+                android:backgroundTint="@color/orange" />
+
+            <Button
+                android:id="@+id/btColorBrown"
+                style="@style/CircularButtonStyle"
+                android:backgroundTint="@color/brown" />
+
+            <Button
+                android:id="@+id/btColorBlack"
+                style="@style/CircularButtonStyle"
+                android:backgroundTint="@color/black" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/colorPicker_cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:contentDescription="@string/filters_cross_description"
+            android:scaleType="fitCenter"
+            android:src="@drawable/cross"
+            app:tint="@android:color/holo_red_dark" />
+
+    </LinearLayout>
+
+</LinearLayout>
+
+
+
