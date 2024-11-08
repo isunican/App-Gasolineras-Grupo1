@@ -60,6 +60,7 @@ public class CreateInterestPointsSuccessUITest {
         // Initialize decorView and DAO
         activityRule.getScenario().onActivity(activity -> decorView = activity.getWindow().getDecorView());
         interestPointsDAO = InterestPointsDAO.getInstance(context);
+        interestPointsDAO.getMyInterestPointsDAO().deleteAll();
     }
 
     @Test
