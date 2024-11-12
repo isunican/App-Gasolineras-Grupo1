@@ -185,6 +185,21 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         newPIDialog.getWindow().setLayout(WRAP_CONTENT,WRAP_CONTENT);
     }
 
+    @Override
+    public void showDeleteMode() {
+        // TODO
+    }
+
+    @Override
+    public void showNormalMode() {
+        // TODO
+    }
+
+    @Override
+    public void showDeleteConfirmationPopup(InterestPoint selectedIP) {
+        // TODO
+    }
+
     /**
      * Crea y lanza la ventana de seleccion de color
      */

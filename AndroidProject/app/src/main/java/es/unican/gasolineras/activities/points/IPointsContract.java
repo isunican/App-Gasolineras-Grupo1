@@ -40,7 +40,29 @@ public interface IPointsContract {
          * also the view is refresed with the new element
          * @param newInterestPoint the new point of interest
          */
-         void onAcceptNewPointOfInterestClicked(InterestPoint newInterestPoint);
+        public void onAcceptNewPointOfInterestClicked(InterestPoint newInterestPoint);
+
+        /**
+         * When you click on the delete mode button, the view updates to support point of interest deletion.
+         */
+        public void onActivateDeleteModeClicked();
+
+        /**
+         * When you click on the cancel delete mode button, the view reverts to the normal mode, disabling point of interest deletion.
+         */
+        public void onCancelDeleteModeClicked();
+
+        /**
+         * When you click on the trash icon of a point of interest, a popup requests confirmation for deletion.
+         * @param selectedIP the selected point of interest to delete.
+         */
+        public void onTrashIconClicked(InterestPoint selectedIP);
+
+        /**
+         * When you click on the confirm delete button in the popup, the point of interest is deleted.
+         * @param selectedIP the point of interest to delete.
+         */
+        public void onConfirmDeletionClicked(InterestPoint selectedIP);
     }
 
     /**
@@ -94,13 +116,31 @@ public interface IPointsContract {
          * The view is requested to open the main activity.
          * Only the Presenter should call this method
          */
-        void showMainPage();
+        public void showMainPage();
 
         /**
          * The view is requested to display a new window to allow creation
          * of new Point of Interest
          * Only the presenter should call this method
          */
-         void showPointOfInterestPopUp();
+        public void showPointOfInterestPopUp();
+
+        /**
+         * The view is requested to enter delete mode, shifting point information to reveal a trash icon for each item.
+         * Additionally, the add, sort, and delete buttons are replaced at the bottom with an exit button for delete mode.
+         */
+        public void showDeleteMode();
+
+        /**
+         * The view is requested to revert to the default view, exiting delete mode.
+         */
+        public void showNormalMode();
+
+        /**
+         * The view is requested to display a popup to confirm the deletion of a selected point of interest.
+         * This method notifies the presenter only if deletion is confirmed.
+         * @param selectedIP the point of interest selected for deletion.
+         */
+        public void showDeleteConfirmationPopup(InterestPoint selectedIP);
     }
 }

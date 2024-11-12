@@ -62,6 +62,26 @@ public class PointsPresenter implements IPointsContract.Presenter {
         load();
     }
 
+    @Override
+    public void onActivateDeleteModeClicked() {
+        // TODO
+    }
+
+    @Override
+    public void onCancelDeleteModeClicked() {
+        // TODO
+    }
+
+    @Override
+    public void onTrashIconClicked(InterestPoint selectedIP) {
+        // TODO
+    }
+
+    @Override
+    public void onConfirmDeletionClicked(InterestPoint selectedIP) {
+        // TODO
+    }
+
     /**
      * Loads the interest points from the DDBB, and sends them to the view
      */
