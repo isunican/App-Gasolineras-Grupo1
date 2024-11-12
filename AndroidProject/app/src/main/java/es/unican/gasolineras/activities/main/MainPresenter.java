@@ -23,6 +23,7 @@ import es.unican.gasolineras.common.OrderMethodsEnum;
 import es.unican.gasolineras.model.Filter;
 import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.model.IDCCAAs;
+import es.unican.gasolineras.model.InterestPoint;
 import es.unican.gasolineras.model.OrderByPrice;
 import es.unican.gasolineras.repository.ICallBack;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
@@ -42,6 +43,9 @@ public class MainPresenter implements IMainContract.Presenter {
     private IFilter tempFilter;
     @Setter
     private List<Selection> tempListSelection;
+    @Setter
+    @Getter
+    private InterestPoint interestPoint;
 
     private List<Gasolinera> gasStations;
     // get values from LimitePricesEnum converted to float and integer
@@ -360,57 +364,6 @@ public class MainPresenter implements IMainContract.Presenter {
         view.showInfoMessage("Se han limpiado los filtros");
     }
 
-    /**
-     * Loads the gas stations from the repository, and sends them to the view
-     */
-    private void load() {
-        IGasolinerasRepository repository = view.getGasolinerasRepository();
-
-        ICallBack callBack = new ICallBack() {
-
-            @Override
-            public void onSuccess(List<Gasolinera> stations) {
-                List<Gasolinera> filtered = null;
-                List<Gasolinera> originalFiltered = null;
-                gasStations = stations;
-
-                // set the min and the max price for the slider
-                minPriceLimit = (float) getMinPrice();
-                maxPriceLimit = (float) getMaxPrice();
-
-                try {
-                    filtered = filter.toFilter(stations);
-                    originalFiltered = new ArrayList<>(filtered);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-
-                if(filtered.isEmpty()){
-                    view.showLoadError();
-                }
-                else {
-                    if (restoreOrder) {
-                        view.showStations(originalFiltered);
-                        view.showLoadCorrect(originalFiltered.size());
-                    }
-                    else {
-                        Collections.sort(filtered,orderByPrice);
-                        view.showStations(filtered);
-                        view.showLoadCorrect(filtered.size());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable e) {
-                view.showLoadError();
-                view.showLoadError();
-            }
-        };
-
-        repository.requestGasolineras(callBack, IDCCAAs.CANTABRIA.id);
-    }
-
     // Methods for Ordering story user
 
     /**
@@ -505,10 +458,7 @@ public class MainPresenter implements IMainContract.Presenter {
     // Comprobar los conflictos de ordenación
     private boolean checkConflicts(IFilter filter, OrderByPrice orderByPrice ) {
         FuelTypeEnum fuelType = orderByPrice.getFuelType();
-        if (!filter.getFuelTypes().contains(fuelType)) {
-            return true;
-        }
-        return false;
+        return !filter.getFuelTypes().contains(fuelType);
     }
 
     /**
@@ -555,16 +505,6 @@ public class MainPresenter implements IMainContract.Presenter {
     }
 
     @Override
-    public void setTempFilter(IFilter f) {
-        this.tempFilter = f;
-    }
-
-    @Override
-    public IFilter getTempFilter() {
-        return tempFilter;
-    }
-
-    @Override
     public IFilter getFilter() {
         return filter;
     }
@@ -572,6 +512,61 @@ public class MainPresenter implements IMainContract.Presenter {
     @Override
     public List<Selection> getTempListSelection() {
         return tempListSelection;
+    }
+
+    /**
+     * Loads the gas stations from the repository, and sends them to the view
+     */
+    private void load() {
+        IGasolinerasRepository repository = view.getGasolinerasRepository();
+
+        ICallBack callBack = new ICallBack() {
+
+            @Override
+            public void onSuccess(List<Gasolinera> stations) {
+                List<Gasolinera> filtered = null;
+                List<Gasolinera> originalFiltered = null;
+                gasStations = stations;
+
+                // Set the min and the max price for the slider
+                minPriceLimit = (float) getMinPrice();
+                maxPriceLimit = (float) getMaxPrice();
+
+                // Filter the gas stations
+                filtered = filter.toFilter(stations);
+
+                // Filter the interest point
+                if (interestPoint != null) {
+                    filtered = filtered.stream()
+                            .filter(interestPoint::isGasStationInRadius)
+                            .collect(Collectors.toList());
+                }
+
+                // Save the original filtered with the gas stations filtered
+                originalFiltered = new ArrayList<>(filtered);
+
+                // Order if is necesary
+                if (!restoreOrder) {
+                    filtered.sort(orderByPrice);
+                }
+
+                // Show the stations and the toast
+                view.showStations(originalFiltered);
+                if (filtered.isEmpty()) {
+                    view.showLoadError();
+                } else {
+                    view.showLoadCorrect(originalFiltered.size());
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                view.showLoadError();
+                view.showLoadError();
+            }
+        };
+
+        repository.requestGasolineras(callBack, IDCCAAs.CANTABRIA.id);
     }
 
 }
