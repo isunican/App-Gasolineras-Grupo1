@@ -2,6 +2,9 @@ package es.unican.gasolineras.activities.main;
 
 
 
+import android.location.Location;
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;

@@ -3,6 +3,7 @@ package es.unican.gasolineras.model;
 
 
 import android.graphics.Color;
+import android.location.Location;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -205,6 +206,30 @@ public class InterestPoint {
     public void setColor(Color color) {
         this.color = color;
         this.colorArgb = color.toArgb();
+    }
+
+    /**
+     * Returns the location of a gas station.
+     *
+     * @return the location.
+     */
+    public Location getLocation() {
+        Location l = new Location(String.format("Interest point named %s", this.name));
+        l.setLatitude(this.latitude);
+        l.setLongitude(this.longitude);
+        return l;
+    }
+
+    /**
+     * Return if a gas station is in the interest point.
+     *
+     * @param g the gas station.
+     *
+     * @return true if is in the interest point or false if not.
+     */
+    public boolean isGasStationInRadius(Gasolinera g) {
+        float distance = this.getLocation().distanceTo(g.getLocation());
+        return distance <= (this.radius * 1000);
     }
 
 }
