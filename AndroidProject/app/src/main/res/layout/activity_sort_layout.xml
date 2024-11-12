@@ -48,6 +48,7 @@
                 android:contentDescription="@string/order_tick_description"
                 android:scaleType="fitCenter"
                 android:src="@drawable/sort_generic"
+                android:tint="#00FFFFFF"
                 tools:src="@drawable/sort_generic_cross" />
 
         </LinearLayout>
@@ -84,7 +85,7 @@
         </LinearLayout>
 
         <!-- Ordenar por precio    -->
-
+        <!-- Se cambio la imagen   -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
