@@ -48,16 +48,16 @@ public class MainPresenter implements IMainContract.Presenter {
     private InterestPoint interestPoint;
 
     private List<Gasolinera> gasStations;
+    private List<Gasolinera> initialGasStations;
     // get values from LimitePricesEnum converted to float and integer
-    float minPriceLimit;
-    float maxPriceLimit;
+    private float minPriceLimit;
+    private float maxPriceLimit;
 
     int staticSeekBarProgress;
     private static final int SCALING_FACTOR = 100;
 
     // Orden by price:
     private OrderByPrice orderByPrice = new OrderByPrice();
-    private boolean restoreOrder = false;
     /**
      * @see IMainContract.Presenter#init(IMainContract.View)
      * @param view the view to control
@@ -69,6 +69,7 @@ public class MainPresenter implements IMainContract.Presenter {
         this.filter = new Filter();
         this.tempFilter = null;
         this.tempListSelection = null;
+        //this.gasStations = new ArrayList<>();
         load();
     }
 
@@ -352,7 +353,9 @@ public class MainPresenter implements IMainContract.Presenter {
         tempFilter = null;
         tempListSelection = null;
         view.closeFiltersPopUp();
-        load();
+        //load();
+        applyFilters();
+        showGasStations();
     }
 
     /**
@@ -414,8 +417,9 @@ public class MainPresenter implements IMainContract.Presenter {
             view.showInfoMessage("Conflicto con filtro de Combustible, se ha restablecido el filtro.");
         }
         // Este método filtrará y ordenará según los criterios establecidos
-        restoreOrder = false;
-        load();
+        //load();
+        applyOrder();
+        showGasStations();
         view.closeOrderPopUp();
     }
 
@@ -433,8 +437,9 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onOrderPopUpClearClicked() {
-        restoreOrder = true;
-        load();
+        //load();
+        applyOrder();
+        showGasStations();
         view.closeOrderPopUp();
     }
 
@@ -466,7 +471,7 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     public double getMaxPrice(){
         double maxPrice = 0.0;
-        for (Gasolinera gasStation : gasStations) {
+        for (Gasolinera gasStation : initialGasStations) {
             if (gasStation.getGasolina95E5() > maxPrice) {
                 maxPrice = gasStation.getGasolina95E5();
             } else if (gasStation.getGasoleoA() > maxPrice) {
@@ -485,22 +490,25 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     public double getMinPrice(){
         double minPrice = Double.MAX_VALUE;
-        for (Gasolinera gasStation : gasStations) {
-                if (gasStation.getGasolina95E5() < minPrice && gasStation.getGasolina95E5() != 0.0) {
-                    minPrice = gasStation.getGasolina95E5();
-                } else if (gasStation.getGasoleoA() < minPrice && gasStation.getGasoleoA() != 0.0) {
-                    minPrice = gasStation.getGasoleoA();
-                }
-        }
+        List<FuelTypeEnum> listToIter = (filter.getFuelTypes() == null || filter.getFuelTypes().isEmpty()) ?
+                Arrays.asList(FuelTypeEnum.values()) : filter.getFuelTypes();
 
+        for (Gasolinera gasStation : gasStations) {
+            double maxInTypes = Double.MIN_VALUE;
+            for (FuelTypeEnum t : listToIter) {
+                double price = gasStation.getPrecioPorTipo(t);
+                if (price != 0.0 && price > maxInTypes)
+                    maxInTypes = price;
+            }
+            if (maxInTypes != Double.MIN_VALUE && maxInTypes < minPrice)
+                minPrice = maxInTypes;
+        }
         if (minPrice == Double.MAX_VALUE){
             minPrice = 0.0;
         }
-
         //round to two decimal places
         minPrice = Math.ceil(minPrice * 100.00) /100.00;
-
-
+        Log.d("DEBUGGING", String.format("Entra min con: %f, iterado por ", minPrice) + listToIter);
         return minPrice;
     }
 
@@ -524,39 +532,16 @@ public class MainPresenter implements IMainContract.Presenter {
 
             @Override
             public void onSuccess(List<Gasolinera> stations) {
-                List<Gasolinera> filtered = null;
-                List<Gasolinera> originalFiltered = null;
-                gasStations = stations;
-
-                // Set the min and the max price for the slider
-                minPriceLimit = (float) getMinPrice();
-                maxPriceLimit = (float) getMaxPrice();
-
-                // Filter the gas stations
-                filtered = filter.toFilter(stations);
-
-                // Filter the interest point
                 if (interestPoint != null) {
-                    filtered = filtered.stream()
+                    stations = stations.stream()
                             .filter(interestPoint::isGasStationInRadius)
                             .collect(Collectors.toList());
                 }
+                initialGasStations = stations;
+                gasStations = stations;
 
-                // Save the original filtered with the gas stations filtered
-                originalFiltered = new ArrayList<>(filtered);
-
-                // Order if is necesary
-                if (!restoreOrder) {
-                    filtered.sort(orderByPrice);
-                }
-
-                // Show the stations and the toast
-                view.showStations(originalFiltered);
-                if (filtered.isEmpty()) {
-                    view.showLoadError();
-                } else {
-                    view.showLoadCorrect(originalFiltered.size());
-                }
+                applyFilters();
+                showGasStations();
             }
 
             @Override
@@ -567,6 +552,30 @@ public class MainPresenter implements IMainContract.Presenter {
         };
 
         repository.requestGasolineras(callBack, IDCCAAs.CANTABRIA.id);
+    }
+
+    private void applyFilters() {
+        // Filter the gas stations
+        gasStations = filter.toFilter(initialGasStations);
+
+        // Update the min and the max values for the slider
+        minPriceLimit = (float) getMinPrice();
+        maxPriceLimit = (float) getMaxPrice();
+    }
+
+    private void applyOrder() {
+        // Filter the gas stations
+        gasStations.sort(orderByPrice);
+    }
+
+    private void showGasStations() {
+        view.showStations(gasStations);
+
+        if (gasStations.isEmpty()) {
+            view.showLoadError();
+        } else {
+            view.showLoadCorrect(gasStations.size());
+        }
     }
 
 }
