@@ -13,7 +13,7 @@ public interface ICallBack {
      * This method is automatically called when the gas stations were successfully retrieved
      * @param stations the list of retrieved gas stations
      */
-    public void onSuccess(List<Gasolinera> stations);
+    public void onSuccess(List<Gasolinera> stations,boolean isOnline);
 
     /**
      * This method is automaticaly called when there was some failure when retrieving the

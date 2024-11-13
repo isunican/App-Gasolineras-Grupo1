@@ -1,25 +1,20 @@
 package es.unican.gasolineras.activities.points;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.InputFilter;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.List;
 
@@ -30,11 +25,12 @@ import es.unican.gasolineras.activities.main.MainView;
 import es.unican.gasolineras.activities.points.inputFilters.LatitudInputFilter;
 import es.unican.gasolineras.activities.points.inputFilters.LongitudInputFilter;
 import es.unican.gasolineras.activities.points.inputFilters.RadiusInputFilter;
+import es.unican.gasolineras.common.database.IInterestPointsDAO;
+import es.unican.gasolineras.common.database.MyFuelDatabase;
 import es.unican.gasolineras.common.exceptions.LatitudInvalidaException;
 import es.unican.gasolineras.common.exceptions.LongitudInvalidaException;
 import es.unican.gasolineras.common.exceptions.RadioInvalidoException;
 import es.unican.gasolineras.model.InterestPoint;
-import es.unican.gasolineras.roomDAO.InterestPointsDAO;
 
 /**
  * The points view of the application. It shows a list of interest points.
@@ -74,8 +70,8 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
      * @see IPointsContract.View#getPointsDao()
      */
     @Override
-    public InterestPointsDAO getPointsDao() {
-        return InterestPointsDAO.getInstance(this);
+    public IInterestPointsDAO getPointsDao() {
+        return MyFuelDatabase.getInstance(this).getInterestPointsDAO();
     }
 
     /**

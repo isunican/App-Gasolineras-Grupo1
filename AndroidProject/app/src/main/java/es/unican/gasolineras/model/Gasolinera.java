@@ -1,5 +1,10 @@
 package es.unican.gasolineras.model;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
@@ -22,8 +27,11 @@ import lombok.Setter;
 @Parcel
 @Getter
 @Setter
+@Entity
 public class Gasolinera{
 
+    @PrimaryKey
+    @NonNull
     @SerializedName("IDEESS")                       protected String id;
 
     @SerializedName("Rótulo")                       protected String rotulo;
@@ -31,7 +39,6 @@ public class Gasolinera{
     @SerializedName("Dirección")                    protected String direccion;
     @SerializedName("Municipio")                    protected String municipio;
     @SerializedName("Horario")                      protected String horario;
-
 
     @SerializedName("Precio Gasoleo A")             protected double gasoleoA;
     @SerializedName("Precio Gasolina 95 E5")        protected double gasolina95E5;
@@ -44,11 +51,6 @@ public class Gasolinera{
         return BrandsEnum.fromString(rotulo);
 
     }
-
-
-
-
-
     
     /**
      * Returns the summary price of a gas station.

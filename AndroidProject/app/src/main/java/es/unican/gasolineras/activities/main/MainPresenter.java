@@ -366,7 +366,7 @@ public class MainPresenter implements IMainContract.Presenter {
         ICallBack callBack = new ICallBack() {
 
             @Override
-            public void onSuccess(List<Gasolinera> stations) {
+            public void onSuccess(List<Gasolinera> stations,boolean isOnline) {
                 List<Gasolinera> filtered = null;
                 List<Gasolinera> originalFiltered = null;
                 gasStations = stations;
