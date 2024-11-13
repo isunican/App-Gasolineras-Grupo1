@@ -405,8 +405,8 @@ public class MainPresenter implements IMainContract.Presenter {
                         view.showInfoMessage("No hay datos guardados de gasolineras");
                     } else {
                         gasStations = gasStationss;
-                        //String date = view.getLocalDBDateRegister();
-                        view.showInfoMessage("Cargadas " + gasStations.size() + " gasolineras en fecha ");// + date);
+                        String date = view.getLocalDBDateRegister();
+                        view.showInfoMessage("Cargadas " + gasStations.size() + " gasolineras en fecha " + date);
                         view.showStations(gasStations);
                     }
                 }catch (Exception exception){

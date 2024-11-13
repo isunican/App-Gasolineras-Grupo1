@@ -1,6 +1,8 @@
 package es.unican.gasolineras.activities.main;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -24,11 +26,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.datastore.preferences.core.MutablePreferences;
-import androidx.datastore.preferences.core.PreferencesKeys;
-import androidx.datastore.preferences.rxjava3.RxPreferenceDataStoreBuilder;
-import androidx.datastore.rxjava3.RxDataStore;
-import androidx.datastore.preferences.core.Preferences;
 
 import org.parceler.Parcels;
 
@@ -48,8 +45,6 @@ import es.unican.gasolineras.common.database.IGasStationsDAO;
 import es.unican.gasolineras.common.database.MyFuelDatabase;
 import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
-import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.core.Single;
 
 /**
  * The main view of the application. It shows a list of gas stations.
@@ -74,8 +69,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     IGasolinerasRepository repository;
 
     /** dataStore object to save and retrieve the date of the gasStations Version */
-    private RxDataStore<Preferences> dataStore;
-    private final Preferences.Key<String> DATE_KEY = PreferencesKeys.stringKey("DB_VERSION");
+    private SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,7 +146,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
             presenter.onStationClicked(station);
         });
 
-        dataStore = new RxPreferenceDataStoreBuilder(this.getBaseContext(), /*name=*/ "localDBParameters").build();
+        sharedPref = this.getPreferences(Context.MODE_PRIVATE);
     }
 
     /**
@@ -545,18 +539,14 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
     @Override
     public void updateLocalDBDateRegister() {
-         dataStore.updateDataAsync(prefsIn -> {
-            MutablePreferences mutablePreferences = prefsIn.toMutablePreferences();
-            mutablePreferences.set(DATE_KEY, LocalDate.now().toString());
-            return Single.just(mutablePreferences);
-        });
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("DBUpdatedDate",LocalDate.now().toString());
+        editor.apply();
     }
 
     @Override
     public String getLocalDBDateRegister() {
-        Flowable<String> databaseVersionFlow =
-                dataStore.data().map(prefs -> prefs.get(DATE_KEY));
-        return databaseVersionFlow.blockingSingle();
+        return sharedPref.getString("DBUpdatedDate","");
     }
 
     public MainPresenter getMainPresenter() {
