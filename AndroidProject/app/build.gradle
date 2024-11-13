@@ -106,6 +106,9 @@ dependencies {
     implementation libs.activity
     implementation libs.constraintlayout
     implementation libs.room.runtime
+    implementation libs.androidx.datastore.preferences.core
+    implementation libs.androidx.datastore.rxjava3
+    implementation libs.androidx.datastore.preferences.rxjava3
     testImplementation libs.junit
     testImplementation libs.junit.jupiter
     androidTestImplementation libs.ext.junit

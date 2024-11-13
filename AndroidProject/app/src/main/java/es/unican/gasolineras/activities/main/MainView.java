@@ -24,9 +24,15 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.datastore.preferences.core.MutablePreferences;
+import androidx.datastore.preferences.core.PreferencesKeys;
+import androidx.datastore.preferences.rxjava3.RxPreferenceDataStoreBuilder;
+import androidx.datastore.rxjava3.RxDataStore;
+import androidx.datastore.preferences.core.Preferences;
 
 import org.parceler.Parcels;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -36,12 +42,14 @@ import es.unican.gasolineras.R;
 import es.unican.gasolineras.activities.info.InfoView;
 import es.unican.gasolineras.activities.details.DetailsView;
 import es.unican.gasolineras.activities.points.PointsView;
-import es.unican.gasolineras.common.LimitPricesEnum;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.OrderMethodsEnum;
+import es.unican.gasolineras.common.database.IGasStationsDAO;
+import es.unican.gasolineras.common.database.MyFuelDatabase;
 import es.unican.gasolineras.model.Gasolinera;
-import es.unican.gasolineras.model.OrderByPrice;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Single;
 
 /**
  * The main view of the application. It shows a list of gas stations.
@@ -64,6 +72,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     /** The repository to access the data. This is automatically injected by Hilt in this class */
     @Inject
     IGasolinerasRepository repository;
+
+    /** dataStore object to save and retrieve the date of the gasStations Version */
+    private RxDataStore<Preferences> dataStore;
+    private final Preferences.Key<String> DATE_KEY = PreferencesKeys.stringKey("DB_VERSION");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +151,8 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
             Gasolinera station = (Gasolinera) parent.getItemAtPosition(position);
             presenter.onStationClicked(station);
         });
+
+        dataStore = new RxPreferenceDataStoreBuilder(this.getBaseContext(), /*name=*/ "localDBParameters").build();
     }
 
     /**
@@ -167,6 +181,15 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
      */
     @Override
     public void showLoadCorrect(int stations) {
+        Toast.makeText(this, "Cargadas " + stations + " gasolineras", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * @see IMainContract.View#showLoadCorrectFromLocalDB(int)
+     * @param stations
+     */
+    @Override
+    public void showLoadCorrectFromLocalDB(int stations) {
         Toast.makeText(this, "Cargadas " + stations + " gasolineras", Toast.LENGTH_SHORT).show();
     }
 
@@ -494,7 +517,6 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         cancelButton.setOnClickListener(v -> { presenter.onOrderPopUpCancelClicked();
         });
 
-        // TODO: Hacer el clear de los filtros.
         ImageButton clearButton = popupView.findViewById(R.id.bt_clear_order);
         clearButton.setOnClickListener(v -> { presenter.onOrderPopUpClearClicked();
         });
@@ -511,6 +533,30 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
     public String getConstantString(int id) {
         return getString(id);
+    }
+
+    /**
+     * @see IMainContract.View#getGasolinerasDAO()
+     */
+    @Override
+    public IGasStationsDAO getGasolinerasDAO() {
+        return MyFuelDatabase.getInstance(this.getBaseContext()).getGasStationsDAO();
+    }
+
+    @Override
+    public void updateLocalDBDateRegister() {
+         dataStore.updateDataAsync(prefsIn -> {
+            MutablePreferences mutablePreferences = prefsIn.toMutablePreferences();
+            mutablePreferences.set(DATE_KEY, LocalDate.now().toString());
+            return Single.just(mutablePreferences);
+        });
+    }
+
+    @Override
+    public String getLocalDBDateRegister() {
+        Flowable<String> databaseVersionFlow =
+                dataStore.data().map(prefs -> prefs.get(DATE_KEY));
+        return databaseVersionFlow.blockingSingle();
     }
 
     public MainPresenter getMainPresenter() {

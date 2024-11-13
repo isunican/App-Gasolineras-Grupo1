@@ -1,5 +1,6 @@
 [versions]
 agp = "8.6.0"
+datastorePreferencesCore = "1.1.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -18,8 +19,11 @@ sonarqube = "5.1.0.4882"
 junitJupiter = "5.8.1"
 roomRuntime = "2.6.1"
 roomCompiler = "2.6.1"
+datastoreRxjava3 = "1.1.1"
+datastorePreferencesRxjava3 = "1.1.1"
 
 [libraries]
+androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastorePreferencesCore" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -42,6 +46,8 @@ roboelectric = { group = "org.robolectric", name = "robolectric", version.ref = 
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomRuntime" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
+androidx-datastore-rxjava3 = { group = "androidx.datastore", name = "datastore-rxjava3", version.ref = "datastoreRxjava3" }
+androidx-datastore-preferences-rxjava3 = { group = "androidx.datastore", name = "datastore-preferences-rxjava3", version.ref = "datastorePreferencesRxjava3" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

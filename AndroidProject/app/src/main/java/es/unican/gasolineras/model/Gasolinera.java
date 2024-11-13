@@ -1,7 +1,6 @@
 package es.unican.gasolineras.model;
 
 import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -11,40 +10,105 @@ import org.parceler.Parcel;
 
 import es.unican.gasolineras.common.BrandsEnum;
 import es.unican.gasolineras.common.FuelTypeEnum;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * A Gas Station.
- *
+ * <p>
  * Properties are defined in the <a href="https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/help/operations/PreciosEESSTerrestres#response-json">API</a>
- *
+ * <p>
  * The #SerializedName annotation is a GSON annotation that defines the name of the property
  * as defined in the json response.
- *
+ * <p>
  * Getters are automatically generated at compile time by Lombok.
  */
 @Parcel
-@Getter
-@Setter
 @Entity
 public class Gasolinera{
 
     @PrimaryKey
     @NonNull
-    @SerializedName("IDEESS")                       protected String id;
+    @SerializedName("IDEESS")                       private String id;
 
-    @SerializedName("Rótulo")                       protected String rotulo;
-    @SerializedName("C.P.")                         protected String cp;
-    @SerializedName("Dirección")                    protected String direccion;
-    @SerializedName("Municipio")                    protected String municipio;
-    @SerializedName("Horario")                      protected String horario;
+    @SerializedName("Rótulo")                       private String rotulo;
+    @SerializedName("C.P.")                         private String cp;
+    @SerializedName("Dirección")                    private String direccion;
+    @SerializedName("Municipio")                    private String municipio;
+    @SerializedName("Horario")                      private String horario;
 
-    @SerializedName("Precio Gasoleo A")             protected double gasoleoA;
-    @SerializedName("Precio Gasolina 95 E5")        protected double gasolina95E5;
+    @SerializedName("Precio Gasoleo A")             private double gasoleoA;
+    @SerializedName("Precio Gasolina 95 E5")        private double gasolina95E5;
+
+    public Gasolinera() {
+        if(id == null){
+            id ="";
+        }
+    }
 
 
+    @NonNull
+    public String getId() {
+        return id;
+    }
 
+    public void setId(@NonNull String id) {
+        this.id = id;
+    }
+
+    public String getRotulo() {
+        return rotulo;
+    }
+
+    public void setRotulo(String rotulo) {
+        this.rotulo = rotulo;
+    }
+
+    public String getCp() {
+        return cp;
+    }
+
+    public void setCp(String cp) {
+        this.cp = cp;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getMunicipio() {
+        return municipio;
+    }
+
+    public void setMunicipio(String municipio) {
+        this.municipio = municipio;
+    }
+
+    public String getHorario() {
+        return horario;
+    }
+
+    public void setHorario(String horario) {
+        this.horario = horario;
+    }
+
+    public double getGasoleoA() {
+        return gasoleoA;
+    }
+
+    public void setGasoleoA(double gasoleoA) {
+        this.gasoleoA = gasoleoA;
+    }
+
+    public double getGasolina95E5() {
+        return gasolina95E5;
+    }
+
+    public void setGasolina95E5(double gasolina95E5) {
+        this.gasolina95E5 = gasolina95E5;
+    }
 
 
     public BrandsEnum getBrand(){
@@ -54,9 +118,8 @@ public class Gasolinera{
     
     /**
      * Returns the summary price of a gas station.
-     *
-     * The summary price is a weighted average of the gas valid prices of gasoline and diesel, where gasoline has a weight of 2 and diesel has a weight of 1.
-     *
+     * The summary price is a weighted average of the gas valid prices of gasoline and diesel,
+     * where gasoline has a weight of 2 and diesel has a weight of 1.
      * @return the summary price of a gas station.
      */
     public double getAverageGasPrice() {

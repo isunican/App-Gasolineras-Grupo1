@@ -1,7 +1,5 @@
 package es.unican.gasolineras.activities.main;
 
-
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,9 +12,9 @@ import es.unican.gasolineras.R;
 import es.unican.gasolineras.common.BrandsEnum;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.IFilter;
-import es.unican.gasolineras.common.LimitPricesEnum;
 import es.unican.gasolineras.common.OrderMethodsEnum;
 
+import es.unican.gasolineras.common.database.IGasStationsDAO;
 import es.unican.gasolineras.model.Filter;
 import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.model.IDCCAAs;
@@ -366,7 +364,8 @@ public class MainPresenter implements IMainContract.Presenter {
         ICallBack callBack = new ICallBack() {
 
             @Override
-            public void onSuccess(List<Gasolinera> stations,boolean isOnline) {
+            public void onSuccess(List<Gasolinera> stations) {
+                persistGasStationsOnLocalDB(stations);
                 List<Gasolinera> filtered = null;
                 List<Gasolinera> originalFiltered = null;
                 gasStations = stations;
@@ -400,13 +399,39 @@ public class MainPresenter implements IMainContract.Presenter {
 
             @Override
             public void onFailure(Throwable e) {
-                view.showLoadError();
-                view.showLoadError();
+                try {
+                    List<Gasolinera> gasStationss = getGasStationsFromLocalDB();
+                    if (gasStationss.isEmpty()) {
+                        view.showInfoMessage("No hay datos guardados de gasolineras");
+                    } else {
+                        gasStations = gasStationss;
+                        //String date = view.getLocalDBDateRegister();
+                        view.showInfoMessage("Cargadas " + gasStations.size() + " gasolineras en fecha ");// + date);
+                        view.showStations(gasStations);
+                    }
+                }catch (Exception exception){
+                    view.showLoadError();
+                }
             }
         };
 
         repository.requestGasolineras(callBack, IDCCAAs.CANTABRIA.id);
     }
+
+    private void persistGasStationsOnLocalDB(List<Gasolinera> gasStations) {
+        IGasStationsDAO gasStationsDAO = view.getGasolinerasDAO();
+        gasStationsDAO.deleteAll();
+        for (Gasolinera gasStation : gasStations) {
+            gasStationsDAO.addGasStation(gasStation);
+        }
+        view.updateLocalDBDateRegister();
+    }
+
+    private List<Gasolinera> getGasStationsFromLocalDB(){
+        IGasStationsDAO gasStationsDAO = view.getGasolinerasDAO();
+        return gasStationsDAO.getAll();
+    }
+
 
     // Methods for Ordering story user
 
