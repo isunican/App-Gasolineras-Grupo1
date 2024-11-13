@@ -6,6 +6,7 @@ import es.unican.gasolineras.common.IFilter;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.OrderMethodsEnum;
 import es.unican.gasolineras.model.Gasolinera;
+import es.unican.gasolineras.model.InterestPoint;
 import es.unican.gasolineras.model.OrderByPrice;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 
@@ -287,7 +288,7 @@ public interface IMainContract {
          * The view is requested to open the point activity.
          * Only the Presenter should call this method
          */
-        public void showPointsActivity();
+        public void showPointsActivity(boolean deleteActual);
 
         /**
          * The view is requested to open the filters popup.
@@ -329,7 +330,7 @@ public interface IMainContract {
          * The view is requested to to update the filters seekbar progress.
          * Only the Presenter and View should call this method
          */
-        public void updateFiltersPopupSeekBarProgressMaxPrice(int progress);
+        public void updateFiltersPopupSeekBarProgressMaxPrice(int progress, float minPriceLimit, float maxPriceLimit);
 
         /**
          * The view is requested to to update the selection of a fuel type selector.
@@ -351,19 +352,22 @@ public interface IMainContract {
          * The view is requested to open the filters popup.
          * Only the Presenter should call this method
          */
-
         public void showOrderPopUp(int typeIndex, int methodIndex);
 
         /**
          * The view is requested to close the filters popup
          * Only the Presenter should call this method.
          */
-
         public void closeOrderPopUp();
 
         public String getConstantString(int id);
 
-
-
+        /**
+         * The view is requested to to show the interest point information.
+         * Only the Presenter should call this method
+         * @param ip the interest point
+         * @param loaded the number of gas stations in the interest point
+         */
+        public void showInterestPointInfo(InterestPoint ip, int loaded);
     }
 }

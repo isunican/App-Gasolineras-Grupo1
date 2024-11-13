@@ -4,6 +4,8 @@ package es.unican.gasolineras.model;
 
 import android.graphics.Color;
 import android.location.Location;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -19,7 +21,7 @@ import lombok.*;
 //@Setter
 
 @Entity
-public class InterestPoint {
+public class InterestPoint implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -228,8 +230,48 @@ public class InterestPoint {
      * @return true if is in the interest point or false if not.
      */
     public boolean isGasStationInRadius(Gasolinera g) {
+        if (g == null) return false;
         float distance = this.getLocation().distanceTo(g.getLocation());
         return distance <= (this.radius * 1000);
     }
+
+    protected InterestPoint(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        colorArgb = in.readInt();
+        latitude = in.readDouble();
+        longitude = in.readDouble();
+        radius = in.readDouble();
+        creationDate = new Date(in.readLong()); // Convierte long a Date
+        color = Color.valueOf(colorArgb); // Recrea el color
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(name);
+        dest.writeInt(colorArgb);
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
+        dest.writeDouble(radius);
+        dest.writeLong(creationDate.getTime()); // Convierte Date a long
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<InterestPoint> CREATOR = new Creator<InterestPoint>() {
+        @Override
+        public InterestPoint createFromParcel(Parcel in) {
+            return new InterestPoint(in);
+        }
+
+        @Override
+        public InterestPoint[] newArray(int size) {
+            return new InterestPoint[size];
+        }
+    };
 
 }

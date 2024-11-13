@@ -41,6 +41,12 @@ public interface IPointsContract {
          * @param newInterestPoint the new point of interest
          */
          void onAcceptNewPointOfInterestClicked(InterestPoint newInterestPoint);
+
+        /**
+         * When you click on a interest point to see its stations
+         * @param interestPoint the point of interest
+         */
+         void onPointOfInterestClicked(InterestPoint interestPoint);
     }
 
     /**
@@ -102,5 +108,11 @@ public interface IPointsContract {
          * Only the presenter should call this method
          */
          void showPointOfInterestPopUp();
+
+        /**
+         * The view is requested to open the main activity with a point of interest.
+         * @param selectedIP the point of interest
+         */
+        void launchMainActivityWith(InterestPoint selectedIP);
     }
 }

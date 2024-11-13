@@ -4,6 +4,7 @@ package es.unican.gasolineras.activities.main;
 
 import android.location.Location;
 import android.util.Log;
+import android.view.LayoutInflater;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,6 +57,12 @@ public class MainPresenter implements IMainContract.Presenter {
     int staticSeekBarProgress;
     private static final int SCALING_FACTOR = 100;
 
+    public MainPresenter(InterestPoint point) {
+        interestPoint = point;
+    }
+
+    public MainPresenter() { }
+
     // Orden by price:
     private OrderByPrice orderByPrice = new OrderByPrice();
     /**
@@ -69,7 +76,6 @@ public class MainPresenter implements IMainContract.Presenter {
         this.filter = new Filter();
         this.tempFilter = null;
         this.tempListSelection = null;
-        //this.gasStations = new ArrayList<>();
         load();
     }
 
@@ -92,7 +98,7 @@ public class MainPresenter implements IMainContract.Presenter {
 
     @Override
     public void onPointsClicked() {
-        view.showPointsActivity();
+        view.showPointsActivity(interestPoint != null);
     }
 
     private <E> List<Selection> getSelections(List<E> selections, E[] allValues) {
@@ -148,7 +154,7 @@ public class MainPresenter implements IMainContract.Presenter {
         view.updateFiltersPopupTextViewsMaxPrice(tempFilter.getMaxPrice() == Float.MAX_VALUE ? maxPriceLimit : tempFilter.getMaxPrice());
         // Actualizamos el seekbar.
         if (tempFilter.getMaxPrice() == Float.MAX_VALUE) {
-            view.updateFiltersPopupSeekBarProgressMaxPrice(Integer.parseInt(calculateSeekbarProgress()));
+            view.updateFiltersPopupSeekBarProgressMaxPrice(Integer.parseInt(calculateSeekbarProgress()), minPriceLimit, maxPriceLimit);
         }
 
     }
@@ -320,7 +326,7 @@ public class MainPresenter implements IMainContract.Presenter {
         float result = (tempFilter.getMaxPrice() - minPriceLimit) / (maxPriceLimit - minPriceLimit) * limitPercent;
         // conver the float to int
         int progress = (int) result;
-        view.updateFiltersPopupSeekBarProgressMaxPrice(progress);
+        view.updateFiltersPopupSeekBarProgressMaxPrice(progress, minPriceLimit, maxPriceLimit);
     }
 
 
@@ -495,20 +501,23 @@ public class MainPresenter implements IMainContract.Presenter {
 
         for (Gasolinera gasStation : gasStations) {
             double maxInTypes = Double.MIN_VALUE;
+            boolean valid = true;
             for (FuelTypeEnum t : listToIter) {
                 double price = gasStation.getPrecioPorTipo(t);
-                if (price != 0.0 && price > maxInTypes)
+                if (price == 0.0)
+                    valid = false;
+                else if (price > maxInTypes)
                     maxInTypes = price;
             }
-            if (maxInTypes != Double.MIN_VALUE && maxInTypes < minPrice)
+            if (valid && maxInTypes != Double.MIN_VALUE && maxInTypes < minPrice) {
                 minPrice = maxInTypes;
+            }
         }
         if (minPrice == Double.MAX_VALUE){
             minPrice = 0.0;
         }
         //round to two decimal places
         minPrice = Math.ceil(minPrice * 100.00) /100.00;
-        Log.d("DEBUGGING", String.format("Entra min con: %f, iterado por ", minPrice) + listToIter);
         return minPrice;
     }
 
@@ -522,6 +531,23 @@ public class MainPresenter implements IMainContract.Presenter {
         return tempListSelection;
     }
 
+    private void initialiceGasStationsList(List<Gasolinera> stations) {
+        if (interestPoint != null) {
+            Log.d("DEBUGGING", "Entra a filtrar el punto de interes");
+            stations = stations.stream()
+                    .filter(interestPoint::isGasStationInRadius)
+                    .collect(Collectors.toList());
+        }
+        initialGasStations = stations;
+        gasStations = stations;
+
+        applyFilters();
+        if (interestPoint != null) {
+            view.showInterestPointInfo(interestPoint, gasStations.size());
+        }
+        showGasStations();
+    }
+
     /**
      * Loads the gas stations from the repository, and sends them to the view
      */
@@ -532,16 +558,7 @@ public class MainPresenter implements IMainContract.Presenter {
 
             @Override
             public void onSuccess(List<Gasolinera> stations) {
-                if (interestPoint != null) {
-                    stations = stations.stream()
-                            .filter(interestPoint::isGasStationInRadius)
-                            .collect(Collectors.toList());
-                }
-                initialGasStations = stations;
-                gasStations = stations;
-
-                applyFilters();
-                showGasStations();
+                initialiceGasStationsList(stations);
             }
 
             @Override
