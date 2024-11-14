@@ -1,11 +1,13 @@
 package es.unican.gasolineras.activities.points;
 
+import android.content.Intent;
 import android.database.sqlite.SQLiteException;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import es.unican.gasolineras.activities.main.MainView;
 import es.unican.gasolineras.common.exceptions.LatitudInvalidaException;
 import es.unican.gasolineras.common.exceptions.LongitudInvalidaException;
 import es.unican.gasolineras.common.exceptions.RadioInvalidoException;
@@ -80,6 +82,14 @@ public class PointsPresenter implements IPointsContract.Presenter {
     @Override
     public void onConfirmDeletionClicked(InterestPoint selectedIP) {
         // TODO
+    }
+
+    /**
+     * @see IPointsContract.Presenter#onPointOfInterestClicked(InterestPoint interestPoint)
+     */
+    @Override
+    public void onPointOfInterestClicked(InterestPoint interestPoint) {
+        view.launchMainActivityWith(interestPoint);
     }
 
     /**

@@ -63,6 +63,13 @@ public interface IPointsContract {
          * @param selectedIP the point of interest to delete.
          */
         public void onConfirmDeletionClicked(InterestPoint selectedIP);
+
+        /**
+         * When you click on a interest point to see its stations
+         * @param interestPoint the point of interest
+         */
+         void onPointOfInterestClicked(InterestPoint interestPoint);
+
     }
 
     /**
@@ -142,5 +149,11 @@ public interface IPointsContract {
          * @param selectedIP the point of interest selected for deletion.
          */
         public void showDeleteConfirmationPopup(InterestPoint selectedIP);
+
+        /**
+         * The view is requested to open the main activity with a point of interest.
+         * @param selectedIP the point of interest
+         */
+        void launchMainActivityWith(InterestPoint selectedIP);
     }
 }

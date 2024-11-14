@@ -1,5 +1,7 @@
 package es.unican.gasolineras.model;
 
+import android.location.Location;
+
 import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
@@ -32,24 +34,17 @@ public class Gasolinera{
     @SerializedName("Municipio")                    protected String municipio;
     @SerializedName("Horario")                      protected String horario;
 
+    @SerializedName("Latitud")                      protected double latitud;
+    @SerializedName("Longitud (WGS84)")             protected double longitud;
 
     @SerializedName("Precio Gasoleo A")             protected double gasoleoA;
     @SerializedName("Precio Gasolina 95 E5")        protected double gasolina95E5;
-
-
-
-
 
     public BrandsEnum getBrand(){
         return BrandsEnum.fromString(rotulo);
 
     }
 
-
-
-
-
-    
     /**
      * Returns the summary price of a gas station.
      *
@@ -73,7 +68,16 @@ public class Gasolinera{
         }
     }
 
-
-
+    /**
+     * Returns the location of a gas station.
+     *
+     * @return the location.
+     */
+    public Location getLocation() {
+        Location l = new Location(String.format("Location of %s", this.rotulo));
+        l.setLatitude(this.latitud);
+        l.setLongitude(this.longitud);
+        return l;
+    }
 
 }

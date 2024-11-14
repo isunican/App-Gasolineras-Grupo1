@@ -1,6 +1,9 @@
 package es.unican.gasolineras.activities.main;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -11,7 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
@@ -20,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -28,6 +35,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import org.parceler.Parcels;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -40,6 +48,7 @@ import es.unican.gasolineras.common.LimitPricesEnum;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.OrderMethodsEnum;
 import es.unican.gasolineras.model.Gasolinera;
+import es.unican.gasolineras.model.InterestPoint;
 import es.unican.gasolineras.model.OrderByPrice;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 
@@ -79,9 +88,25 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Get the interest point
+        InterestPoint point = getIntent().getParcelableExtra("interestPoint");
+
+        // Set the correct tool bar
+        if (point == null) {
+            LinearLayout toolbarContent = findViewById(R.id.layoutToolbarIP);
+            toolbarContent.setVisibility(View.GONE);
+        } else {
+            ActionBar bar = Objects.requireNonNull(getSupportActionBar());
+            bar.setTitle("");
+        }
+
         // instantiate presenter and launch initial business logic
-        presenter = new MainPresenter();
+        if (point == null)
+            presenter = new MainPresenter();
+        else
+            presenter = new MainPresenter(point);
         presenter.init(this);
+
     }
 
     /**
@@ -206,12 +231,18 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
-     * @see IMainContract.View#showPointsActivity()
+     * @see IMainContract.View#showPointsActivity(boolean deleteActual)
      */
     @Override
-    public void showPointsActivity() {
+    public void showPointsActivity(boolean deleteActual) {
         Intent intent = new Intent(this, PointsView.class);
+        if (deleteActual) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        }
         startActivity(intent);
+        if (deleteActual) {
+            finish();
+        }
     }
 
 
@@ -226,7 +257,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
 
         // Muestra el PopupWindow en el centro de la pantalla
-        ConstraintLayout rootLayout = findViewById(R.id.main);
+        LinearLayout rootLayout = findViewById(R.id.main);
         popupWindow.showAtLocation(rootLayout, Gravity.CENTER, 0, 0);
     }
 
@@ -249,23 +280,14 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         brandSpinner.setOnClickListener(v -> {
             presenter.onFiltersPopUpBrandsSelected();
         });
-        // Buscar el SeekBar en el layout
-        SeekBar maxPriceSeekBar = popupView.findViewById(R.id.MaxPriceSeekBar);
-        // Establece el rango del seekbar
-        maxPriceSeekBar.setMax(Integer.parseInt(presenter.calculateSeekbarProgress()));
-
-        // Ajusta el texto de los TextView minPriceLabel y maxPriceLabel
-        minPriceLimit =  (float) presenter.getMinPrice();
-        maxPriceLimit =  (float) presenter.getMaxPrice();
-
-        TextView minPriceLabel = popupView.findViewById(R.id.minPriceLabel);
-        TextView maxPriceLabel = popupView.findViewById(R.id.maxPriceLabel);
-        minPriceLabel.setText(String.valueOf(minPriceLimit));
-        maxPriceLabel.setText(String.valueOf(maxPriceLimit));
 
         // Establece la barra de progreso del precio maximo con el valor almacenado en el filtro
         presenter.onFiltersPopUpMaxPriceSeekBarLoaded();
 
+        // Buscar el SeekBar en el layout
+        SeekBar maxPriceSeekBar = popupView.findViewById(R.id.MaxPriceSeekBar);
+        // Establece el rango del seekbar
+        maxPriceSeekBar.setMax(Integer.parseInt(presenter.calculateSeekbarProgress()));
 
         // Fija listener al SeekBar del precio maximo de gasolineras para obtener el valor decimal
         maxPriceSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -327,20 +349,29 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     /**
      * @see IMainContract.View#updateFiltersPopupTextViewsMaxPrice(float)
      */
+    @SuppressLint("DefaultLocale")
     @Override
     public void updateFiltersPopupTextViewsMaxPrice(float truncatedMaxPrice) {
         // Actualizamos el label que muestra el valor maximo actual
         TextView lbSelectedMaxPrice = popupView.findViewById(R.id.lbSelectedMaxPrice);
-        lbSelectedMaxPrice.setText(String.valueOf(truncatedMaxPrice));
+        lbSelectedMaxPrice.setText(String.format("%.2f", truncatedMaxPrice));
     }
 
     /**
-     * @see IMainContract.View#updateFiltersPopupSeekBarProgressMaxPrice(int)
+     * @see IMainContract.View#updateFiltersPopupSeekBarProgressMaxPrice(int progress, float minPriceLimit, float maxPriceLimit)
      */
     @Override
-    public void updateFiltersPopupSeekBarProgressMaxPrice(int progress) {
-        // Actualizamos el progress del SeekBar
+    public void updateFiltersPopupSeekBarProgressMaxPrice(int progress, float minPriceLimit, float maxPriceLimit) {
+        // Fijar los labels
+        TextView minPriceLabel = popupView.findViewById(R.id.minPriceLabel);
+        minPriceLabel.setText(String.valueOf(minPriceLimit));
+        TextView maxPriceLabel = popupView.findViewById(R.id.maxPriceLabel);
+        maxPriceLabel.setText(String.valueOf(maxPriceLimit));
+
+        // Buscar el SeekBar en el layout
         SeekBar maxPriceSeekBar = popupView.findViewById(R.id.MaxPriceSeekBar);
+
+        // Actualizamos el progress del SeekBar
         maxPriceSeekBar.setProgress(progress);
     }
 
@@ -515,5 +546,28 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
     public MainPresenter getMainPresenter() {
         return presenter;
+    }
+
+    /**
+     * @see IMainContract.View#showInterestPointInfo(InterestPoint ip, int loaded)
+     */
+    @SuppressLint("DefaultLocale")
+    @Override
+    public void showInterestPointInfo(InterestPoint ip, int loaded) {
+        // Create the bar
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View horizontalLayout = inflater.inflate(R.layout.activity_points_information, null, false);
+        FrameLayout placeholder = findViewById(R.id.interest_point_placeholder);
+        placeholder.addView(horizontalLayout);
+
+        // Set the values
+        TextView name = findViewById(R.id.ip_name_tv);
+        name.setText(ip.getName());
+        TextView radius = findViewById(R.id.ip_radius_tv);
+        radius.setText(String.format("Radio: %.1f km", ip.getRadius()));
+        TextView loadedTv = findViewById(R.id.ip_loaded_tv);
+        loadedTv.setText(String.format("Encontradas: %d", loaded));
+        ImageView img = findViewById(R.id.description_ip_image);
+        img.setImageTintList(ColorStateList.valueOf(Color.BLACK));
     }
 }

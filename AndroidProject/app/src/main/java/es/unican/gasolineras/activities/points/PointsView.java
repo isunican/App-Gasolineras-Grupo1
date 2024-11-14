@@ -1,25 +1,20 @@
 package es.unican.gasolineras.activities.points;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.InputFilter;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.List;
 
@@ -86,6 +81,10 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         ListView list = findViewById(R.id.lvPoints);
         PointsArrayAdapter adapter = new PointsArrayAdapter(this, points);
         list.setAdapter(adapter);
+        list.setOnItemClickListener((parent, view, position, id) -> {
+            InterestPoint point = (InterestPoint) parent.getItemAtPosition(position);
+            presenter.onPointOfInterestClicked(point);
+        });
     }
 
     /**
@@ -117,7 +116,9 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
     @Override
     public void showMainPage() {
         Intent intent = new Intent(this, MainView.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
+        finish();
     }
 
     /**
@@ -276,5 +277,12 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         Color color = Color.valueOf(colorArgb);
         btColorPicker.setTag(color);
         colorPickerDialog.cancel();
+    }
+
+    @Override
+    public void launchMainActivityWith(InterestPoint selectedIP) {
+        Intent intent = new Intent(this, MainView.class);
+        intent.putExtra("interestPoint", selectedIP); // Agrega un String
+        startActivity(intent);
     }
 }
