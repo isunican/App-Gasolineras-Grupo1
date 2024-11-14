@@ -2,6 +2,8 @@ package es.unican.gasolineras.activities.main;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -564,5 +567,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         radius.setText(String.format("Radio: %.1f km", ip.getRadius()));
         TextView loadedTv = findViewById(R.id.ip_loaded_tv);
         loadedTv.setText(String.format("Encontradas: %d", loaded));
+        ImageView img = findViewById(R.id.description_ip_image);
+        img.setImageTintList(ColorStateList.valueOf(Color.BLACK));
     }
 }
