@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -31,6 +32,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import org.parceler.Parcels;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -86,12 +88,22 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         // Get the interest point
         InterestPoint point = getIntent().getParcelableExtra("interestPoint");
 
+        // Set the correct tool bar
+        if (point == null) {
+            LinearLayout toolbarContent = findViewById(R.id.layoutToolbarIP);
+            toolbarContent.setVisibility(View.GONE);
+        } else {
+            ActionBar bar = Objects.requireNonNull(getSupportActionBar());
+            bar.setTitle("");
+        }
+
         // instantiate presenter and launch initial business logic
         if (point == null)
             presenter = new MainPresenter();
         else
             presenter = new MainPresenter(point);
         presenter.init(this);
+
     }
 
     /**

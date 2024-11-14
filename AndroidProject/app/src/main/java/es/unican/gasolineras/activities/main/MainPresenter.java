@@ -2,13 +2,8 @@ package es.unican.gasolineras.activities.main;
 
 
 
-import android.location.Location;
-import android.util.Log;
-import android.view.LayoutInflater;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -18,7 +13,6 @@ import es.unican.gasolineras.R;
 import es.unican.gasolineras.common.BrandsEnum;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.IFilter;
-import es.unican.gasolineras.common.LimitPricesEnum;
 import es.unican.gasolineras.common.OrderMethodsEnum;
 
 import es.unican.gasolineras.model.Filter;
@@ -533,7 +527,6 @@ public class MainPresenter implements IMainContract.Presenter {
 
     private void initialiceGasStationsList(List<Gasolinera> stations) {
         if (interestPoint != null) {
-            Log.d("DEBUGGING", "Entra a filtrar el punto de interes");
             stations = stations.stream()
                     .filter(interestPoint::isGasStationInRadius)
                     .collect(Collectors.toList());
