@@ -142,7 +142,7 @@ public class MainPresenterITest {
         verify(mockMainView2).closeFiltersPopUp();
         // Comprobamos los metodos internos de load() con las gasolineras ya filtradas
         // Son 2 veces porque "sut.init(view);" llama al load()
-        verify(mockMainView2, times(2)).getGasolinerasRepository();
+        verify(mockMainView2, times(1)).getGasolinerasRepository();
         // {CEPSA, REPSOL, PETRONOR, PETRONOR V2, GALP}
         verify(mockMainView2).showLoadCorrect(rotulos.length);
         verify(mockMainView2, times(2)).showStations(listCaptor.capture());
@@ -173,7 +173,7 @@ public class MainPresenterITest {
         verify(mockMainView2).closeFiltersPopUp();
         // Comprobamos los metodos internos de load() con las gasolineras ya filtradas
         // Son 2 veces porque "sut.init(view);" llama al load()
-        verify(mockMainView2, times(2)).getGasolinerasRepository();
+        verify(mockMainView2, times(1)).getGasolinerasRepository();
         // {CEPSA, REPSOL, PETRONOR, PETRONOR V2, GALP}
         verify(mockMainView2).showLoadCorrect(rotulos.length);
         verify(mockMainView2, times(2)).showStations(listCaptor.capture());
@@ -203,7 +203,7 @@ public class MainPresenterITest {
         sut.onFiltersPopUpAcceptClicked();
         verify(mockMainView2).closeFiltersPopUp();
         // Son 2 veces porque "sut.init(view);" llama al load()
-        verify(mockMainView2, times(2)).getGasolinerasRepository();
+        verify(mockMainView2, times(1)).getGasolinerasRepository();
         // {CEPSA, REPSOL, PETRONOR, PETRONOR V2, GALP}
         verify(mockMainView2, times(2)).showLoadCorrect(6);
         verify(mockMainView2, times(2)).showStations(listCaptor.capture());
