@@ -184,6 +184,13 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         Objects.requireNonNull(newPIDialog.getWindow()).setLayout(WRAP_CONTENT,WRAP_CONTENT);
     }
 
+    @Override
+    public void launchMainActivityWith(InterestPoint selectedIP) {
+        Intent intent = new Intent(this, MainView.class);
+        intent.putExtra("interestPoint", (CharSequence) selectedIP); // Agrega un String
+        startActivity(intent);
+    }
+
     /**
      * @see IPointsContract.View#showDeleteMode()
      */

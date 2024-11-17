@@ -43,6 +43,12 @@ public interface IPointsContract {
         public void onAcceptNewPointOfInterestClicked(InterestPoint newInterestPoint);
 
         /**
+         * When you click on a interest point to see its stations
+         * @param interestPoint the point of interest
+         */
+        public void onPointOfInterestClicked(InterestPoint interestPoint);
+
+        /**
          * When you click on the delete mode button, the view updates to support point of interest deletion.
          */
         public void onActivateDeleteModeClicked();
@@ -124,6 +130,12 @@ public interface IPointsContract {
          * Only the presenter should call this method
          */
         public void showPointOfInterestPopUp();
+
+        /**
+         * The view is requested to open the main activity with a point of interest.
+         * @param selectedIP the point of interest
+         */
+        public void launchMainActivityWith(InterestPoint selectedIP);
 
         /**
          * The view is requested to enter delete mode, shifting point information to reveal a trash icon for each item.

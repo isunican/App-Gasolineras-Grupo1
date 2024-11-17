@@ -61,6 +61,14 @@ public class PointsPresenter implements IPointsContract.Presenter {
     }
 
     /**
+     * @see IPointsContract.Presenter#onPointOfInterestClicked(InterestPoint interestPoint)
+     */
+    @Override
+    public void onPointOfInterestClicked(InterestPoint interestPoint) {
+        view.launchMainActivityWith(interestPoint);
+    }
+
+    /**
      * @see IPointsContract.Presenter#onActivateDeleteModeClicked()
      */
     @Override
