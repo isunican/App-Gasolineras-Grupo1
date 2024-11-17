@@ -23,7 +23,6 @@ public class PointsPresenter implements IPointsContract.Presenter {
     private List<InterestPoint> points;
     private InterestPointsDAO ddbb;
 
-
     /**
      * @see IPointsContract.Presenter#init(IPointsContract.View)
      */
@@ -41,7 +40,6 @@ public class PointsPresenter implements IPointsContract.Presenter {
     public void onHomeClicked() {
         view.showMainPage();
     }
-
 
     /**
      * @see IPointsContract.Presenter#onCreatePointOfInterestClicked()
@@ -62,24 +60,38 @@ public class PointsPresenter implements IPointsContract.Presenter {
         load();
     }
 
+    /**
+     * @see IPointsContract.Presenter#onActivateDeleteModeClicked()
+     */
     @Override
     public void onActivateDeleteModeClicked() {
-        // TODO
+        view.showDeleteMode();
     }
 
+    /**
+     * @see IPointsContract.Presenter#onCancelDeleteModeClicked()
+     */
     @Override
     public void onCancelDeleteModeClicked() {
-        // TODO
+        view.showNormalMode();
     }
 
+    /**
+     * @see IPointsContract.Presenter#onTrashIconClicked(int)
+     */
     @Override
-    public void onTrashIconClicked(InterestPoint selectedIP) {
-        // TODO
+    public void onTrashIconClicked(int selectedIP) {
+        view.showDeleteConfirmationPopup(selectedIP);
     }
 
+    /**
+     * @see IPointsContract.Presenter#onConfirmDeletionClicked(int)
+     */
     @Override
-    public void onConfirmDeletionClicked(InterestPoint selectedIP) {
-        // TODO
+    public void onConfirmDeletionClicked(int idSelectedPoint) {
+        InterestPoint removedPoint = ddbb.getMyInterestPointsDAO().getInterestPointById(idSelectedPoint);
+        ddbb.getMyInterestPointsDAO().deleteInterestPoint(removedPoint);
+        load();
     }
 
     /**
@@ -90,7 +102,7 @@ public class PointsPresenter implements IPointsContract.Presenter {
         points = ddbb.getMyInterestPointsDAO().getInterestPoints();
         } catch (SQLiteException e) {
             view.showLoadError();
-            points = new ArrayList<InterestPoint>();
+            points = new ArrayList<>();
         }
 
         points.sort(Comparator.comparing(InterestPoint::getCreationDate));

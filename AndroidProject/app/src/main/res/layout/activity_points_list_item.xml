@@ -22,68 +22,77 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        tools:text="Nombre"
         app:layout_constraintStart_toEndOf="@+id/ivLocation"
-        app:layout_constraintTop_toTopOf="@+id/ivLocation" />
+        app:layout_constraintTop_toTopOf="@+id/ivLocation"
+        tools:text="Nombre" />
 
-    <!-- TextView para las coordenadas de latitud -->
     <TextView
         android:id="@+id/tvLatitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        tools:text="Latitud"
         app:layout_constraintStart_toEndOf="@+id/ivLocation"
-        app:layout_constraintTop_toBottomOf="@+id/tvName" />
+        app:layout_constraintTop_toBottomOf="@+id/tvName"
+        tools:text="Latitud" />
 
-    <!-- TextView para separador de las coordenadas de latitud -->
     <TextView
         android:id="@+id/tvSeparator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
-        tools:text="-"
         app:layout_constraintStart_toEndOf="@+id/tvLatitude"
-        app:layout_constraintTop_toBottomOf="@+id/tvName" />
+        app:layout_constraintTop_toBottomOf="@+id/tvName"
+        tools:text="-" />
 
-    <!-- TextView para las coordenadas de logitud -->
     <TextView
         android:id="@+id/tvLongitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
-        tools:text="Longitud"
         app:layout_constraintStart_toEndOf="@+id/tvSeparator"
-        app:layout_constraintTop_toBottomOf="@+id/tvName" />
+        app:layout_constraintTop_toBottomOf="@+id/tvName"
+        tools:text="Longitud" />
 
-    <!-- Label de Radio -->
     <TextView
         android:id="@+id/tvRadiusLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        tools:text="@string/point_radio"
+        app:layout_constraintStart_toEndOf="@+id/ivLocation"
         app:layout_constraintTop_toBottomOf="@+id/tvLatitude"
-        app:layout_constraintStart_toEndOf="@+id/ivLocation" />
+        tools:text="@string/point_radio" />
 
-    <!-- Valor de Radio -->
     <TextView
         android:id="@+id/tvRadiusValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
-        tools:text="0.0"
+        app:layout_constraintStart_toEndOf="@+id/tvRadiusLabel"
         app:layout_constraintTop_toBottomOf="@+id/tvLatitude"
-        app:layout_constraintStart_toEndOf="@+id/tvRadiusLabel" />
+        tools:text="0.0" />
 
-    <!-- Unidades de Radio -->
     <TextView
         android:id="@+id/tvRadiusUnits"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
-        tools:text="km"
+        app:layout_constraintStart_toEndOf="@+id/tvRadiusValue"
         app:layout_constraintTop_toBottomOf="@+id/tvLatitude"
-        app:layout_constraintStart_toEndOf="@+id/tvRadiusValue" />
+        tools:text="km" />
+
+    <ImageView
+        android:id="@+id/ivTrash"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:contentDescription="@string/point_trash_description"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/ivLocation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ivLocation"
+        app:layout_constraintVertical_bias="1.0"
+        tools:ignore="ImageContrastCheck"
+        tools:srcCompat="@drawable/trash" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
