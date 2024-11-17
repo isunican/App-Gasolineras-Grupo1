@@ -1,10 +1,12 @@
 package es.unican.gasolineras.activities.main;
 
+import java.util.Date;
 import java.util.List;
 
 import es.unican.gasolineras.common.IFilter;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.OrderMethodsEnum;
+import es.unican.gasolineras.common.database.IGasStationsDAO;
 import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.model.InterestPoint;
 import es.unican.gasolineras.model.OrderByPrice;
@@ -259,6 +261,14 @@ public interface IMainContract {
         public void showLoadCorrect(int stations);
 
         /**
+         * The view is requested to display a notification indicating  that the gas
+         * stations were loaded correctly and the date of the saved data.
+         * Only the Presenter should call this method
+         * @param stations
+         */
+        void showLoadCorrectFromLocalDB(int stations);
+
+        /**
          * The view is requested to display a notificacion indicating that the gas
          * stations were not loaded correctly.
          * Only the Presenter should call this method
@@ -369,5 +379,24 @@ public interface IMainContract {
          * @param loaded the number of gas stations in the interest point
          */
         public void showInterestPointInfo(InterestPoint ip, int loaded);
+        /**
+         * Returns a GasStationsDAO that can be called by the Presenter to retrieve or save gas stations.
+         * Only the Presenter should call this method
+         * @return instance of gasolinerasDAO for data extracion
+         */
+        IGasStationsDAO getGasolinerasDAO();
+
+        /**
+         *  The view is requested to update de Preference that stores
+         *  the date when the local database was updated
+         */
+        void updateLocalDBDateRegister();
+
+        /**
+         * The view is request to retrieve the date when the local database
+         * was updated
+         * @return date formatted as String when local database was updated
+         */
+        String getLocalDBDateRegister();
     }
 }

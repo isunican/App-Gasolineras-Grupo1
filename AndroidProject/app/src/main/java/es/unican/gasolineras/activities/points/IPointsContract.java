@@ -2,8 +2,8 @@ package es.unican.gasolineras.activities.points;
 
 import java.util.List;
 
+import es.unican.gasolineras.common.database.IInterestPointsDAO;
 import es.unican.gasolineras.model.InterestPoint;
-import es.unican.gasolineras.roomDAO.InterestPointsDAO;
 
 /**
  * The Presenter-View contract for the Points activity.
@@ -84,10 +84,10 @@ public interface IPointsContract {
         public void init();
 
         /**
-         * Get the instance of the DDBB.
-         * @return the instance of the DDBB.
+         * Get the instance of the DAO for InterestPoints.
+         * @return the instance of the DAO for InterestPoints.
          */
-        public InterestPointsDAO getPointsDao();
+        public IInterestPointsDAO getPointsDao();
 
         /**
          * The view is requested to display the given list of points.

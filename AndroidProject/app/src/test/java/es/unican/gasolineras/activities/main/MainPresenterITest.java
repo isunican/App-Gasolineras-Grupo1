@@ -2,6 +2,8 @@ package es.unican.gasolineras.activities.main;
 
 import android.content.Context;
 
+import androidx.room.Room;
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.Assert;
@@ -24,6 +26,8 @@ import java.util.List;
 
 import es.unican.gasolineras.R;
 import es.unican.gasolineras.common.FuelTypeEnum;
+import es.unican.gasolineras.common.database.IGasStationsDAO;
+import es.unican.gasolineras.common.database.MyFuelDatabase;
 import es.unican.gasolineras.model.OrderByPrice;
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,6 +46,7 @@ public class MainPresenterITest {
     final IGasolinerasRepository repository2 = MockRepositories.getTestRepository(context, R.raw.gasolineras_test_505739);
     final IGasolinerasRepository repository3 = MockRepositories.getTestRepository(context, R.raw.gasolineras_filtro_tipo_test);
 
+
     @Mock
     private IMainContract.View view;
     @Mock
@@ -50,18 +55,26 @@ public class MainPresenterITest {
     private IMainContract.View mockMainView2;
 
     private IMainContract.Presenter sut;
-
     @Captor
     ArgumentCaptor<List<Gasolinera>> listCaptor;
 
     @Before
     public void setUp() {
+        MyFuelDatabase db = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(),MyFuelDatabase.class)
+                .allowMainThreadQueries().build();
+        IGasStationsDAO gasStationsDAO = db.getGasStationsDAO();
+
         MockitoAnnotations.openMocks(this);
         when(view.getGasolinerasRepository()).thenReturn(repository);
         when(mockMainView.getGasolinerasRepository()).thenReturn(repository2);
         when(mockMainView2.getGasolinerasRepository()).thenReturn(repository3);
+        when(view.getGasolinerasDAO()).thenReturn(gasStationsDAO);
+        when(mockMainView.getGasolinerasDAO()).thenReturn(gasStationsDAO);
+        when(mockMainView2.getGasolinerasDAO()).thenReturn(gasStationsDAO);
         sut = new MainPresenter();
         sut.init(view);
+
+
     }
 
     @Test

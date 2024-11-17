@@ -27,11 +27,12 @@ import es.unican.gasolineras.activities.main.MainView;
 import es.unican.gasolineras.activities.points.inputFilters.LatitudInputFilter;
 import es.unican.gasolineras.activities.points.inputFilters.LongitudInputFilter;
 import es.unican.gasolineras.activities.points.inputFilters.RadiusInputFilter;
+import es.unican.gasolineras.common.database.IInterestPointsDAO;
+import es.unican.gasolineras.common.database.MyFuelDatabase;
 import es.unican.gasolineras.common.exceptions.LatitudInvalidaException;
 import es.unican.gasolineras.common.exceptions.LongitudInvalidaException;
 import es.unican.gasolineras.common.exceptions.RadioInvalidoException;
 import es.unican.gasolineras.model.InterestPoint;
-import es.unican.gasolineras.roomDAO.InterestPointsDAO;
 
 /**
  * The points view of the application. It shows a list of interest points.
@@ -73,8 +74,8 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
      * @see IPointsContract.View#getPointsDao()
      */
     @Override
-    public InterestPointsDAO getPointsDao() {
-        return InterestPointsDAO.getInstance(this);
+    public IInterestPointsDAO getPointsDao() {
+        return MyFuelDatabase.getInstance(this).getInterestPointsDAO();
     }
 
     /**

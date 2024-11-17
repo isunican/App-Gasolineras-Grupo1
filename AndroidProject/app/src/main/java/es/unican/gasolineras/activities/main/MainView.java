@@ -1,9 +1,11 @@
 package es.unican.gasolineras.activities.main;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -34,6 +36,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import org.parceler.Parcels;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -45,9 +48,10 @@ import es.unican.gasolineras.R;
 import es.unican.gasolineras.activities.info.InfoView;
 import es.unican.gasolineras.activities.details.DetailsView;
 import es.unican.gasolineras.activities.points.PointsView;
-import es.unican.gasolineras.common.LimitPricesEnum;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.OrderMethodsEnum;
+import es.unican.gasolineras.common.database.IGasStationsDAO;
+import es.unican.gasolineras.common.database.MyFuelDatabase;
 import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.model.InterestPoint;
 import es.unican.gasolineras.model.OrderByPrice;
@@ -74,6 +78,9 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     /** The repository to access the data. This is automatically injected by Hilt in this class */
     @Inject
     IGasolinerasRepository repository;
+
+    /** dataStore object to save and retrieve the date of the gasStations Version */
+    private SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,6 +172,8 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
             Gasolinera station = (Gasolinera) parent.getItemAtPosition(position);
             presenter.onStationClicked(station);
         });
+
+        sharedPref = this.getPreferences(Context.MODE_PRIVATE);
     }
 
     /**
@@ -193,6 +202,15 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
      */
     @Override
     public void showLoadCorrect(int stations) {
+        Toast.makeText(this, "Cargadas " + stations + " gasolineras", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * @see IMainContract.View#showLoadCorrectFromLocalDB(int)
+     * @param stations
+     */
+    @Override
+    public void showLoadCorrectFromLocalDB(int stations) {
         Toast.makeText(this, "Cargadas " + stations + " gasolineras", Toast.LENGTH_SHORT).show();
     }
 
@@ -526,7 +544,6 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         cancelButton.setOnClickListener(v -> { presenter.onOrderPopUpCancelClicked();
         });
 
-        // TODO: Hacer el clear de los filtros.
         ImageButton clearButton = popupView.findViewById(R.id.bt_clear_order);
         clearButton.setOnClickListener(v -> { presenter.onOrderPopUpClearClicked();
         });
@@ -543,6 +560,26 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
     public String getConstantString(int id) {
         return getString(id);
+    }
+
+    /**
+     * @see IMainContract.View#getGasolinerasDAO()
+     */
+    @Override
+    public IGasStationsDAO getGasolinerasDAO() {
+        return MyFuelDatabase.getInstance(this.getBaseContext()).getGasStationsDAO();
+    }
+
+    @Override
+    public void updateLocalDBDateRegister() {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("DBUpdatedDate",LocalDate.now().toString());
+        editor.apply();
+    }
+
+    @Override
+    public String getLocalDBDateRegister() {
+        return sharedPref.getString("DBUpdatedDate","");
     }
 
     public MainPresenter getMainPresenter() {
