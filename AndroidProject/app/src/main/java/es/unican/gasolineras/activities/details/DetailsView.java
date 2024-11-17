@@ -2,6 +2,7 @@ package es.unican.gasolineras.activities.details;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -56,10 +57,21 @@ public class DetailsView extends AppCompatActivity {
         // Get Gas Station from the intent that triggered this activity
         Gasolinera gasolinera = Parcels.unwrap(getIntent().getExtras().getParcelable(INTENT_STATION));
 
-        // Set logo
-        @SuppressLint("DiscouragedApi") int imageID =
-                getResources().getIdentifier("generic", "drawable", getPackageName());
-        ivRotulo.setImageResource(imageID);
+        //Obtaining the name for searching the picture
+        String rotulo = gasolinera.getRotulo().toLowerCase();
+        int imageID = getResources()
+                .getIdentifier(rotulo, "drawable", getPackageName());
+
+        // Si el rotulo son sólo numeros, el método getIdentifier simplemente devuelve
+        // como imageID esos números, pero eso va a fallar porque no tendré ningún recurso
+        // que coincida con esos números
+        if (imageID == 0 || TextUtils.isDigitsOnly(rotulo)) {
+            imageID = getResources().getIdentifier("generic", "drawable", getPackageName());
+        }
+
+        if (imageID != 0) {
+            ivRotulo.setImageResource(imageID);
+        }
 
         // Set Texts
         tvRotulo.setText(gasolinera.getRotulo());
