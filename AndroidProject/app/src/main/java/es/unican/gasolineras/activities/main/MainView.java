@@ -38,6 +38,7 @@ import org.parceler.Parcels;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -372,7 +373,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     public void updateFiltersPopupTextViewsMaxPrice(float truncatedMaxPrice) {
         // Actualizamos el label que muestra el valor maximo actual
         TextView lbSelectedMaxPrice = popupView.findViewById(R.id.lbSelectedMaxPrice);
-        lbSelectedMaxPrice.setText(String.format("%.2f", truncatedMaxPrice));
+        lbSelectedMaxPrice.setText(String.format(Locale.US, "%.2f", truncatedMaxPrice));
     }
 
     /**
