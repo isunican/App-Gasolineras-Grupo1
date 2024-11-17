@@ -35,8 +35,10 @@
     <string name="point_add_button">Añadir</string>
     <string name="point_sort_generic_description">Ordenar</string>
     <string name="point_remove_button">Eliminar</string>
+    <string name="point_exit_delete_mode_button">Salir del modo de eliminación</string>
     <!-- Item -->
     <string name="point_location_description">Localizar</string>
+    <string name="point_trash_description">Basura</string>
     <string name="point_radio">Radio:</string>
     <string name="back_home">MenuPuntos</string>
     <string name="selector_de_color">Selector de color</string>
@@ -47,5 +49,10 @@
     <string name="color">Color</string>
     <string name="_0_0">0.0</string>
     <string name="nombre">Nombre</string>
+    <!-- Confirmation popup -->
+    <string name="point_confirmation_title">Eliminar punto</string>
+    <string name="point_confirmation_description">¿Esta seguro de que desea eliminar el punto de interes seleccionado?</string>
+    <string name="point_confirmation_ok_button">Confirmar</string>
+    <string name="point_confirmation_cancel_button">Cancelar</string>
 
 </resources>

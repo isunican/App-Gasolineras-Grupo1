@@ -54,22 +54,15 @@ public interface IPointsContract {
 
         /**
          * When you click on the trash icon of a point of interest, a popup requests confirmation for deletion.
-         * @param selectedIP the selected point of interest to delete.
+         * @param idSelectedPoint the ID in the DDBB of the point of interest to delete.
          */
-        public void onTrashIconClicked(InterestPoint selectedIP);
+        public void onTrashIconClicked(int idSelectedPoint);
 
         /**
          * When you click on the confirm delete button in the popup, the point of interest is deleted.
-         * @param selectedIP the point of interest to delete.
+         * @param idSelectedPoint the ID in the DDBB of the point of interest to delete.
          */
-        public void onConfirmDeletionClicked(InterestPoint selectedIP);
-
-        /**
-         * When you click on a interest point to see its stations
-         * @param interestPoint the point of interest
-         */
-         void onPointOfInterestClicked(InterestPoint interestPoint);
-
+        public void onConfirmDeletionClicked(int idSelectedPoint);
     }
 
     /**
@@ -146,14 +139,8 @@ public interface IPointsContract {
         /**
          * The view is requested to display a popup to confirm the deletion of a selected point of interest.
          * This method notifies the presenter only if deletion is confirmed.
-         * @param selectedIP the point of interest selected for deletion.
+         * @param idSelectedPoint the ID in the DDBB of the point of interest to delete.
          */
-        public void showDeleteConfirmationPopup(InterestPoint selectedIP);
-
-        /**
-         * The view is requested to open the main activity with a point of interest.
-         * @param selectedIP the point of interest
-         */
-        void launchMainActivityWith(InterestPoint selectedIP);
+        public void showDeleteConfirmationPopup(int idSelectedPoint);
     }
 }

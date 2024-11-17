@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -118,6 +119,23 @@ public class PointsArrayAdapter extends BaseAdapter {
             double radius = point.getRadius();
             radius = Math.round(radius * 10.0) / 10.0;    // Formato para 1 decimal
             tv.setText(String.valueOf(radius));
+        }
+
+        // Delete button
+        {
+            ImageView iv = convertView.findViewById(R.id.ivTrash);
+
+            // Obtén el Drawable del vector
+            Drawable drawable = Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.trash)).mutate();
+
+            // Usa DrawableCompat para garantizar compatibilidad con versiones anteriores
+            Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
+
+            // Establecemos un tag a modo de ID de la DDBB del PI para poder manejarlo más facil
+            iv.setTag(point.getId());
+
+            // Asigna el Drawable al ImageView
+            iv.setImageDrawable(wrappedDrawable);
         }
 
         return convertView;

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.List;
+import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import es.unican.gasolineras.R;
@@ -60,9 +62,11 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
     public void init() {
         // initialize on click listeners
         ImageView homeButton = findViewById(R.id.homeiconbutton);
+        Button addButton = findViewById(R.id.btn_add);
+        Button deleteButton = findViewById(R.id.btn_delete);
         homeButton.setOnClickListener(v -> presenter.onHomeClicked());
-        this.findViewById(R.id.btn_add).setOnClickListener(v -> presenter.onCreatePointOfInterestClicked());
-
+        addButton.setOnClickListener(v -> presenter.onCreatePointOfInterestClicked());
+        deleteButton.setOnClickListener(v -> presenter.onActivateDeleteModeClicked());
     }
 
     /**
@@ -183,22 +187,110 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
 
         newPIDialog.show();
         newPIDialog.setCancelable(false);
-        newPIDialog.getWindow().setLayout(WRAP_CONTENT,WRAP_CONTENT);
+        Objects.requireNonNull(newPIDialog.getWindow()).setLayout(WRAP_CONTENT,WRAP_CONTENT);
     }
 
+    /**
+     * @see IPointsContract.View#showDeleteMode()
+     */
     @Override
     public void showDeleteMode() {
-        // TODO
+        // Establecer los elementos adicionales en "GONE" (btn_add, img_center, btn_delete)
+        if (findViewById(R.id.btn_add) != null) {
+            findViewById(R.id.btn_add).setVisibility(View.GONE);
+        }
+        if (findViewById(R.id.img_center) != null) {
+            findViewById(R.id.img_center).setVisibility(View.GONE);
+        }
+        if (findViewById(R.id.btn_delete) != null) {
+            findViewById(R.id.btn_delete).setVisibility(View.GONE);
+        }
+
+        if (findViewById(R.id.btn_exit_delete_mode) != null) {
+            // Establece el elemento en "VISIBLE" (btn_exit_delete_mode)
+            findViewById(R.id.btn_exit_delete_mode).setVisibility(View.VISIBLE);
+
+            // Configurar el listener para el botón de salir del modo de eliminación
+            findViewById(R.id.btn_exit_delete_mode).setOnClickListener(v -> presenter.onCancelDeleteModeClicked());
+        }
+
+        // Recorre los puntos de la lista
+        ListView lvPoints = findViewById(R.id.lvPoints);
+        for (int i = 0; i < lvPoints.getChildCount(); i++) {
+            View child = lvPoints.getChildAt(i);
+            ImageView trash = child.findViewById(R.id.ivTrash);
+
+            // Verifica si el elemento hijo tiene el ID ivTrash
+            if (trash != null) {
+                // Hacer visible el icono de la papelera (ivTrash)
+                trash.setVisibility(View.VISIBLE);
+
+                // Configurar el listener para el icono de la papelera (ivTrash)
+                // Le pasamos como parametro el ID de la DDBB del elemento seleccionado
+                trash.setOnClickListener(v -> presenter.onTrashIconClicked((int)trash.getTag()));
+            }
+        }
     }
 
+    /**
+     * @see IPointsContract.View#showNormalMode()
+     */
     @Override
     public void showNormalMode() {
-        // TODO
+        // Establecer los elementos adicionales en "VISIBLE" (btn_add, img_center, btn_delete)
+        if (findViewById(R.id.btn_add) != null) {
+            findViewById(R.id.btn_add).setVisibility(View.VISIBLE);
+        }
+        if (findViewById(R.id.img_center) != null) {
+            findViewById(R.id.img_center).setVisibility(View.VISIBLE);
+        }
+        if (findViewById(R.id.btn_delete) != null) {
+            findViewById(R.id.btn_delete).setVisibility(View.VISIBLE);
+        }
+
+        if (findViewById(R.id.btn_exit_delete_mode) != null) {
+            // Establecer el elemento en "GONE" (btn_exit_delete_mode)
+            findViewById(R.id.btn_exit_delete_mode).setVisibility(View.GONE);
+        }
+
+        // Recorre los puntos de la lista
+        ListView lvPoints = findViewById(R.id.lvPoints);
+        for (int i = 0; i < lvPoints.getChildCount(); i++) {
+            View child = lvPoints.getChildAt(i);
+            ImageView trash = child.findViewById(R.id.ivTrash);
+
+            // Verifica si el elemento hijo tiene el ID ivTrash
+            if (trash != null) {
+                // Ocultar el icono de la papelera (ivTrash)
+                trash.setVisibility(View.GONE);
+            }
+        }
     }
 
+    /**
+     * @see IPointsContract.View#showDeleteConfirmationPopup(int)
+     */
     @Override
-    public void showDeleteConfirmationPopup(InterestPoint selectedIP) {
-        // TODO
+    public void showDeleteConfirmationPopup(int selectedIP) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // Configurar el botón positivo (OK) para confirmar la eliminación
+        builder.setPositiveButton(R.string.point_confirmation_ok_button,
+                (dialog, id) -> presenter.onConfirmDeletionClicked(selectedIP));
+
+        // Configurar el botón negativo (Cancelar) para cerrar el diálogo
+        builder.setNegativeButton(R.string.point_confirmation_cancel_button, (dialog, id) -> {} );
+
+        // Establecer el título del diálogo
+        builder.setTitle(R.string.point_confirmation_title);
+
+        // Establecer la descripción del diálogo
+        builder.setMessage(R.string.point_confirmation_description);
+
+        // Crear y mostrar el AlertDialog
+        AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);  // Evita que el diálogo se cierre al hacer clic fuera de él
+        dialog.show();
     }
 
     /**
