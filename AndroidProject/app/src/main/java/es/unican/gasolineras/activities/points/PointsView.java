@@ -82,6 +82,10 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         ListView list = findViewById(R.id.lvPoints);
         PointsArrayAdapter adapter = new PointsArrayAdapter(this, points);
         list.setAdapter(adapter);
+        list.setOnItemClickListener((parent, view, position, id) -> {
+            InterestPoint point = (InterestPoint) parent.getItemAtPosition(position);
+            presenter.onPointOfInterestClicked(point);
+        });
     }
 
     /**
@@ -113,7 +117,9 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
     @Override
     public void showMainPage() {
         Intent intent = new Intent(this, MainView.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
+        finish();
     }
 
     /**
@@ -257,5 +263,12 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         Color color = Color.valueOf(colorArgb);
         btColorPicker.setTag(color);
         colorPickerDialog.cancel();
+    }
+
+    @Override
+    public void launchMainActivityWith(InterestPoint selectedIP) {
+        Intent intent = new Intent(this, MainView.class);
+        intent.putExtra("interestPoint", selectedIP); // Agrega un String
+        startActivity(intent);
     }
 }

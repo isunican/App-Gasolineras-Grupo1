@@ -3,6 +3,7 @@ package es.unican.gasolineras.model;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import android.location.Location;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -38,12 +39,14 @@ public class Gasolinera{
     @SerializedName("Precio Gasoleo A")             private double gasoleoA;
     @SerializedName("Precio Gasolina 95 E5")        private double gasolina95E5;
 
+    @SerializedName("Latitud")                      private double latitud;
+    @SerializedName("Longitud (WGS84)")             private double longitud;
+
     public Gasolinera() {
         if(id == null){
             id ="";
         }
     }
-
 
     @NonNull
     public String getId() {
@@ -110,12 +113,18 @@ public class Gasolinera{
         this.gasolina95E5 = gasolina95E5;
     }
 
+    public double getLatitud() { return latitud; }
+
+    public void setLatitud(double latitud) {  this.latitud = latitud;}
+
+    public double getLongitud() { return longitud; }
+
+    public void setLongitud(double longitud) {  this.longitud = longitud; }
 
     public BrandsEnum getBrand(){
         return BrandsEnum.fromString(rotulo);
 
     }
-    
     /**
      * Returns the summary price of a gas station.
      * The summary price is a weighted average of the gas valid prices of gasoline and diesel,
@@ -138,7 +147,16 @@ public class Gasolinera{
         }
     }
 
-
-
+    /**
+     * Returns the location of a gas station.
+     *
+     * @return the location.
+     */
+    public Location getLocation() {
+        Location l = new Location(String.format("Location of %s", this.rotulo));
+        l.setLatitude(this.latitud);
+        l.setLongitude(this.longitud);
+        return l;
+    }
 
 }

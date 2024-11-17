@@ -2,6 +2,8 @@ package es.unican.gasolineras.activities.main;
 
 import android.content.Context;
 
+import androidx.room.Room;
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.Assert;
@@ -24,6 +26,8 @@ import java.util.List;
 
 import es.unican.gasolineras.R;
 import es.unican.gasolineras.common.FuelTypeEnum;
+import es.unican.gasolineras.common.database.IGasStationsDAO;
+import es.unican.gasolineras.common.database.MyFuelDatabase;
 import es.unican.gasolineras.model.OrderByPrice;
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,6 +46,7 @@ public class MainPresenterITest {
     final IGasolinerasRepository repository2 = MockRepositories.getTestRepository(context, R.raw.gasolineras_test_505739);
     final IGasolinerasRepository repository3 = MockRepositories.getTestRepository(context, R.raw.gasolineras_filtro_tipo_test);
 
+
     @Mock
     private IMainContract.View view;
     @Mock
@@ -50,18 +55,26 @@ public class MainPresenterITest {
     private IMainContract.View mockMainView2;
 
     private IMainContract.Presenter sut;
-
     @Captor
     ArgumentCaptor<List<Gasolinera>> listCaptor;
 
     @Before
     public void setUp() {
+        MyFuelDatabase db = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(),MyFuelDatabase.class)
+                .allowMainThreadQueries().build();
+        IGasStationsDAO gasStationsDAO = db.getGasStationsDAO();
+
         MockitoAnnotations.openMocks(this);
         when(view.getGasolinerasRepository()).thenReturn(repository);
         when(mockMainView.getGasolinerasRepository()).thenReturn(repository2);
         when(mockMainView2.getGasolinerasRepository()).thenReturn(repository3);
+        when(view.getGasolinerasDAO()).thenReturn(gasStationsDAO);
+        when(mockMainView.getGasolinerasDAO()).thenReturn(gasStationsDAO);
+        when(mockMainView2.getGasolinerasDAO()).thenReturn(gasStationsDAO);
         sut = new MainPresenter();
         sut.init(view);
+
+
     }
 
     @Test
@@ -142,7 +155,7 @@ public class MainPresenterITest {
         verify(mockMainView2).closeFiltersPopUp();
         // Comprobamos los metodos internos de load() con las gasolineras ya filtradas
         // Son 2 veces porque "sut.init(view);" llama al load()
-        verify(mockMainView2, times(2)).getGasolinerasRepository();
+        verify(mockMainView2, times(1)).getGasolinerasRepository();
         // {CEPSA, REPSOL, PETRONOR, PETRONOR V2, GALP}
         verify(mockMainView2).showLoadCorrect(rotulos.length);
         verify(mockMainView2, times(2)).showStations(listCaptor.capture());
@@ -173,7 +186,7 @@ public class MainPresenterITest {
         verify(mockMainView2).closeFiltersPopUp();
         // Comprobamos los metodos internos de load() con las gasolineras ya filtradas
         // Son 2 veces porque "sut.init(view);" llama al load()
-        verify(mockMainView2, times(2)).getGasolinerasRepository();
+        verify(mockMainView2, times(1)).getGasolinerasRepository();
         // {CEPSA, REPSOL, PETRONOR, PETRONOR V2, GALP}
         verify(mockMainView2).showLoadCorrect(rotulos.length);
         verify(mockMainView2, times(2)).showStations(listCaptor.capture());
@@ -203,7 +216,7 @@ public class MainPresenterITest {
         sut.onFiltersPopUpAcceptClicked();
         verify(mockMainView2).closeFiltersPopUp();
         // Son 2 veces porque "sut.init(view);" llama al load()
-        verify(mockMainView2, times(2)).getGasolinerasRepository();
+        verify(mockMainView2, times(1)).getGasolinerasRepository();
         // {CEPSA, REPSOL, PETRONOR, PETRONOR V2, GALP}
         verify(mockMainView2, times(2)).showLoadCorrect(6);
         verify(mockMainView2, times(2)).showStations(listCaptor.capture());

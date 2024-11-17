@@ -28,6 +28,7 @@ import androidx.test.core.app.ApplicationProvider;
 import es.unican.gasolineras.R;
 import es.unican.gasolineras.common.BrandsEnum;
 import es.unican.gasolineras.common.IFilter;
+import es.unican.gasolineras.common.database.IGasStationsDAO;
 import es.unican.gasolineras.model.Filter;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 
@@ -39,6 +40,9 @@ public class MainPresenterTest {
     private IMainContract.View mockView;
     @Mock
     private List<Selection> mockTempListSelection;
+
+    @Mock
+    private IGasStationsDAO mockGasStationsDAO;
 
     @Mock
     private List<Selection> mockTempListType;
@@ -55,6 +59,7 @@ public class MainPresenterTest {
         repository = getTestRepository(context, R.raw.gasolineras_ccaa_06);
 
         when(mockView.getGasolinerasRepository()).thenReturn(repository);
+        when(mockView.getGasolinerasDAO()).thenReturn(mockGasStationsDAO);
         when(mockView.getConstantString(R.string.all_selections)).thenReturn("Todos");
 
         presenter.init(mockView);
