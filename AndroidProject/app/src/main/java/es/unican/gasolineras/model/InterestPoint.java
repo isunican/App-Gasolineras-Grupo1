@@ -14,6 +14,7 @@ import androidx.room.PrimaryKey;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 import lombok.*;
 
@@ -273,5 +274,13 @@ public class InterestPoint implements Parcelable {
             return new InterestPoint[size];
         }
     };
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InterestPoint that = (InterestPoint) o;
+        return id == that.id && colorArgb == that.colorArgb && Double.compare(latitude, that.latitude) == 0 && Double.compare(longitude, that.longitude) == 0 && Double.compare(radius, that.radius) == 0 && Objects.equals(name, that.name) && Objects.equals(creationDate, that.creationDate) && Objects.equals(color, that.color);
+    }
 
 }
