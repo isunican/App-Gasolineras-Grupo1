@@ -43,7 +43,7 @@
     <string name="latitud">Latitud</string>
     <string name="latitud_hint">00.0000</string>
     <string name="longitud">Longitud</string>
-    <string name="radio">Radio</string>
+    <string name="radio">Radio (Km)</string>
     <string name="color">Color</string>
     <string name="_0_0">0.0</string>
     <string name="nombre">Nombre</string>
