@@ -3,9 +3,9 @@ package es.unican.gasolineras.activities.main;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -32,7 +32,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import org.parceler.Parcels;
 
@@ -45,8 +44,8 @@ import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import es.unican.gasolineras.R;
-import es.unican.gasolineras.activities.info.InfoView;
 import es.unican.gasolineras.activities.details.DetailsView;
+import es.unican.gasolineras.activities.info.InfoView;
 import es.unican.gasolineras.activities.points.PointsView;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.OrderMethodsEnum;
@@ -54,7 +53,6 @@ import es.unican.gasolineras.common.database.IGasStationsDAO;
 import es.unican.gasolineras.common.database.MyFuelDatabase;
 import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.model.InterestPoint;
-import es.unican.gasolineras.model.OrderByPrice;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 
 /**
@@ -288,15 +286,11 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
         // Fijar listener al TextView del tipo de combustible
         TextView typeSpinner = popupView.findViewById(R.id.typeSpinner);
-        typeSpinner.setOnClickListener(v -> {
-            presenter.onFiltersPopUpFuelTypesSelected();
-        });
+        typeSpinner.setOnClickListener(v -> presenter.onFiltersPopUpFuelTypesSelected());
 
         // Fijar listener al TextView de la marca de gasolineras
         TextView brandSpinner = popupView.findViewById(R.id.brandSpinner);
-        brandSpinner.setOnClickListener(v -> {
-            presenter.onFiltersPopUpBrandsSelected();
-        });
+        brandSpinner.setOnClickListener(v -> presenter.onFiltersPopUpBrandsSelected());
 
         // Establece la barra de progreso del precio maximo con el valor almacenado en el filtro
         presenter.onFiltersPopUpMaxPriceSeekBarLoaded();
@@ -327,21 +321,15 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
         // Fijar listener al boton de limpiar filtros
         ImageButton filterClear = popupView.findViewById(R.id.clear_filters_bt);
-        filterClear.setOnClickListener(v -> {
-            presenter.onFiltersPopUpClearFiltersClicked();
-        });
+        filterClear.setOnClickListener(v -> presenter.onFiltersPopUpClearFiltersClicked());
 
         // Fijar listener al boton de cancelar
         ImageButton cancelButton = popupView.findViewById(R.id.filters_cancel_button);
-        cancelButton.setOnClickListener(v -> {
-            presenter.onFiltersPopUpCancelClicked();
-        });
+        cancelButton.setOnClickListener(v -> presenter.onFiltersPopUpCancelClicked());
 
         // Fijar listener al boton de aceptar
         ImageButton accpetlButton = popupView.findViewById(R.id.filters_accept_button);
-        accpetlButton.setOnClickListener(v -> {
-            presenter.onFiltersPopUpAcceptClicked();
-        });
+        accpetlButton.setOnClickListener(v -> presenter.onFiltersPopUpAcceptClicked());
     }
 
 
@@ -416,9 +404,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         }
 
         // Actualizar el estado de selección en el array
-        builder.setMultiChoiceItems(options, selectcionArray, (dialog, which, isChecked) -> {
-            presenter.onFiltersPopUpFuelTypesOneSelected(which, isChecked);
-        });
+        builder.setMultiChoiceItems(options, selectcionArray, (dialog, which, isChecked) -> presenter.onFiltersPopUpFuelTypesOneSelected(which, isChecked));
 
         // Botón "OK"
         builder.setPositiveButton("OK", (dialog, which) ->
@@ -449,10 +435,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         }
 
         // Actualizar el estado de selección en el array
-        builder.setMultiChoiceItems(options, selectcionArray, (dialog, which, isChecked) -> {
-            presenter.onFiltersPopUpBrandsOneSelected(which, isChecked);
-
-        });
+        builder.setMultiChoiceItems(options, selectcionArray, (dialog, which, isChecked) -> presenter.onFiltersPopUpBrandsOneSelected(which, isChecked));
 
         // Botón "OK"
         builder.setPositiveButton("OK", (dialog, which) ->
@@ -467,7 +450,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         alertDialog.show();
     }
 
-    public void closeFiltersPopUp() {
+    public void closeActivePopUp() {
         popupWindow.dismiss();
         popupView = null;
         alertDialog = null;
@@ -534,26 +517,15 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
         // Manejo de los botones de aceptar y cancelar
         ImageButton acceptButton = popupView.findViewById(R.id.order_accept_button);
-        acceptButton.setOnClickListener (v -> { presenter.onOrderPopUpAcceptClicked();
-        });
+        acceptButton.setOnClickListener (v -> presenter.onOrderPopUpAcceptClicked());
 
         ImageButton cancelButton = popupView.findViewById(R.id.order_cancel_button);
-        cancelButton.setOnClickListener(v -> { presenter.onOrderPopUpCancelClicked();
-        });
+        cancelButton.setOnClickListener(v -> presenter.onOrderPopUpCancelClicked());
 
         ImageButton clearButton = popupView.findViewById(R.id.bt_clear_order);
-        clearButton.setOnClickListener(v -> { presenter.onOrderPopUpClearClicked();
-        });
+        clearButton.setOnClickListener(v -> presenter.onOrderPopUpClearClicked());
 
     }
-
-    public void closeOrderPopUp(){
-        popupWindow.dismiss();
-        popupView = null;
-        alertDialog = null;
-        popupWindow = null;
-    }
-
 
     public String getConstantString(int id) {
         return getString(id);

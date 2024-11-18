@@ -9,20 +9,22 @@ import java.util.Locale;
 
 public class Converters {
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+    private Converters(){}
 
     @TypeConverter
-    public static Date fromString(String value) {
+    public static Date fromString(String value)
+    {
         try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.US);
             return value == null ? null : dateFormat.parse(value);
         } catch (ParseException e) {
-            e.printStackTrace();
             return null;
         }
     }
 
     @TypeConverter
     public static String dateToString(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.US);
         return date == null ? null : dateFormat.format(date);
     }
 }

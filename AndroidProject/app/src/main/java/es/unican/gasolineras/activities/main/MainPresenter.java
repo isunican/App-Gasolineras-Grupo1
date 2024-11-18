@@ -12,7 +12,6 @@ import es.unican.gasolineras.common.BrandsEnum;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.IFilter;
 import es.unican.gasolineras.common.OrderMethodsEnum;
-
 import es.unican.gasolineras.common.database.IGasStationsDAO;
 import es.unican.gasolineras.model.Filter;
 import es.unican.gasolineras.model.Gasolinera;
@@ -43,7 +42,7 @@ public class MainPresenter implements IMainContract.Presenter {
 
     private List<Gasolinera> gasStations;
     private List<Gasolinera> initialGasStations;
-    // get values from LimitePricesEnum converted to float and integer
+
     private float minPriceLimit;
     private float maxPriceLimit;
 
@@ -341,7 +340,7 @@ public class MainPresenter implements IMainContract.Presenter {
     public void onFiltersPopUpCancelClicked() {
         tempFilter = null;
         tempListSelection = null;
-        view.closeFiltersPopUp();
+        view.closeActivePopUp();
     }
 
     /**
@@ -351,8 +350,7 @@ public class MainPresenter implements IMainContract.Presenter {
         filter = tempFilter;
         tempFilter = null;
         tempListSelection = null;
-        view.closeFiltersPopUp();
-        //load();
+        view.closeActivePopUp();
         applyFilters();
         showGasStations();
     }
@@ -416,10 +414,9 @@ public class MainPresenter implements IMainContract.Presenter {
             view.showInfoMessage("Conflicto con filtro de Combustible, se ha restablecido el filtro.");
         }
         // Este método filtrará y ordenará según los criterios establecidos
-        //load();
         applyOrder();
         showGasStations();
-        view.closeOrderPopUp();
+        view.closeActivePopUp();
     }
 
     /**
@@ -427,7 +424,7 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onOrderPopUpCancelClicked() {
-    view.closeOrderPopUp();
+    view.closeActivePopUp();
 
     }
 
@@ -436,10 +433,9 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onOrderPopUpClearClicked() {
-        //load();
         applyOrder();
         showGasStations();
-        view.closeOrderPopUp();
+        view.closeActivePopUp();
     }
 
     /**

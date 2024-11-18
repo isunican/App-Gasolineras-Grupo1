@@ -16,11 +16,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-import lombok.*;
-
-//@Getter
-//@Setter
-
 @Entity
 public class InterestPoint implements Parcelable {
 
@@ -28,7 +23,6 @@ public class InterestPoint implements Parcelable {
     private int id;
 
     @ColumnInfo(name = "name")
-    @NonNull
     private String name;
 
     @ColumnInfo (name = "color")
@@ -44,7 +38,6 @@ public class InterestPoint implements Parcelable {
     private double radius;
 
     @ColumnInfo (name = "creationDate")
-    @NonNull
     private Date creationDate;
 
     @Ignore

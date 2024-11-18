@@ -1,10 +1,9 @@
 package es.unican.gasolineras.activities.main;
 
-import java.util.Date;
 import java.util.List;
 
-import es.unican.gasolineras.common.IFilter;
 import es.unican.gasolineras.common.FuelTypeEnum;
+import es.unican.gasolineras.common.IFilter;
 import es.unican.gasolineras.common.OrderMethodsEnum;
 import es.unican.gasolineras.common.database.IGasStationsDAO;
 import es.unican.gasolineras.model.Gasolinera;
@@ -351,10 +350,10 @@ public interface IMainContract {
         public void updateFiltersPopUpSelection(int position, boolean value);
 
         /**
-         * The view is requested to close the filters popup.
+         * The view is requested to close the popup managed by PopupWindow.
          * Only the Presenter should call this method
          */
-        public void closeFiltersPopUp();
+        public void closeActivePopUp();
 
 
         // Methods for the Ordering story user
@@ -363,12 +362,6 @@ public interface IMainContract {
          * Only the Presenter should call this method
          */
         public void showOrderPopUp(int typeIndex, int methodIndex);
-
-        /**
-         * The view is requested to close the filters popup
-         * Only the Presenter should call this method.
-         */
-        public void closeOrderPopUp();
 
         public String getConstantString(int id);
 

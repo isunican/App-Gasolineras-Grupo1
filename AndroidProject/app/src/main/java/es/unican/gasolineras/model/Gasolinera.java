@@ -5,7 +5,6 @@ import android.location.Location;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import android.location.Location;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -26,7 +25,7 @@ import es.unican.gasolineras.common.FuelTypeEnum;
  */
 @Parcel
 @Entity
-public class Gasolinera{
+public class Gasolinera {
 
     @PrimaryKey
     @NonNull
