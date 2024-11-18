@@ -1,9 +1,6 @@
 package es.unican.gasolineras.utils;
 
-
-
 import static org.hamcrest.Matchers.instanceOf;
-
 
 import android.view.View;
 import android.widget.SeekBar;
@@ -14,13 +11,9 @@ import androidx.test.espresso.ViewAction;
 import org.hamcrest.Matcher;
 
 import es.unican.gasolineras.activities.main.MainPresenter;
-import es.unican.gasolineras.common.IFilter;
 
 
 public class SeekBarActions {
-
-    //private static final double MIN_PRICE = 1.24;
-    //private static final double MAX_PRICE = 1.65;
 
     private static MainPresenter mainPresenter;  //
 

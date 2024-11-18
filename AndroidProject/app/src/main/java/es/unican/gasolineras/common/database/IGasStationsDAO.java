@@ -7,7 +7,6 @@ import androidx.room.Query;
 import java.util.List;
 
 import es.unican.gasolineras.model.Gasolinera;
-import es.unican.gasolineras.model.InterestPoint;
 
 @Dao
 public interface IGasStationsDAO {
