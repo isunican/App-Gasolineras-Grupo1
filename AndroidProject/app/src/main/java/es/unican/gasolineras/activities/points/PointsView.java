@@ -148,10 +148,16 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         EditText nameTextView = newPIView.findViewById(R.id.tvPIName);
         EditText longTextView = newPIView.findViewById(R.id.tvPILongitud);
         longTextView.setFilters(new InputFilter[]{new LongitudInputFilter()});
+        autocompletarDecimales(longTextView);
+
         EditText latTextView = newPIView.findViewById(R.id.tvPILatitud);
         latTextView.setFilters(new InputFilter[]{new LatitudInputFilter()});
+        autocompletarDecimales(latTextView);
+
+
         EditText radiusTextView = newPIView.findViewById(R.id.tvPIRadio);
         radiusTextView.setFilters(new InputFilter[]{new RadiusInputFilter()});
+        autocompletarUnDecimal(radiusTextView);
 
         View acceptButton = newPIView.findViewById(R.id.newPI_accept_button);
 
@@ -167,13 +173,16 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
             }else if(radiusTextView.getText().length() == 0){
                 radiusTextView.setError("El campo radio es necesario");
             }else {
+                double latitud = Double.parseDouble(latTextView.getText().toString());
+                double longitud = Double.parseDouble(longTextView.getText().toString());
+
 
                 //Si los campos no estan vacios crea el punto de interes
                 InterestPoint newPointOfInterest = new InterestPoint(
                         nameTextView.getText().toString(),
                         (Color) colorPickerButton.getTag(),
-                        Double.parseDouble(latTextView.getText().toString()),
-                        Double.parseDouble(longTextView.getText().toString()),
+                        latitud,
+                        longitud,
                         Double.parseDouble(radiusTextView.getText().toString())
                 );
                 try{
@@ -377,5 +386,52 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         Intent intent = new Intent(this, MainView.class);
         intent.putExtra("interestPoint", selectedIP); // Agrega un String
         startActivity(intent);
+    }
+
+
+    private void autocompletarDecimales(EditText editText) {
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                String valor = editText.getText().toString().trim();
+                if (!valor.isEmpty()) {
+                    if (valor.contains(".")) {
+                        String[] partes = valor.split("\\.");
+                        String parteEntera = partes[0];
+                        String parteDecimal = partes.length > 1 ? partes[1] : "";
+                        //Si tiene menos de 4 decimales completa
+                        if (parteDecimal.length() < 4) {
+                            parteDecimal = parteDecimal + "0000".substring(parteDecimal.length());
+                        }
+                        editText.setText(String.format("%s.%s", parteEntera, parteDecimal));
+                    } else {
+                        editText.setText(valor + ".0000");
+                    }
+                }
+            }
+        });
+    }
+
+    private void autocompletarUnDecimal(EditText editText) {
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) { // Cuando pierde el foco
+                String valor = editText.getText().toString().trim();
+                if (!valor.isEmpty()) {
+                    if (valor.contains(".")) {
+                        String[] partes = valor.split("\\.");
+                        String parteEntera = partes[0];
+                        String parteDecimal = partes.length > 1 ? partes[1] : "";
+                        // Si tiene menos de 1 decimal, completa con ceros
+                        if (parteDecimal.length() < 1) {
+                            parteDecimal = parteDecimal + "0".substring(parteDecimal.length());
+                        }
+                        // Formatear con la parte entera y 1 decimal
+                        editText.setText(String.format("%s.%s", parteEntera, parteDecimal.substring(0, 1)));
+                    } else {
+                        // Si no tiene punto decimal, añade ".0"
+                        editText.setText(valor + ".0");
+                    }
+                }
+            }
+        });
     }
 }

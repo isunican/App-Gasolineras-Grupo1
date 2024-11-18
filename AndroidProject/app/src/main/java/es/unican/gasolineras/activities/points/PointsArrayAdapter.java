@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import es.unican.gasolineras.R;
@@ -101,24 +102,21 @@ public class PointsArrayAdapter extends BaseAdapter {
         {
             TextView tv = convertView.findViewById(R.id.tvLatitude);
             double latitude = point.getLatitude();
-            latitude = Math.round(latitude * 10000.0) / 10000.0;    // Formato para 4 decimales
-            tv.setText(String.valueOf(latitude));
+            tv.setText(String.format(Locale.US, "%.4f", latitude));
         }
 
         // longitude
         {
             TextView tv = convertView.findViewById(R.id.tvLongitude);
             double longitude = point.getLongitude();
-            longitude = Math.round(longitude * 10000.0) / 10000.0;    // Formato para 4 decimales
-            tv.setText(String.valueOf(longitude));
+            tv.setText(String.format(Locale.US, "%.4f", longitude));
         }
 
         // radious
         {
             TextView tv = convertView.findViewById(R.id.tvRadiusValue);
             double radius = point.getRadius();
-            radius = Math.round(radius * 10.0) / 10.0;    // Formato para 1 decimal
-            tv.setText(String.valueOf(radius));
+            tv.setText(String.format(Locale.US, "%.1f",radius));
         }
 
         // Delete button
