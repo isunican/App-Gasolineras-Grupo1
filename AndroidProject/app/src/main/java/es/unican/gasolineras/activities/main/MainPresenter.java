@@ -582,7 +582,7 @@ public class MainPresenter implements IMainContract.Presenter {
         view.showStations(gasStations);
 
         if (gasStations.isEmpty()) {
-            view.showLoadError();
+            view.showInfoMessage("No se han encontrado gasolineras en el rango");
         } else {
             view.showLoadCorrect(gasStations.size());
         }
