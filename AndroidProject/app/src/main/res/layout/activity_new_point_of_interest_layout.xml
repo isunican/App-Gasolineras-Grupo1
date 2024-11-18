@@ -27,7 +27,7 @@
 
             <TextView
                 android:id="@+id/lbPINombre"
-                android:layout_width="75dp"
+                android:layout_width="90dp"
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
@@ -57,7 +57,7 @@
 
             <TextView
                 android:id="@+id/lbPIColor"
-                android:layout_width="75dp"
+                android:layout_width="90dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="5dp"
@@ -92,7 +92,7 @@
 
             <TextView
                 android:id="@+id/lbPILatitud"
-                android:layout_width="75dp"
+                android:layout_width="90dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="5dp"
@@ -120,7 +120,7 @@
 
             <TextView
                 android:id="@+id/lbPILongitud"
-                android:layout_width="75dp"
+                android:layout_width="90dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="5dp"
@@ -148,7 +148,7 @@
 
             <TextView
                 android:id="@+id/lbRadio"
-                android:layout_width="75dp"
+                android:layout_width="90dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="5dp"
