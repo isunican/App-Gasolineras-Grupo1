@@ -55,4 +55,7 @@
     <string name="point_confirmation_ok_button">Confirmar</string>
     <string name="point_confirmation_cancel_button">Cancelar</string>
 
+    <!-- Uds -->
+    <string name="priceUds">€/l</string>
+
 </resources>
