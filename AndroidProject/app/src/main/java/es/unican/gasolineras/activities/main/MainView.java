@@ -63,14 +63,12 @@ import es.unican.gasolineras.repository.IGasolinerasRepository;
 @AndroidEntryPoint
 public class MainView extends AppCompatActivity implements IMainContract.View {
 
+    private static final String PRICE_FORMAT = "%.2f €/l";
+
     private View popupView;
     PopupWindow popupWindow;
     private AlertDialog alertDialog;
     boolean[] selectcionArray;
-    // get values from LimitePricesEnum converted to float and integer
-    float minPriceLimit;
-    float maxPriceLimit;
-
 
     /** The presenter of this view */
     private MainPresenter presenter;
@@ -368,12 +366,11 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     /**
      * @see IMainContract.View#updateFiltersPopupTextViewsMaxPrice(float)
      */
-    @SuppressLint("DefaultLocale")
     @Override
     public void updateFiltersPopupTextViewsMaxPrice(float truncatedMaxPrice) {
         // Actualizamos el label que muestra el valor maximo actual
         TextView lbSelectedMaxPrice = popupView.findViewById(R.id.lbSelectedMaxPrice);
-        lbSelectedMaxPrice.setText(String.format(Locale.US, "%.2f", truncatedMaxPrice));
+        lbSelectedMaxPrice.setText(String.format(Locale.US, PRICE_FORMAT, truncatedMaxPrice));
     }
 
     /**
@@ -383,9 +380,9 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     public void updateFiltersPopupSeekBarProgressMaxPrice(int progress, float minPriceLimit, float maxPriceLimit) {
         // Fijar los labels
         TextView minPriceLabel = popupView.findViewById(R.id.minPriceLabel);
-        minPriceLabel.setText(String.valueOf(minPriceLimit));
+        minPriceLabel.setText(String.format(Locale.US, PRICE_FORMAT, minPriceLimit));
         TextView maxPriceLabel = popupView.findViewById(R.id.maxPriceLabel);
-        maxPriceLabel.setText(String.valueOf(maxPriceLimit));
+        maxPriceLabel.setText(String.format(Locale.US, PRICE_FORMAT, maxPriceLimit));
 
         // Buscar el SeekBar en el layout
         SeekBar maxPriceSeekBar = popupView.findViewById(R.id.MaxPriceSeekBar);
