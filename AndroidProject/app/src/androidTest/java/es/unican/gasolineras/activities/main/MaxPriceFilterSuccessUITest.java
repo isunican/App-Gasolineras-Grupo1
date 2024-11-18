@@ -91,7 +91,7 @@ public class MaxPriceFilterSuccessUITest {
 
         //The value established in the label is checked
         Espresso.onView(withId(R.id.lbSelectedMaxPrice))
-                .check(matches(withText("1.50")));
+                .check(matches(withText("1.50 €/l")));
 
         //Press the button that accepts the filters
         Espresso.onView(withId(R.id.filters_accept_button))
