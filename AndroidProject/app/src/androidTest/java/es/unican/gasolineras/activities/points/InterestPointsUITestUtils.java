@@ -16,6 +16,7 @@ import androidx.test.espresso.matcher.BoundedMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
+import java.util.Locale;
 import java.util.Objects;
 
 import es.unican.gasolineras.R;
@@ -33,13 +34,13 @@ public class InterestPointsUITestUtils {
                 .check(matches(withTintColor(expectedPoint.getColorArgb())));   // Custom matcher
 
         element.onChildView(withId(R.id.tvLatitude))
-                .check(matches(withText(String.valueOf(expectedPoint.getLatitude()))));
+                .check(matches(withText(String.format(Locale.US, "%.4f", expectedPoint.getLatitude()))));
 
         element.onChildView(withId(R.id.tvLongitude))
-                .check(matches(withText(String.valueOf(expectedPoint.getLongitude()))));
+                .check(matches(withText(String.format(Locale.US, "%.4f", expectedPoint.getLongitude()))));
 
         element.onChildView(withId(R.id.tvRadiusValue))
-                .check(matches(withText(String.valueOf(expectedPoint.getRadius()))));
+                .check(matches(withText(String.format(Locale.US, "%.1f", expectedPoint.getRadius()))));
     }
 
     public static void writeDataToCreateInterestPoint(
