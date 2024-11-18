@@ -39,7 +39,11 @@
     <!-- Item -->
     <string name="point_location_description">Localizar</string>
     <string name="point_trash_description">Basura</string>
+    <string name="point_latitude">Latitud:</string>
+    <string name="point_longitude">Longitud:</string>
+    <string name="point_name">Nombre:</string>
     <string name="point_radio">Radio:</string>
+    <string name="point_radio_units">km</string>
     <string name="back_home">MenuPuntos</string>
     <string name="selector_de_color">Selector de color</string>
     <string name="latitud">Latitud</string>
