@@ -61,6 +61,14 @@ public class PointsPresenter implements IPointsContract.Presenter {
     }
 
     /**
+     * @see IPointsContract.Presenter#onPointOfInterestClicked(InterestPoint interestPoint)
+     */
+    @Override
+    public void onPointOfInterestClicked(InterestPoint interestPoint) {
+        view.launchMainActivityWith(interestPoint);
+    }
+
+    /**
      * @see IPointsContract.Presenter#onActivateDeleteModeClicked()
      */
     @Override
@@ -92,14 +100,6 @@ public class PointsPresenter implements IPointsContract.Presenter {
         InterestPoint removedPoint = view.getPointsDao().getInterestPointById(idSelectedPoint);
         view.getPointsDao().deleteInterestPoint(removedPoint);
         load();
-    }
-
-    /**
-     * @see IPointsContract.Presenter#onPointOfInterestClicked(InterestPoint interestPoint)
-     */
-    @Override
-    public void onPointOfInterestClicked(InterestPoint interestPoint) {
-        view.launchMainActivityWith(interestPoint);
     }
 
     /**

@@ -17,6 +17,8 @@ import androidx.core.graphics.drawable.DrawableCompat;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import es.unican.gasolineras.R;
 import es.unican.gasolineras.model.InterestPoint;
@@ -29,6 +31,9 @@ public class PointsArrayAdapter extends BaseAdapter {
     /** The list of interest points to render */
     private final List<InterestPoint> points;
 
+    Consumer<InterestPoint> deleteFunction;
+    boolean deleteState;
+
     /** Context of the application */
     private final Context context;
 
@@ -37,10 +42,12 @@ public class PointsArrayAdapter extends BaseAdapter {
      * @param context the application context
      * @param objects the list of gas stations
      */
-    public PointsArrayAdapter(@NonNull Context context, @NonNull List<InterestPoint> objects) {
+    public PointsArrayAdapter(@NonNull Context context, @NonNull List<InterestPoint> objects, @NonNull Consumer<InterestPoint> deleteFunction, boolean deleteState) {
         // we know the parameters are not null because of the @NonNull annotation
         this.points = objects;
         this.context = context;
+        this.deleteFunction = deleteFunction;
+        this.deleteState = deleteState;
     }
 
     @Override
@@ -82,6 +89,36 @@ public class PointsArrayAdapter extends BaseAdapter {
 
         // radious
         setRaidus(convertView, point);
+        {
+            TextView tv = convertView.findViewById(R.id.tvRadiusValue);
+            double radius = point.getRadius();
+            radius = Math.round(radius * 10.0) / 10.0;    // Formato para 1 decimal
+            tv.setText(String.valueOf(radius));
+        }
+
+        // Delete button
+        {
+            ImageView iv = convertView.findViewById(R.id.ivTrash);
+
+            // Obtén el Drawable del vector
+            Drawable drawable = Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.trash)).mutate();
+
+            // Usa DrawableCompat para garantizar compatibilidad con versiones anteriores
+            Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
+
+            // Establecemos un tag a modo de ID de la DDBB del PI para poder manejarlo más facil
+            iv.setTag(point.getId());
+
+            iv.setOnClickListener(v -> deleteFunction.accept(point));
+            if (deleteState) {
+                iv.setVisibility(View.VISIBLE);
+            } else {
+                iv.setVisibility(View.GONE);
+            }
+
+            // Asigna el Drawable al ImageView
+            iv.setImageDrawable(wrappedDrawable);
+        }
 
         return convertView;
     }
