@@ -44,6 +44,8 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
      */
     private PointsPresenter presenter;
     private View newPIView;
+    private boolean deleteMode;
+    private List<InterestPoint> pointsSaved;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,12 +63,15 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
     @Override
     public void init() {
         // initialize on click listeners
+        deleteMode = false;
         ImageView homeButton = findViewById(R.id.homeiconbutton);
         Button addButton = findViewById(R.id.btn_add);
         Button deleteButton = findViewById(R.id.btn_delete);
+        Button cancelDelete = findViewById(R.id.btn_exit_delete_mode);
         homeButton.setOnClickListener(v -> presenter.onHomeClicked());
         addButton.setOnClickListener(v -> presenter.onCreatePointOfInterestClicked());
         deleteButton.setOnClickListener(v -> presenter.onActivateDeleteModeClicked());
+        cancelDelete.setOnClickListener(v -> presenter.onCancelDeleteModeClicked());
     }
 
     /**
@@ -82,8 +87,9 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
      */
     @Override
     public void showPoints(List<InterestPoint> points) {
+        pointsSaved = points;
         ListView list = findViewById(R.id.lvPoints);
-        PointsArrayAdapter adapter = new PointsArrayAdapter(this, points);
+        PointsArrayAdapter adapter = new PointsArrayAdapter(this, points, (point) -> presenter.onTrashIconClicked(point.getId()), deleteMode);
         list.setAdapter(adapter);
     }
 
@@ -197,40 +203,19 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
     @Override
     public void showDeleteMode() {
         // Establecer los elementos adicionales en "GONE" (btn_add, img_center, btn_delete)
-        if (findViewById(R.id.btn_add) != null) {
-            findViewById(R.id.btn_add).setVisibility(View.GONE);
-        }
-        if (findViewById(R.id.img_center) != null) {
-            findViewById(R.id.img_center).setVisibility(View.GONE);
-        }
-        if (findViewById(R.id.btn_delete) != null) {
-            findViewById(R.id.btn_delete).setVisibility(View.GONE);
-        }
+        findViewById(R.id.btn_add).setVisibility(View.GONE);
+        findViewById(R.id.img_center).setVisibility(View.GONE);
+        findViewById(R.id.btn_delete).setVisibility(View.GONE);
 
-        if (findViewById(R.id.btn_exit_delete_mode) != null) {
-            // Establece el elemento en "VISIBLE" (btn_exit_delete_mode)
-            findViewById(R.id.btn_exit_delete_mode).setVisibility(View.VISIBLE);
+        // Establece el elemento en "VISIBLE" (btn_exit_delete_mode)
+        findViewById(R.id.btn_exit_delete_mode).setVisibility(View.VISIBLE);
 
-            // Configurar el listener para el botón de salir del modo de eliminación
-            findViewById(R.id.btn_exit_delete_mode).setOnClickListener(v -> presenter.onCancelDeleteModeClicked());
-        }
+        // Configurar el listener para el botón de salir del modo de eliminación
+        findViewById(R.id.btn_exit_delete_mode).setOnClickListener(v -> presenter.onCancelDeleteModeClicked());
 
-        // Recorre los puntos de la lista
-        ListView lvPoints = findViewById(R.id.lvPoints);
-        for (int i = 0; i < lvPoints.getChildCount(); i++) {
-            View child = lvPoints.getChildAt(i);
-            ImageView trash = child.findViewById(R.id.ivTrash);
-
-            // Verifica si el elemento hijo tiene el ID ivTrash
-            if (trash != null) {
-                // Hacer visible el icono de la papelera (ivTrash)
-                trash.setVisibility(View.VISIBLE);
-
-                // Configurar el listener para el icono de la papelera (ivTrash)
-                // Le pasamos como parametro el ID de la DDBB del elemento seleccionado
-                trash.setOnClickListener(v -> presenter.onTrashIconClicked((int)trash.getTag()));
-            }
-        }
+        // Fijar modo de eliminacion y mostrar los puntos
+        deleteMode = true;
+        showPoints(pointsSaved);
     }
 
     /**
@@ -239,33 +224,16 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
     @Override
     public void showNormalMode() {
         // Establecer los elementos adicionales en "VISIBLE" (btn_add, img_center, btn_delete)
-        if (findViewById(R.id.btn_add) != null) {
-            findViewById(R.id.btn_add).setVisibility(View.VISIBLE);
-        }
-        if (findViewById(R.id.img_center) != null) {
-            findViewById(R.id.img_center).setVisibility(View.VISIBLE);
-        }
-        if (findViewById(R.id.btn_delete) != null) {
-            findViewById(R.id.btn_delete).setVisibility(View.VISIBLE);
-        }
+        findViewById(R.id.btn_add).setVisibility(View.VISIBLE);
+        findViewById(R.id.img_center).setVisibility(View.VISIBLE);
+        findViewById(R.id.btn_delete).setVisibility(View.VISIBLE);
 
-        if (findViewById(R.id.btn_exit_delete_mode) != null) {
-            // Establecer el elemento en "GONE" (btn_exit_delete_mode)
-            findViewById(R.id.btn_exit_delete_mode).setVisibility(View.GONE);
-        }
+        // Establecer el elemento en "GONE" (btn_exit_delete_mode)
+        findViewById(R.id.btn_exit_delete_mode).setVisibility(View.GONE);
 
-        // Recorre los puntos de la lista
-        ListView lvPoints = findViewById(R.id.lvPoints);
-        for (int i = 0; i < lvPoints.getChildCount(); i++) {
-            View child = lvPoints.getChildAt(i);
-            ImageView trash = child.findViewById(R.id.ivTrash);
-
-            // Verifica si el elemento hijo tiene el ID ivTrash
-            if (trash != null) {
-                // Ocultar el icono de la papelera (ivTrash)
-                trash.setVisibility(View.GONE);
-            }
-        }
+        // Desactivar el modo de eliminacion y mostrar los puntos
+        deleteMode = false;
+        showPoints(pointsSaved);
     }
 
     /**
