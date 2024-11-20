@@ -121,7 +121,7 @@ public class ShowGasStationsOnInterestPointUITest {
 
         //Radio
         Espresso.onView(withId(R.id.ip_radius_tv))
-                .check(matches(withText(("Radio: 2,0 km"))));
+                .check(matches(withText(("Radio: 2.0 km"))));
 
         //Encontradas
         Espresso.onView(withId(R.id.ip_loaded_tv))
