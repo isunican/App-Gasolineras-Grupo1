@@ -81,6 +81,7 @@ public class PointsPresenterTest {
 
         // En este caso es el sut.
         sut= new PointsPresenter();
+        sut= new PointsPresenter();
 
     }
 
