@@ -276,4 +276,8 @@ public class InterestPoint implements Parcelable {
         return id == that.id && colorArgb == that.colorArgb && Double.compare(latitude, that.latitude) == 0 && Double.compare(longitude, that.longitude) == 0 && Double.compare(radius, that.radius) == 0 && Objects.equals(name, that.name) && Objects.equals(creationDate, that.creationDate) && Objects.equals(color, that.color);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, colorArgb, latitude, longitude, radius, creationDate, color);
+    }
 }
