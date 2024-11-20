@@ -99,6 +99,7 @@ public class PointsPresenter implements IPointsContract.Presenter {
     public void onConfirmDeletionClicked(int idSelectedPoint) {
         InterestPoint removedPoint = view.getPointsDao().getInterestPointById(idSelectedPoint);
         view.getPointsDao().deleteInterestPoint(removedPoint);
+        view.showInfoDeletedPoint(removedPoint.getName());
         load();
     }
 

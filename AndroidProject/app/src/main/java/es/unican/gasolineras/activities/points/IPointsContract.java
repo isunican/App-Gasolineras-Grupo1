@@ -154,5 +154,12 @@ public interface IPointsContract {
          * @param idSelectedPoint the ID in the DDBB of the point of interest to delete.
          */
         public void showDeleteConfirmationPopup(int idSelectedPoint);
+
+        /**
+         * The view is requested to display a toast indicating a point of interest
+         * has been deleted and the name of the deleted point
+         * @param name of the deleted point of interest
+         */
+        void showInfoDeletedPoint(String name);
     }
 }

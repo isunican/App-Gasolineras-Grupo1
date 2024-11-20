@@ -270,6 +270,11 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         dialog.show();
     }
 
+    @Override
+    public void showInfoDeletedPoint(String name) {
+        Toast.makeText(this, "Se ha eliminado el punto de interes '"+name+"'", Toast.LENGTH_SHORT).show();
+    }
+
     /**
      * Crea y lanza la ventana de seleccion de color
      */
