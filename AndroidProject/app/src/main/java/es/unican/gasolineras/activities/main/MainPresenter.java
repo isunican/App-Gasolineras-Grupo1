@@ -549,10 +549,9 @@ public class MainPresenter implements IMainContract.Presenter {
             public void onSuccess(List<Gasolinera> stations) {
                 try {
                     persistGasStationsOnLocalDB(stations);
-                    initialiceGasStationsList(stations);
                 } catch (Exception exception){
                     view.showInfoMessage("Error al guardar datos de gasolineras en la base de datos");
-                    stations = getGasStationsFromLocalDB();
+                } finally {
                     initialiceGasStationsList(stations);
                 }
 
