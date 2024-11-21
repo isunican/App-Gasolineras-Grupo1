@@ -487,10 +487,9 @@ public class MainPresenterTest {
         // Verificamos que se llama a view.showStations() con las gasolineras PETROPRIX Y BALLENOIL.
         ArgumentCaptor<List<Gasolinera>> captor = ArgumentCaptor.forClass(List.class);
 
-        // Se verifica que se llama 2 veces por el init del setup.
         verify(mockView).showStations(captor.capture());
         List<Gasolinera> mostradas = captor.getValue();
-        assertEquals(2, mostradas.size());  // Aseguramos que la lista tiene dos elementos
+        assertEquals(2, mostradas.size());
         assertEquals("PETROPRIX", mostradas.get(0).getRotulo());
         assertEquals("BALLENOIL", mostradas.get(1).getRotulo());
 
