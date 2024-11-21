@@ -380,13 +380,11 @@ public class MainPresenterTest {
         gasStations.add(g1);
         gasStations.add(g2);
 
-        // Comprobar que se llama al view.updateLocalDBRegister(), times(2) por la llamada al init en el setup.
         verify(mockView).updateLocalDBDateRegister();
 
         // Comprobar que se muestran las gasolineras deseadas
         ArgumentCaptor<List<Gasolinera>> captor = ArgumentCaptor.forClass(List.class);
 
-        // Verificar que se llama 2 veces por la llamada en el init del setUp.
         verify(mockView).showStations(captor.capture());
         List<Gasolinera> mostradas = captor.getValue();
         assertEquals(2, mostradas.size());
@@ -431,7 +429,6 @@ public class MainPresenterTest {
         g1.setRotulo("CEPSA");
         g2.setRotulo("REPSOL");
 
-        // Comprobar que se llama al view.updateLocalDBRegister(), times(2) por la llamada al init en el setup.
         verify(mockView).updateLocalDBDateRegister();
 
         // Comprobar que se muestran las gasolineras deseadas
@@ -483,10 +480,8 @@ public class MainPresenterTest {
         // Inicializamos el SUT (presenter) para simular el comportamiento de la API con fallo.
         presenter.init(mockView);
 
-        // Se verifica que no se llama al addGasStation
+        // Se verifica que no se llama al addGasStation ni se actualiza la fecha
         verify(mockView.getGasolinerasDAO(), never()).addGasStation(any());
-
-        // Se verifica que se llama 1 vez por el init del setup, asi comprobamos que aqui no se ha acualizado la fecha.
         verify(mockView, never()).updateLocalDBDateRegister();
 
         // Verificamos que se llama a view.showStations() con las gasolineras PETROPRIX Y BALLENOIL.
@@ -520,17 +515,14 @@ public class MainPresenterTest {
         // Simulamos que no hay gasolineras precargadas en la DAO
         when(mockGasStationsDAO.getAll()).thenReturn(gasStations);
 
-        // Inicializamos el SUT (presenter)
         presenter.init(mockView);
-
-        // Se verifica que se llama 1 vez por el init del setup, asi comprobamos que aqui no se ha acualizado la fecha ni se han anhadido gasolineras.
+        
         verify(mockView, never()).updateLocalDBDateRegister();
         verify(mockView.getGasolinerasDAO(), never()).addGasStation(any());
 
         // Verificamos que se llama a view.showStations() con una lista vacía
         ArgumentCaptor<List<Gasolinera>> captor = ArgumentCaptor.forClass(List.class);
 
-        // Se verifica que se llama 2 veces por el init del setup.
         verify(mockView).showStations(captor.capture());
         List<Gasolinera> mostradas = captor.getValue();
         assertTrue(mostradas.isEmpty());
@@ -540,7 +532,7 @@ public class MainPresenterTest {
         verify(mockView).showInfoMessage(expectedMessage);
     }
 
-    //UP1.e
+    // UP1.e
     @Test
     public void onLoadWithDatabaseReadError() {
         MockitoAnnotations.openMocks(this);
@@ -555,13 +547,9 @@ public class MainPresenterTest {
         // Envuelvo la SQLException en una RuntimeException para evitar el error de comprobación de excepciones chequeadas
         when(mockGasStationsDAO.getAll()).thenThrow(new RuntimeException(new SQLException("Error de lectura en la base de datos")));
 
-        // Inicializamos el presenter
         presenter.init(mockView);
 
-        // Se verifica que no se ha acualizado la fecha.
         verify(mockView, never()).updateLocalDBDateRegister();
-
-        // Verificamos que no se anhaden gasolineras.
         verify(mockView.getGasolinerasDAO(), never()).addGasStation(any());
 
         // Se verifica que se llama 1 vez, porque se mete una lista vacia.
@@ -570,6 +558,7 @@ public class MainPresenterTest {
         verify(mockView).showLoadError();
     }
 
+    // UP1.f
     @Test
     public void onLoadWithDatabaseWriteError() {
         MockitoAnnotations.openMocks(this);
@@ -603,7 +592,7 @@ public class MainPresenterTest {
         // Verificamos que no se escriben gasolineras, pero se llama una vez, y ahi lanza la excepcion
         verify(mockView.getGasolinerasDAO(), times(1)).addGasStation(any());
 
-        // Se verifica que se llama 1 vez por el init del setup, asi comprobamos que aqui no se ha actualizado la fecha.
+        // Se verifica que no se ha actualizado la fecha.
         verify(mockView, never()).updateLocalDBDateRegister();
 
         // Verificamos que se llama a view.showStations() con las gasolineras persistentes.
@@ -612,8 +601,8 @@ public class MainPresenterTest {
         List<Gasolinera> mostradas = captor.getValue();
 
         assertEquals(2, mostradas.size());
-        assertEquals("PETROPRIX", mostradas.get(0).getRotulo());
-        assertEquals("BALLENOIL", mostradas.get(1).getRotulo());
+        assertEquals("CEPSA", mostradas.get(0).getRotulo());
+        assertEquals("REPSOL", mostradas.get(1).getRotulo());
 
         // Verificamos que se muestra el mensaje con el número de gasolineras
         verify(mockView).showLoadCorrect(2);
@@ -623,6 +612,7 @@ public class MainPresenterTest {
 
     }
 
+    // UP1.g
     @Test
     public void onLoadWithEmptyDatabaseAndEmptyAPIResponse() {
         MockitoAnnotations.openMocks(this);
@@ -641,7 +631,6 @@ public class MainPresenterTest {
         // Inicializamos el presenter
         presenter.init(mockView);
 
-        // Verificamos que no se escriben gasolineras en la DAO
         verify(mockView.getGasolinerasDAO(), never()).addGasStation(any());
 
         // Verificamos que se llama a updateLocalDBDateRegister() para actualizar la fecha de la base de datos
@@ -654,6 +643,7 @@ public class MainPresenterTest {
         verify(mockView).showLoadError();
     }
 
+    // UP1.h
     @Test
     public void onLoadWithDatabaseAndEmptyAPIResponse() {
         MockitoAnnotations.openMocks(this);
@@ -661,7 +651,7 @@ public class MainPresenterTest {
         List<Gasolinera> gasStations = new ArrayList<>();
 
         // Creamos el repositorio que lanza un onSuccess con una respuesta vacía (API con respuesta vacía)
-        repository = getEmptyRepository();  // Repositorio que devuelve una lista vacía
+        repository = getEmptyRepository();
         when(mockView.getGasolinerasRepository()).thenReturn(repository);
         when(mockView.getGasolinerasDAO()).thenReturn(mockGasStationsDAO);
 
@@ -677,7 +667,6 @@ public class MainPresenterTest {
         // Inicializamos el presenter
         presenter.init(mockView);
 
-        // Verificamos que se llama a updateLocalDBDateRegister() para actualizar la fecha de la base de datos
         verify(mockView).updateLocalDBDateRegister();
 
         // Verificamos que no se escriben gasolineras en la DAO
