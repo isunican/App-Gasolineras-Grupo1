@@ -161,5 +161,11 @@ public interface IPointsContract {
          * @param name of the deleted point of interest
          */
         void showInfoDeletedPoint(String name);
+
+        /**
+         * The view is requested to display a toast with a message to notice
+         * the user an error has occurred deleting a point of interest
+         */
+        void showDeleteError();
     }
 }

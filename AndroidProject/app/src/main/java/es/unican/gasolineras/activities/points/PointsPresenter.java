@@ -98,9 +98,19 @@ public class PointsPresenter implements IPointsContract.Presenter {
     @Override
     public void onConfirmDeletionClicked(int idSelectedPoint) {
         InterestPoint removedPoint = view.getPointsDao().getInterestPointById(idSelectedPoint);
-        view.getPointsDao().deleteInterestPoint(removedPoint);
-        view.showInfoDeletedPoint(removedPoint.getName());
-        load();
+        if(removedPoint!= null){
+            try {
+                view.getPointsDao().deleteInterestPoint(removedPoint);
+                points.remove(removedPoint);
+                view.showPoints(points);
+                view.showInfoDeletedPoint(removedPoint.getName());
+            } catch (SQLiteException e) {
+                view.showDeleteError();
+            }
+        }else{
+            view.showDeleteError();
+        }
+
     }
 
     /**

@@ -114,6 +114,14 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
     }
 
     /**
+     * @see IPointsContract.View#showDeleteError()
+     */
+    @Override
+    public void showDeleteError() {
+        Toast.makeText(this, "Error eliminando el punto de interes", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
      * @see IPointsContract.View#showInfoMessage(String)
      */
     public void showInfoMessage(String message) {
