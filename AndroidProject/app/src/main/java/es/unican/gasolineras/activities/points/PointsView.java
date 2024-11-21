@@ -114,6 +114,14 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
     }
 
     /**
+     * @see IPointsContract.View#showDeleteError()
+     */
+    @Override
+    public void showDeleteError() {
+        Toast.makeText(this, "Error eliminando el punto de interes", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
      * @see IPointsContract.View#showInfoMessage(String)
      */
     public void showInfoMessage(String message) {
@@ -268,6 +276,11 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         AlertDialog dialog = builder.create();
         dialog.setCancelable(false);  // Evita que el diálogo se cierre al hacer clic fuera de él
         dialog.show();
+    }
+
+    @Override
+    public void showInfoDeletedPoint(String name) {
+        Toast.makeText(this, "Se ha eliminado el punto de interes '"+name+"'", Toast.LENGTH_SHORT).show();
     }
 
     /**
