@@ -39,13 +39,17 @@
     <!-- Item -->
     <string name="point_location_description">Localizar</string>
     <string name="point_trash_description">Basura</string>
+    <string name="point_latitude">Latitud:</string>
+    <string name="point_longitude">Longitud:</string>
+    <string name="point_name">Nombre:</string>
     <string name="point_radio">Radio:</string>
+    <string name="point_radio_units">km</string>
     <string name="back_home">MenuPuntos</string>
     <string name="selector_de_color">Selector de color</string>
     <string name="latitud">Latitud</string>
     <string name="latitud_hint">00.0000</string>
     <string name="longitud">Longitud</string>
-    <string name="radio">Radio</string>
+    <string name="radio">Radio (Km)</string>
     <string name="color">Color</string>
     <string name="_0_0">0.0</string>
     <string name="nombre">Nombre</string>
@@ -54,5 +58,8 @@
     <string name="point_confirmation_description">¿Esta seguro de que desea eliminar el punto de interes seleccionado?</string>
     <string name="point_confirmation_ok_button">Confirmar</string>
     <string name="point_confirmation_cancel_button">Cancelar</string>
+
+    <!-- Uds -->
+    <string name="priceUds">€/l</string>
 
 </resources>

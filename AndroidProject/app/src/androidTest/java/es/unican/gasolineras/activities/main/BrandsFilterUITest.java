@@ -1,11 +1,9 @@
-package es.unican.gasolineras;
+package es.unican.gasolineras.activities.main;
 
 
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.CoreMatchers.not;
 import static es.unican.gasolineras.utils.Matchers.withListSize;
 import static es.unican.gasolineras.utils.MockRepositories.getTestRepository;
 
@@ -15,14 +13,13 @@ import android.view.View;
 import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.action.ViewActions;
-import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.hamcrest.CoreMatchers;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.Before;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +28,7 @@ import dagger.hilt.android.testing.BindValue;
 import dagger.hilt.android.testing.HiltAndroidRule;
 import dagger.hilt.android.testing.HiltAndroidTest;
 import dagger.hilt.android.testing.UninstallModules;
-import es.unican.gasolineras.activities.main.MainView;
-import es.unican.gasolineras.activities.main.Selection;
+import es.unican.gasolineras.R;
 import es.unican.gasolineras.common.BrandsEnum;
 import es.unican.gasolineras.injection.RepositoriesModule;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
