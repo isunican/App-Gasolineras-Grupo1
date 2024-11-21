@@ -1,5 +1,6 @@
 package es.unican.gasolineras.activities.main;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -520,10 +521,6 @@ public class MainPresenter implements IMainContract.Presenter {
         return tempListSelection;
     }
 
-    /*
-    Error: se llama
-     */
-
     private void initialiceGasStationsList(List<Gasolinera> stations) {
         if (interestPoint != null) {
             stations = stations.stream()
@@ -550,23 +547,30 @@ public class MainPresenter implements IMainContract.Presenter {
 
             @Override
             public void onSuccess(List<Gasolinera> stations) {
-                persistGasStationsOnLocalDB(stations);
-                initialiceGasStationsList(stations);
+                try {
+                    persistGasStationsOnLocalDB(stations);
+                } catch (Exception exception){
+                    view.showInfoMessage("Error al guardar datos de gasolineras en la base de datos");
+                } finally {
+                    initialiceGasStationsList(stations);
+                }
+
             }
 
             @Override
             public void onFailure(Throwable e) {
                 try {
                     List<Gasolinera> stations = getGasStationsFromLocalDB();
+                    initialiceGasStationsList(stations);
                     if (stations.isEmpty()) {
                         view.showInfoMessage("No hay datos guardados de gasolineras");
                     } else {
-                        initialiceGasStationsList(stations);
+
                         String date = view.getLocalDBDateRegister();
                         view.showInfoMessage("Cargadas " + stations.size() + " gasolineras en fecha " + date);
                     }
-                }catch (Exception exception){
-                    view.showLoadError();
+                }catch (Exception exception) {
+                    initialiceGasStationsList(new ArrayList<>());
                 }
             }
         };
@@ -577,8 +581,10 @@ public class MainPresenter implements IMainContract.Presenter {
     private void persistGasStationsOnLocalDB(List<Gasolinera> gasStations) {
         IGasStationsDAO gasStationsDAO = view.getGasolinerasDAO();
         gasStationsDAO.deleteAll();
-        for (Gasolinera gasStation : gasStations) {
-            gasStationsDAO.addGasStation(gasStation);
+        if (!gasStations.isEmpty()) {
+            for (Gasolinera gasStation : gasStations) {
+                gasStationsDAO.addGasStation(gasStation);
+            }
         }
         view.updateLocalDBDateRegister();
     }
@@ -606,7 +612,11 @@ public class MainPresenter implements IMainContract.Presenter {
         view.showStations(gasStations);
 
         if (gasStations.isEmpty()) {
-            view.showInfoMessage("No se han encontrado gasolineras en el rango");
+            if(interestPoint != null){
+                view.showInfoMessage("No se han encontrado gasolineras en el rango");
+            }else{
+                view.showLoadError();
+            }
         } else {
             view.showLoadCorrect(gasStations.size());
         }

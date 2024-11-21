@@ -7,13 +7,11 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
@@ -21,7 +19,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -64,9 +61,10 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     private static final String PRICE_FORMAT = "%.2f €/l";
 
     private View popupView;
-    PopupWindow popupWindow;
+    android.app.AlertDialog popupWindow;
     private AlertDialog alertDialog;
     boolean[] selectcionArray;
+
 
     /** The presenter of this view */
     private MainPresenter presenter;
@@ -263,17 +261,15 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
     private void createPopUp(int layoutId) {
         // Crear el layout del Popup
-        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainView.this);
+        LayoutInflater inflater = getLayoutInflater();
         popupView = inflater.inflate(layoutId, null);
-        int width = ViewGroup.LayoutParams.MATCH_PARENT;
-        int height = ViewGroup.LayoutParams.MATCH_PARENT;
-        boolean focusable = true; // Permite al usuario interactuar con los elementos del popup
-        popupWindow = new PopupWindow(popupView, width, height, focusable);
+        builder.setView(popupView);
+        popupWindow = builder.create();
 
 
-        // Muestra el PopupWindow en el centro de la pantalla
-        LinearLayout rootLayout = findViewById(R.id.main);
-        popupWindow.showAtLocation(rootLayout, Gravity.CENTER, 0, 0);
+        // Muestra el AlertDialog
+        popupWindow.show();
     }
 
     /**

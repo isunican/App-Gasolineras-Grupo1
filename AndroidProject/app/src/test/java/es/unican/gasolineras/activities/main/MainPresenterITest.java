@@ -2,9 +2,14 @@ package es.unican.gasolineras.activities.main;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import static es.unican.gasolineras.utils.MockRepositories.getEmptyRepository;
+import static es.unican.gasolineras.utils.MockRepositories.getFailureRepository;
+import static es.unican.gasolineras.utils.MockRepositories.getTestRepository;
 
 import android.content.Context;
 
@@ -22,6 +27,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -45,6 +51,7 @@ public class MainPresenterITest {
     final IGasolinerasRepository repository2 = MockRepositories.getTestRepository(context, R.raw.gasolineras_test_505739);
     final IGasolinerasRepository repository3 = MockRepositories.getTestRepository(context, R.raw.gasolineras_filtro_tipo_test);
 
+    private IGasolinerasRepository repo;
 
     @Mock
     private IMainContract.View view;
@@ -54,6 +61,9 @@ public class MainPresenterITest {
     private IMainContract.View mockMainView2;
 
     private IMainContract.Presenter sut;
+
+    private IGasStationsDAO gasStationsDAO;
+
     @Captor
     ArgumentCaptor<List<Gasolinera>> listCaptor;
 
@@ -61,7 +71,7 @@ public class MainPresenterITest {
     public void setUp() {
         MyFuelDatabase db = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(),MyFuelDatabase.class)
                 .allowMainThreadQueries().build();
-        IGasStationsDAO gasStationsDAO = db.getGasStationsDAO();
+        gasStationsDAO = db.getGasStationsDAO();
 
         MockitoAnnotations.openMocks(this);
         when(view.getGasolinerasRepository()).thenReturn(repository);
@@ -223,4 +233,218 @@ public class MainPresenterITest {
         // tempListSelection = null
         Assert.assertNull(sut.getTempListSelection());
     }
+
+    // IP2.a
+    @Test
+    public void onLoadWithConnectionAndNoPersistenceSuccess() {
+        MockitoAnnotations.openMocks(this);
+        // Obtenemos el repositorio de las gasolineras, con el getTestRepository (llamada al onSuccess).
+        repo = getTestRepository(context, R.raw.gasolineras_us509051_lista2);
+        when(mockMainView.getGasolinerasRepository()).thenReturn(repo);
+        when(mockMainView.getGasolinerasDAO()).thenReturn(gasStationsDAO);
+
+        sut = new MainPresenter();
+        gasStationsDAO.deleteAll();
+        sut.init(mockMainView);
+
+        assertEquals("CEPSA", gasStationsDAO.getAll().get(0).getRotulo());
+        assertEquals("REPSOL", gasStationsDAO.getAll().get(1).getRotulo());
+
+        verify(mockMainView).updateLocalDBDateRegister();
+
+        ArgumentCaptor<List<Gasolinera>> captor = ArgumentCaptor.forClass(List.class);
+        verify(mockMainView).showStations(captor.capture());
+        List<Gasolinera> mostradas = captor.getValue();
+        assertEquals(2, mostradas.size());
+        assertEquals("CEPSA", mostradas.get(0).getRotulo());
+        assertEquals("REPSOL", mostradas.get(1).getRotulo());
+
+        verify(mockMainView).showLoadCorrect(2);
+
+    }
+
+    // Caso IP2.b
+    @Test
+    public void onLoadWithConnectionAndPersistenceBeforeSuccess() {
+
+        // Creamos las gasolineras con su marca y las metemos en la DAO.
+        Gasolinera g1 = new Gasolinera();
+        g1.setId("1");
+        g1.setRotulo("PETROPRIX");
+        Gasolinera g2 = new Gasolinera();
+        g1.setId("2");
+        g2.setRotulo("BALLENOIL");
+        gasStationsDAO.deleteAll();
+        gasStationsDAO.addGasStation(g1);
+        gasStationsDAO.addGasStation(g2);
+
+        MockitoAnnotations.openMocks(this);
+        // Obtenemos el repositorio de las gasolineras, con el getTestRepository (llamada al onSuccess).
+        repo = getTestRepository(context, R.raw.gasolineras_us509051_lista2);
+        when(mockMainView.getGasolinerasRepository()).thenReturn(repo);
+        when(mockMainView.getGasolinerasDAO()).thenReturn(gasStationsDAO);
+
+        sut = new MainPresenter();
+        sut.init(mockMainView);
+
+        assertEquals("CEPSA", gasStationsDAO.getAll().get(0).getRotulo());
+        assertEquals("REPSOL", gasStationsDAO.getAll().get(1).getRotulo());
+
+        verify(mockMainView).updateLocalDBDateRegister();
+
+        ArgumentCaptor<List<Gasolinera>> captor = ArgumentCaptor.forClass(List.class);
+        verify(mockMainView).showStations(captor.capture());
+        List<Gasolinera> mostradas = captor.getValue();
+        assertEquals(2, mostradas.size());
+        assertEquals("CEPSA", mostradas.get(0).getRotulo());
+        assertEquals("REPSOL", mostradas.get(1).getRotulo());
+
+        verify(mockMainView).showLoadCorrect(2);
+
+    }
+
+    // Caso UP1.c
+    @Test
+    public void onLoadWithoutConnectionAndWithPersistenceOnFailure() {
+
+        // Creamos las gasolineras con su marca y las metemos en la DAO.
+        Gasolinera g1 = new Gasolinera();
+        g1.setId("1");
+        g1.setRotulo("PETROPRIX");
+        Gasolinera g2 = new Gasolinera();
+        g1.setId("2");
+        g2.setRotulo("BALLENOIL");
+        gasStationsDAO.deleteAll();
+        gasStationsDAO.addGasStation(g1);
+        gasStationsDAO.addGasStation(g2);
+
+        MockitoAnnotations.openMocks(this);
+        // Obtenemos el repositorio con llamada en onfailure
+        repo = getFailureRepository();
+        when(mockMainView.getGasolinerasRepository()).thenReturn(repo);
+        when(mockMainView.getGasolinerasDAO()).thenReturn(gasStationsDAO);
+
+        // Simulamos la fecha de ultima actualizacion.
+        String simulatedDate = "17/11/2024";
+        when(mockMainView.getLocalDBDateRegister()).thenReturn(simulatedDate);
+
+        sut = new MainPresenter();
+        sut.init(mockMainView);
+
+        // Verificamos que no se actualiza la BBDD
+        verify(mockMainView, never()).updateLocalDBDateRegister();
+        assertEquals("PETROPRIX", gasStationsDAO.getAll().get(0).getRotulo());
+        assertEquals("BALLENOIL", gasStationsDAO.getAll().get(1).getRotulo());
+
+        ArgumentCaptor<List<Gasolinera>> captor = ArgumentCaptor.forClass(List.class);
+        verify(mockMainView).showStations(captor.capture());
+        List<Gasolinera> mostradas = captor.getValue();
+        assertEquals(2, mostradas.size());  // Aseguramos que la lista tiene dos elementos
+        assertEquals("PETROPRIX", mostradas.get(0).getRotulo());
+        assertEquals("BALLENOIL", mostradas.get(1).getRotulo());
+
+        // Verificamos que se muestra el mensaje correcto.
+        String expectedMessage = "Cargadas 2 gasolineras en fecha " + simulatedDate;
+        verify(mockMainView).showInfoMessage(expectedMessage);
+
+    }
+
+    // Caso IP2.d
+    @Test
+    public void onLoadWithoutConnectionAndNoPersistenceOnFailure() {
+        // Vaciamos la DAO
+        gasStationsDAO.deleteAll();
+
+        MockitoAnnotations.openMocks(this);
+
+        // Obtemos el repositorio que llama al onfailure
+        repo = getFailureRepository();
+        when(mockMainView.getGasolinerasRepository()).thenReturn(repo);
+        when(mockMainView.getGasolinerasDAO()).thenReturn(gasStationsDAO);
+
+        sut = new MainPresenter();
+        sut.init(mockMainView);
+
+        // Verificamos que no se actualiza la BBDD
+        verify(mockMainView, never()).updateLocalDBDateRegister();
+        assertEquals(0, gasStationsDAO.getAll().size());
+
+        ArgumentCaptor<List<Gasolinera>> captor = ArgumentCaptor.forClass(List.class);
+        verify(mockMainView).showStations(captor.capture());
+        List<Gasolinera> mostradas = captor.getValue();
+        assertEquals(0, mostradas.size());
+
+        // Verificamos que se llama a view.showInfoMessage()
+        String expectedMessage = "No hay datos guardados de gasolineras";
+        verify(mockMainView).showInfoMessage(expectedMessage);
+    }
+
+    // Caso IP2.e, no se hace por los errores en BBDD.
+
+    // Caso UP1.f, no se hace por los errores en BBDD.
+
+    // IP2.g
+    @Test
+    public void onLoadWithEmptyDatabaseAndEmptyAPIResponse() {
+        // Vaciamos la DAO
+        gasStationsDAO.deleteAll();
+
+        MockitoAnnotations.openMocks(this);
+
+        // Obtenemos el repositorio vacio
+        repo = getEmptyRepository();
+        when(mockMainView.getGasolinerasRepository()).thenReturn(repo);
+        when(mockMainView.getGasolinerasDAO()).thenReturn(gasStationsDAO);
+
+        // Inicializamos el presenter
+        sut.init(mockMainView);
+
+        // Verificamos que se llama a updateLocalDBDateRegister() para actualizar la fecha de la base de datos
+        verify(mockMainView).updateLocalDBDateRegister();
+
+        // Verificamos que se llama a showStations con una lista vacía
+        verify(mockMainView).showStations(new ArrayList<Gasolinera>());  // Lista vacía
+
+        // Verificamos que se muestra el mensaje con error de carga, ya que muestra 0 gasolineras.
+        verify(mockMainView).showLoadError();
+
+    }
+
+    // IP2.h
+    @Test
+    public void onLoadWithDatabaseAndEmptyAPIResponse() {
+        // Creamos las gasolineras con su marca y las metemos en la DAO.
+        Gasolinera g1 = new Gasolinera();
+        g1.setId("1");
+        g1.setRotulo("PETROPRIX");
+        Gasolinera g2 = new Gasolinera();
+        g1.setId("2");
+        g2.setRotulo("BALLENOIL");
+        gasStationsDAO.deleteAll();
+        gasStationsDAO.addGasStation(g1);
+        gasStationsDAO.addGasStation(g2);
+
+        // Obtenemos el repositorio vacio
+        repo = getEmptyRepository();
+        when(mockMainView.getGasolinerasRepository()).thenReturn(repo);
+        when(mockMainView.getGasolinerasDAO()).thenReturn(gasStationsDAO);
+
+        // Inicializamos el presenter
+        sut.init(mockMainView);
+
+        // Verificamos que se vacia la dao
+        verify(mockMainView).updateLocalDBDateRegister();
+        assertEquals(0, gasStationsDAO.getAll().size());
+
+        // Verificamos que se llama a view.showStations() con la lista vacia
+        ArgumentCaptor<List<Gasolinera>> captor = ArgumentCaptor.forClass(List.class);
+        verify(mockMainView).showStations(captor.capture());
+        List<Gasolinera> mostradas = captor.getValue();
+        assertEquals(0, mostradas.size());
+
+        // Verificamos que se muestra el mensaje con error de carga, ya que muestra 0 gasolineras.
+        verify(mockMainView).showLoadError();
+
+    }
+
 }
