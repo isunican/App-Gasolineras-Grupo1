@@ -105,7 +105,7 @@ public class CreateInterestPointsSuccessUITest {
 
         // Add the point to the list
         expectedPoints.add(
-                new InterestPoint("Zonal norte", "#808080", 40.0637, 82.3467, 20)
+                new InterestPoint("Zona norte", "#808080", 40.0637, 82.3467, 20)
         );
 
         // Verify each interest point meets the requirements using a loop

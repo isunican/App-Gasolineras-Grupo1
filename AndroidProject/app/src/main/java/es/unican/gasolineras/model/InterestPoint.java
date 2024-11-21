@@ -222,6 +222,12 @@ public class InterestPoint implements Parcelable {
         return l;
     }
 
+    public Location getLocation(Location l) {
+        l.setLatitude(this.latitude);
+        l.setLongitude(this.longitude);
+        return l;
+    }
+
     /**
      * Return if a gas station is in the interest point.
      *
@@ -232,6 +238,12 @@ public class InterestPoint implements Parcelable {
     public boolean isGasStationInRadius(Gasolinera g) {
         if (g == null) return false;
         float distance = this.getLocation().distanceTo(g.getLocation());
+        return distance <= (this.radius * 1000);
+    }
+
+    public boolean isGasStationInRadius(Gasolinera g, Location l) {
+        if (g == null) return false;
+        float distance = this.getLocation(l).distanceTo(g.getLocation());
         return distance <= (this.radius * 1000);
     }
 
