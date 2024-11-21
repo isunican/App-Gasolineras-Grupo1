@@ -14,6 +14,7 @@ import static es.unican.gasolineras.utils.MockRepositories.getFailureRepository;
 import static es.unican.gasolineras.utils.MockRepositories.getTestRepository;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteException;
 
 import androidx.test.core.app.ApplicationProvider;
 
@@ -25,7 +26,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -498,10 +498,6 @@ public class MainPresenterTest {
         // Inicializamos el sut (presenter)
         presenter.init(mockView);
 
-        // Añadimos las gasolineras a la lista de gasStations que retorna la DAO al llamar al getAll.
-        gasStations.add(g1);
-        gasStations.add(g2);
-
         verify(mockView).updateLocalDBDateRegister();
 
         // Comprobar que se muestran las gasolineras deseadas
@@ -532,10 +528,6 @@ public class MainPresenterTest {
         Gasolinera g2 = new Gasolinera();
         g2.setRotulo("BALLENOIL");
 
-        // Añadimos las gasolineras a la lista de gasStations que retorna la DAO al llamar al getAll.
-        gasStations.add(g1);
-        gasStations.add(g2);
-
         // Obtenemos el repositorio de las gasolineras, con el getTestRepository (llamada al onSuccess).
         repository = getTestRepository(context, R.raw.gasolineras_us509051_lista2);
         when(mockView.getGasolinerasRepository()).thenReturn(repository);
@@ -557,7 +549,7 @@ public class MainPresenterTest {
         ArgumentCaptor<List<Gasolinera>> captor = ArgumentCaptor.forClass(List.class);
         verify(mockView).showStations(captor.capture());
         List<Gasolinera> mostradas = captor.getValue();
-        assertEquals(2, mostradas.size());  // Aseguramos que la lista tiene dos elementos
+        assertEquals(2, mostradas.size());
         assertEquals("CEPSA", mostradas.get(0).getRotulo());
         assertEquals("REPSOL", mostradas.get(1).getRotulo());
 
@@ -665,8 +657,8 @@ public class MainPresenterTest {
         when(mockView.getGasolinerasDAO()).thenReturn(mockGasStationsDAO);
 
         // Simulamos que al intentar acceder a la base de datos, se lanza una SQLException
-        // Envuelvo la SQLException en una RuntimeException para evitar el error de comprobación de excepciones chequeadas
-        when(mockGasStationsDAO.getAll()).thenThrow(new RuntimeException(new SQLException("Error de lectura en la base de datos")));
+        // Se ha usado un SQLiteExcepcion en lugar de SQLException envuelta en RuntimeException.
+        when(mockGasStationsDAO.getAll()).thenThrow(new SQLiteException("Error de lectura en la base de datos"));
 
         presenter.init(mockView);
 
@@ -704,8 +696,8 @@ public class MainPresenterTest {
         when(mockGasStationsDAO.getAll()).thenReturn(gasStations);
         when(mockView.getLocalDBDateRegister()).thenReturn(simulatedDate);
 
-        // Simulamos el fallo en la escritura a la base de datos (simulamos una SQLException), mediante un doThrow ya que es void.
-        doThrow(new RuntimeException(new SQLException("Error al guardar en la base de datos"))).when(mockGasStationsDAO).addGasStation(any());
+        // // Se ha usado un SQLiteExcepcion en lugar de SQLException envuelta en RuntimeException, para diferenciar la excepcion de BBDD en la implementacion (el mensaje)
+        doThrow(new SQLiteException("Error al guardar datos en la base de datos")).when(mockGasStationsDAO).addGasStation(any());
 
         // Inicializamos el presenter
         presenter.init(mockView);
@@ -729,7 +721,7 @@ public class MainPresenterTest {
         verify(mockView).showLoadCorrect(2);
 
         // Verificamos que se llama a showLoadError() notificando el error de BBDD
-        verify(mockView).showInfoMessage("Error al guardar datos de gasolineras en la base de datos");
+        verify(mockView).showInfoMessage("Error al guardar datos en la base de datos");
 
     }
 
@@ -802,4 +794,5 @@ public class MainPresenterTest {
         // Verificamos que se muestra el mensaje con error de carga, ya que muestra 0 gasolineras.
         verify(mockView).showLoadError();
     }
+
 }

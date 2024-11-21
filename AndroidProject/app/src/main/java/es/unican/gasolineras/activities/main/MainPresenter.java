@@ -1,5 +1,7 @@
 package es.unican.gasolineras.activities.main;
 
+import android.database.sqlite.SQLiteException;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -549,8 +551,10 @@ public class MainPresenter implements IMainContract.Presenter {
             public void onSuccess(List<Gasolinera> stations) {
                 try {
                     persistGasStationsOnLocalDB(stations);
-                } catch (Exception exception){
-                    view.showInfoMessage("Error al guardar datos de gasolineras en la base de datos");
+                } catch (SQLiteException exception1) {
+                    view.showInfoMessage("Error al guardar datos en la base de datos");
+                }catch (Exception exception){
+                    view.showInfoMessage("Error al mostrar las gasolineras");
                 } finally {
                     initialiceGasStationsList(stations);
                 }
@@ -581,11 +585,10 @@ public class MainPresenter implements IMainContract.Presenter {
     private void persistGasStationsOnLocalDB(List<Gasolinera> gasStations) {
         IGasStationsDAO gasStationsDAO = view.getGasolinerasDAO();
         gasStationsDAO.deleteAll();
-        if (!gasStations.isEmpty()) {
-            for (Gasolinera gasStation : gasStations) {
-                gasStationsDAO.addGasStation(gasStation);
-            }
+        for (Gasolinera gasStation : gasStations) {
+            gasStationsDAO.addGasStation(gasStation);
         }
+
         view.updateLocalDBDateRegister();
     }
 
