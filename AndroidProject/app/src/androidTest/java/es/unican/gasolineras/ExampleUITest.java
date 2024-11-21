@@ -1,7 +1,7 @@
 package es.unican.gasolineras;
 
 import static org.junit.Assert.assertEquals;
-import static es.unican.gasolineras.utils.MockRepositories.getTestRepository;
+import static es.unican.gasolineras.Utils.MockRepositories.getTestRepository;
 
 import android.content.Context;
 

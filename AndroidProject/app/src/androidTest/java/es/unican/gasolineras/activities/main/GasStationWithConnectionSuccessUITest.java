@@ -3,7 +3,7 @@ package es.unican.gasolineras.activities.main;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static es.unican.gasolineras.utils.MockRepositories.getTestRepository;
+import static es.unican.gasolineras.Utils.MockRepositories.getTestRepository;
 
 import android.content.Context;
 import android.util.Log;
