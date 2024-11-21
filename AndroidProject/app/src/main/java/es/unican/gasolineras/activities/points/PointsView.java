@@ -22,16 +22,16 @@ import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import es.unican.gasolineras.R;
-
 import es.unican.gasolineras.activities.main.MainView;
 import es.unican.gasolineras.activities.points.inputFilters.LatitudInputFilter;
 import es.unican.gasolineras.activities.points.inputFilters.LongitudInputFilter;
 import es.unican.gasolineras.activities.points.inputFilters.RadiusInputFilter;
+import es.unican.gasolineras.common.database.IInterestPointsDAO;
+import es.unican.gasolineras.common.database.MyFuelDatabase;
 import es.unican.gasolineras.common.exceptions.LatitudInvalidaException;
 import es.unican.gasolineras.common.exceptions.LongitudInvalidaException;
 import es.unican.gasolineras.common.exceptions.RadioInvalidoException;
 import es.unican.gasolineras.model.InterestPoint;
-import es.unican.gasolineras.roomDAO.InterestPointsDAO;
 
 /**
  * The points view of the application. It shows a list of interest points.
@@ -78,8 +78,8 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
      * @see IPointsContract.View#getPointsDao()
      */
     @Override
-    public InterestPointsDAO getPointsDao() {
-        return InterestPointsDAO.getInstance(this);
+    public IInterestPointsDAO getPointsDao() {
+        return MyFuelDatabase.getInstance(this).getInterestPointsDAO();
     }
 
     /**
@@ -91,6 +91,10 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         ListView list = findViewById(R.id.lvPoints);
         PointsArrayAdapter adapter = new PointsArrayAdapter(this, points, (point) -> presenter.onTrashIconClicked(point.getId()), deleteMode);
         list.setAdapter(adapter);
+        list.setOnItemClickListener((parent, view, position, id) -> {
+            InterestPoint point = (InterestPoint) parent.getItemAtPosition(position);
+            presenter.onPointOfInterestClicked(point);
+        });
     }
 
     /**
@@ -110,6 +114,14 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
     }
 
     /**
+     * @see IPointsContract.View#showDeleteError()
+     */
+    @Override
+    public void showDeleteError() {
+        Toast.makeText(this, "Error eliminando el punto de interes", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
      * @see IPointsContract.View#showInfoMessage(String)
      */
     public void showInfoMessage(String message) {
@@ -122,7 +134,9 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
     @Override
     public void showMainPage() {
         Intent intent = new Intent(this, MainView.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
+        finish();
     }
 
     /**
@@ -147,10 +161,16 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         EditText nameTextView = newPIView.findViewById(R.id.tvPIName);
         EditText longTextView = newPIView.findViewById(R.id.tvPILongitud);
         longTextView.setFilters(new InputFilter[]{new LongitudInputFilter()});
+        autocompletarDecimales(longTextView);
+
         EditText latTextView = newPIView.findViewById(R.id.tvPILatitud);
         latTextView.setFilters(new InputFilter[]{new LatitudInputFilter()});
+        autocompletarDecimales(latTextView);
+
+
         EditText radiusTextView = newPIView.findViewById(R.id.tvPIRadio);
         radiusTextView.setFilters(new InputFilter[]{new RadiusInputFilter()});
+        autocompletarUnDecimal(radiusTextView);
 
         View acceptButton = newPIView.findViewById(R.id.newPI_accept_button);
 
@@ -166,13 +186,16 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
             }else if(radiusTextView.getText().length() == 0){
                 radiusTextView.setError("El campo radio es necesario");
             }else {
+                double latitud = Double.parseDouble(latTextView.getText().toString());
+                double longitud = Double.parseDouble(longTextView.getText().toString());
+
 
                 //Si los campos no estan vacios crea el punto de interes
                 InterestPoint newPointOfInterest = new InterestPoint(
                         nameTextView.getText().toString(),
                         (Color) colorPickerButton.getTag(),
-                        Double.parseDouble(latTextView.getText().toString()),
-                        Double.parseDouble(longTextView.getText().toString()),
+                        latitud,
+                        longitud,
                         Double.parseDouble(radiusTextView.getText().toString())
                 );
                 try{
@@ -188,13 +211,6 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         newPIDialog.show();
         newPIDialog.setCancelable(false);
         Objects.requireNonNull(newPIDialog.getWindow()).setLayout(WRAP_CONTENT,WRAP_CONTENT);
-    }
-
-    @Override
-    public void launchMainActivityWith(InterestPoint selectedIP) {
-        Intent intent = new Intent(this, MainView.class);
-        intent.putExtra("interestPoint", (CharSequence) selectedIP); // Agrega un String
-        startActivity(intent);
     }
 
     /**
@@ -260,6 +276,11 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         AlertDialog dialog = builder.create();
         dialog.setCancelable(false);  // Evita que el diálogo se cierre al hacer clic fuera de él
         dialog.show();
+    }
+
+    @Override
+    public void showInfoDeletedPoint(String name) {
+        Toast.makeText(this, "Se ha eliminado el punto de interes '"+name+"'", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -338,5 +359,59 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         Color color = Color.valueOf(colorArgb);
         btColorPicker.setTag(color);
         colorPickerDialog.cancel();
+    }
+
+    @Override
+    public void launchMainActivityWith(InterestPoint selectedIP) {
+        Intent intent = new Intent(this, MainView.class);
+        intent.putExtra("interestPoint", selectedIP); // Agrega un String
+        startActivity(intent);
+    }
+
+
+    private void autocompletarDecimales(EditText editText) {
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                String valor = editText.getText().toString().trim();
+                if (!valor.isEmpty()) {
+                    if (valor.contains(".")) {
+                        String[] partes = valor.split("\\.");
+                        String parteEntera = partes[0];
+                        String parteDecimal = partes.length > 1 ? partes[1] : "";
+                        //Si tiene menos de 4 decimales completa
+                        if (parteDecimal.length() < 4) {
+                            parteDecimal = parteDecimal + "0000".substring(parteDecimal.length());
+                        }
+                        editText.setText(String.format("%s.%s", parteEntera, parteDecimal));
+                    } else {
+                        editText.setText(valor + ".0000");
+                    }
+                }
+            }
+        });
+    }
+
+    private void autocompletarUnDecimal(EditText editText) {
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) { // Cuando pierde el foco
+                String valor = editText.getText().toString().trim();
+                if (!valor.isEmpty()) {
+                    if (valor.contains(".")) {
+                        String[] partes = valor.split("\\.");
+                        String parteEntera = partes[0];
+                        String parteDecimal = partes.length > 1 ? partes[1] : "";
+                        // Si tiene menos de 1 decimal, completa con ceros
+                        if (parteDecimal.length() < 1) {
+                            parteDecimal = parteDecimal + "0".substring(parteDecimal.length());
+                        }
+                        // Formatear con la parte entera y 1 decimal
+                        editText.setText(String.format("%s.%s", parteEntera, parteDecimal.substring(0, 1)));
+                    } else {
+                        // Si no tiene punto decimal, añade ".0"
+                        editText.setText(valor + ".0");
+                    }
+                }
+            }
+        });
     }
 }

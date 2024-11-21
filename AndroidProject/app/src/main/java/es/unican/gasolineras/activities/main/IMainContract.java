@@ -2,10 +2,12 @@ package es.unican.gasolineras.activities.main;
 
 import java.util.List;
 
-import es.unican.gasolineras.common.IFilter;
 import es.unican.gasolineras.common.FuelTypeEnum;
+import es.unican.gasolineras.common.IFilter;
 import es.unican.gasolineras.common.OrderMethodsEnum;
+import es.unican.gasolineras.common.database.IGasStationsDAO;
 import es.unican.gasolineras.model.Gasolinera;
+import es.unican.gasolineras.model.InterestPoint;
 import es.unican.gasolineras.model.OrderByPrice;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 
@@ -258,6 +260,14 @@ public interface IMainContract {
         public void showLoadCorrect(int stations);
 
         /**
+         * The view is requested to display a notification indicating  that the gas
+         * stations were loaded correctly and the date of the saved data.
+         * Only the Presenter should call this method
+         * @param stations
+         */
+        void showLoadCorrectFromLocalDB(int stations);
+
+        /**
          * The view is requested to display a notificacion indicating that the gas
          * stations were not loaded correctly.
          * Only the Presenter should call this method
@@ -287,7 +297,7 @@ public interface IMainContract {
          * The view is requested to open the point activity.
          * Only the Presenter should call this method
          */
-        public void showPointsActivity();
+        public void showPointsActivity(boolean deleteActual);
 
         /**
          * The view is requested to open the filters popup.
@@ -329,7 +339,7 @@ public interface IMainContract {
          * The view is requested to to update the filters seekbar progress.
          * Only the Presenter and View should call this method
          */
-        public void updateFiltersPopupSeekBarProgressMaxPrice(int progress);
+        public void updateFiltersPopupSeekBarProgressMaxPrice(int progress, float minPriceLimit, float maxPriceLimit);
 
         /**
          * The view is requested to to update the selection of a fuel type selector.
@@ -340,10 +350,10 @@ public interface IMainContract {
         public void updateFiltersPopUpSelection(int position, boolean value);
 
         /**
-         * The view is requested to close the filters popup.
+         * The view is requested to close the popup managed by PopupWindow.
          * Only the Presenter should call this method
          */
-        public void closeFiltersPopUp();
+        public void closeActivePopUp();
 
 
         // Methods for the Ordering story user
@@ -351,19 +361,35 @@ public interface IMainContract {
          * The view is requested to open the filters popup.
          * Only the Presenter should call this method
          */
-
         public void showOrderPopUp(int typeIndex, int methodIndex);
-
-        /**
-         * The view is requested to close the filters popup
-         * Only the Presenter should call this method.
-         */
-
-        public void closeOrderPopUp();
 
         public String getConstantString(int id);
 
+        /**
+         * The view is requested to to show the interest point information.
+         * Only the Presenter should call this method
+         * @param ip the interest point
+         * @param loaded the number of gas stations in the interest point
+         */
+        public void showInterestPointInfo(InterestPoint ip, int loaded);
+        /**
+         * Returns a GasStationsDAO that can be called by the Presenter to retrieve or save gas stations.
+         * Only the Presenter should call this method
+         * @return instance of gasolinerasDAO for data extracion
+         */
+        IGasStationsDAO getGasolinerasDAO();
 
+        /**
+         *  The view is requested to update de Preference that stores
+         *  the date when the local database was updated
+         */
+        void updateLocalDBDateRegister();
 
+        /**
+         * The view is request to retrieve the date when the local database
+         * was updated
+         * @return date formatted as String when local database was updated
+         */
+        String getLocalDBDateRegister();
     }
 }

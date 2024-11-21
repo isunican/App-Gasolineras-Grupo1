@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import es.unican.gasolineras.common.database.IInterestPointsDAO;
 import es.unican.gasolineras.common.exceptions.LatitudInvalidaException;
 import es.unican.gasolineras.common.exceptions.LongitudInvalidaException;
 import es.unican.gasolineras.common.exceptions.RadioInvalidoException;
 import es.unican.gasolineras.model.InterestPoint;
-import es.unican.gasolineras.roomDAO.InterestPointsDAO;
 import es.unican.gasolineras.model.validators.InterestPointValidator;
 
 /**
@@ -21,7 +21,7 @@ public class PointsPresenter implements IPointsContract.Presenter {
     /** The view that is controlled by this presenter */
     private IPointsContract.View view;
     private List<InterestPoint> points;
-    private InterestPointsDAO ddbb;
+    private IInterestPointsDAO interestPointsDAO;
 
     /**
      * @see IPointsContract.Presenter#init(IPointsContract.View)
@@ -30,7 +30,7 @@ public class PointsPresenter implements IPointsContract.Presenter {
     public void init(IPointsContract.View view) {
         this.view = view;
         this.view.init();
-        ddbb = view.getPointsDao();
+        interestPointsDAO = view.getPointsDao();
         load();
     }
 
@@ -56,7 +56,7 @@ public class PointsPresenter implements IPointsContract.Presenter {
     public void onAcceptNewPointOfInterestClicked(InterestPoint newInterestPoint)
             throws LatitudInvalidaException, LongitudInvalidaException, RadioInvalidoException {
         InterestPointValidator.checkFields(newInterestPoint);
-        ddbb.getMyInterestPointsDAO().addInterestPoint(newInterestPoint);
+        interestPointsDAO.addInterestPoint(newInterestPoint);
         load();
     }
 
@@ -97,9 +97,20 @@ public class PointsPresenter implements IPointsContract.Presenter {
      */
     @Override
     public void onConfirmDeletionClicked(int idSelectedPoint) {
-        InterestPoint removedPoint = ddbb.getMyInterestPointsDAO().getInterestPointById(idSelectedPoint);
-        ddbb.getMyInterestPointsDAO().deleteInterestPoint(removedPoint);
-        load();
+        InterestPoint removedPoint = view.getPointsDao().getInterestPointById(idSelectedPoint);
+        if(removedPoint!= null){
+            try {
+                view.getPointsDao().deleteInterestPoint(removedPoint);
+                points.remove(removedPoint);
+                view.showPoints(points);
+                view.showInfoDeletedPoint(removedPoint.getName());
+            } catch (SQLiteException e) {
+                view.showDeleteError();
+            }
+        }else{
+            view.showDeleteError();
+        }
+
     }
 
     /**
@@ -107,7 +118,7 @@ public class PointsPresenter implements IPointsContract.Presenter {
      */
     private void load() {
         try {
-        points = ddbb.getMyInterestPointsDAO().getInterestPoints();
+        points = interestPointsDAO.getInterestPoints();
         } catch (SQLiteException e) {
             view.showLoadError();
             points = new ArrayList<>();

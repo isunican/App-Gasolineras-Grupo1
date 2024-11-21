@@ -1,7 +1,15 @@
 package es.unican.gasolineras.activities.main;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import android.content.Context;
 
+import androidx.room.Room;
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.Assert;
@@ -12,25 +20,20 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import org.robolectric.RobolectricTestRunner;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import es.unican.gasolineras.R;
 import es.unican.gasolineras.common.FuelTypeEnum;
-import es.unican.gasolineras.model.OrderByPrice;
-import java.util.Arrays;
-import java.util.Collections;
-
 import es.unican.gasolineras.common.IFilter;
+import es.unican.gasolineras.common.database.IGasStationsDAO;
+import es.unican.gasolineras.common.database.MyFuelDatabase;
 import es.unican.gasolineras.model.Filter;
 import es.unican.gasolineras.model.Gasolinera;
+import es.unican.gasolineras.model.OrderByPrice;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 import es.unican.gasolineras.utils.MockRepositories;
 
@@ -42,6 +45,7 @@ public class MainPresenterITest {
     final IGasolinerasRepository repository2 = MockRepositories.getTestRepository(context, R.raw.gasolineras_test_505739);
     final IGasolinerasRepository repository3 = MockRepositories.getTestRepository(context, R.raw.gasolineras_filtro_tipo_test);
 
+
     @Mock
     private IMainContract.View view;
     @Mock
@@ -50,18 +54,26 @@ public class MainPresenterITest {
     private IMainContract.View mockMainView2;
 
     private IMainContract.Presenter sut;
-
     @Captor
     ArgumentCaptor<List<Gasolinera>> listCaptor;
 
     @Before
     public void setUp() {
+        MyFuelDatabase db = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(),MyFuelDatabase.class)
+                .allowMainThreadQueries().build();
+        IGasStationsDAO gasStationsDAO = db.getGasStationsDAO();
+
         MockitoAnnotations.openMocks(this);
         when(view.getGasolinerasRepository()).thenReturn(repository);
         when(mockMainView.getGasolinerasRepository()).thenReturn(repository2);
         when(mockMainView2.getGasolinerasRepository()).thenReturn(repository3);
+        when(view.getGasolinerasDAO()).thenReturn(gasStationsDAO);
+        when(mockMainView.getGasolinerasDAO()).thenReturn(gasStationsDAO);
+        when(mockMainView2.getGasolinerasDAO()).thenReturn(gasStationsDAO);
         sut = new MainPresenter();
         sut.init(view);
+
+
     }
 
     @Test
@@ -102,7 +114,7 @@ public class MainPresenterITest {
         assertEquals("13606", listCaptor.getValue().get(0).getId());
         assertEquals("1048", listCaptor.getValue().get(3).getId());
         verify(mockMainView, times (2)).showLoadCorrect(eq(7));
-        verify(mockMainView, times(1)).closeOrderPopUp();
+        verify(mockMainView, times(1)).closeActivePopUp();
 
         //ID1.b
         sut.setOrderByPrice(createOrderByPrice(FuelTypeEnum.GASOLEO_A, false));
@@ -114,7 +126,7 @@ public class MainPresenterITest {
         assertEquals("1048", listCaptor.getValue().get(0).getId());
         assertEquals("1039", listCaptor.getValue().get(3).getId());
         verify(mockMainView, times (3)).showLoadCorrect(eq(7));
-        verify(mockMainView, times(2)).closeOrderPopUp();
+        verify(mockMainView, times(2)).closeActivePopUp();
     }
 
     private OrderByPrice createOrderByPrice(FuelTypeEnum fuelType, Boolean ascending) {
@@ -139,24 +151,20 @@ public class MainPresenterITest {
                 .setFuelTypes(Collections.singletonList(FuelTypeEnum.GASOLINA_95E5))
         );
         sut.onFiltersPopUpAcceptClicked();
-        verify(mockMainView2).closeFiltersPopUp();
+        verify(mockMainView2).closeActivePopUp();
         // Comprobamos los metodos internos de load() con las gasolineras ya filtradas
         // Son 2 veces porque "sut.init(view);" llama al load()
-        verify(mockMainView2, times(2)).getGasolinerasRepository();
-        // {CEPSA, REPSOL, PETRONOR, PETRONOR V2, GALP}
+        verify(mockMainView2, times(1)).getGasolinerasRepository();
         verify(mockMainView2).showLoadCorrect(rotulos.length);
         verify(mockMainView2, times(2)).showStations(listCaptor.capture());
         for (int i = 0; i < rotulos.length; i++) {
             Assert.assertEquals(rotulos[i], listCaptor.getValue().get(i).getRotulo());
         }
-        // Filter = {Gasolina95E5}
         IFilter f = sut.getFilter();
         Assert.assertEquals(1, f.getFuelTypes().size());
         Assert.assertEquals(FuelTypeEnum.GASOLINA_95E5, f.getFuelTypes().get(0));
-        // TempFilter = null
         IFilter tmpF = sut.getTempFilter();
         Assert.assertNull(tmpF);
-        // tempListSelection = null
         Assert.assertNull(sut.getTempListSelection());
     }
 
@@ -170,17 +178,15 @@ public class MainPresenterITest {
                 .setFuelTypes(Collections.singletonList(FuelTypeEnum.GASOLEO_A))
         );
         sut.onFiltersPopUpAcceptClicked();
-        verify(mockMainView2).closeFiltersPopUp();
+        verify(mockMainView2).closeActivePopUp();
         // Comprobamos los metodos internos de load() con las gasolineras ya filtradas
         // Son 2 veces porque "sut.init(view);" llama al load()
-        verify(mockMainView2, times(2)).getGasolinerasRepository();
-        // {CEPSA, REPSOL, PETRONOR, PETRONOR V2, GALP}
+        verify(mockMainView2, times(1)).getGasolinerasRepository();
         verify(mockMainView2).showLoadCorrect(rotulos.length);
         verify(mockMainView2, times(2)).showStations(listCaptor.capture());
         for (int i = 0; i < rotulos.length; i++) {
             Assert.assertEquals(rotulos[i], listCaptor.getValue().get(i).getRotulo());
         }
-        // Filter = {GasoleoA}
         IFilter f = sut.getFilter();
         Assert.assertEquals(1, f.getFuelTypes().size());
         Assert.assertEquals(FuelTypeEnum.GASOLEO_A, f.getFuelTypes().get(0));
@@ -201,16 +207,14 @@ public class MainPresenterITest {
                 .setFuelTypes(Arrays.asList(FuelTypeEnum.GASOLEO_A, FuelTypeEnum.GASOLINA_95E5))
         );
         sut.onFiltersPopUpAcceptClicked();
-        verify(mockMainView2).closeFiltersPopUp();
+        verify(mockMainView2).closeActivePopUp();
         // Son 2 veces porque "sut.init(view);" llama al load()
-        verify(mockMainView2, times(2)).getGasolinerasRepository();
-        // {CEPSA, REPSOL, PETRONOR, PETRONOR V2, GALP}
+        verify(mockMainView2, times(1)).getGasolinerasRepository();
         verify(mockMainView2, times(2)).showLoadCorrect(6);
         verify(mockMainView2, times(2)).showStations(listCaptor.capture());
         for (int i = 0; i < rotulos.length; i++) {
             Assert.assertEquals(rotulos[i], listCaptor.getValue().get(i).getRotulo());
         }
-        // Filter = {Gasolina95E5, GasoleoA}
         IFilter f = sut.getFilter();
         Assert.assertEquals(Arrays.asList(FuelTypeEnum.GASOLEO_A, FuelTypeEnum.GASOLINA_95E5), f.getFuelTypes());
         // TempFilter = null

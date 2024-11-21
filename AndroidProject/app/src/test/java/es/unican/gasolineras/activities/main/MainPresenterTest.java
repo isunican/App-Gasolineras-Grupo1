@@ -1,5 +1,15 @@
 package es.unican.gasolineras.activities.main;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static es.unican.gasolineras.utils.MockRepositories.getTestRepository;
+
+import android.content.Context;
+
+import androidx.test.core.app.ApplicationProvider;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,21 +23,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
-
-
-import static es.unican.gasolineras.utils.MockRepositories.getTestRepository;
-
-import android.content.Context;
-
-import androidx.test.core.app.ApplicationProvider;
-
 import es.unican.gasolineras.R;
 import es.unican.gasolineras.common.BrandsEnum;
 import es.unican.gasolineras.common.IFilter;
+import es.unican.gasolineras.common.database.IGasStationsDAO;
 import es.unican.gasolineras.model.Filter;
 import es.unican.gasolineras.model.InterestPoint;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
@@ -40,6 +39,9 @@ public class MainPresenterTest {
     private IMainContract.View mockView;
     @Mock
     private List<Selection> mockTempListSelection;
+
+    @Mock
+    private IGasStationsDAO mockGasStationsDAO;
 
     @Mock
     private List<Selection> mockTempListType;
@@ -55,6 +57,7 @@ public class MainPresenterTest {
         repository = getTestRepository(context, R.raw.gasolineras_ccaa_06);
 
         when(mockView.getGasolinerasRepository()).thenReturn(repository);
+        when(mockView.getGasolinerasDAO()).thenReturn(mockGasStationsDAO);
         when(mockView.getConstantString(R.string.all_selections)).thenReturn("Todos");
 
 
@@ -107,7 +110,6 @@ public class MainPresenterTest {
         // Caso: Se selecciona "Todos"
         presenter.onFiltersPopUpBrandsOneSelected(0, true);
         presenter.onFiltersPopUpBrandsOneSelected(1, true);
-        //presenter.onFiltersPopUpBrandsOneSelected(2, false);
 
         verify(mockView).updateFiltersPopUpSelection(0, false);
 
@@ -118,7 +120,7 @@ public class MainPresenterTest {
 
     }
 
-    //Seleccionas las dos marcas y por eso se desmarcan y se marca TODOS
+    //Seleccionas las dos marcas y por eso se desmarcan y se marca "TODOS"
     @Test
     public void testOnFiltersPopUpBrandsOneSelected_SelectAllBrands() {
         presenter = new MainPresenter();
@@ -136,7 +138,6 @@ public class MainPresenterTest {
         presenter.onFiltersPopUpBrandsOneSelected(1, true);
         presenter.onFiltersPopUpBrandsOneSelected(2, true);
 
-        //verify(mockView).updateFiltersPopUpSelection(0, true);
         verify(mockView).updateFiltersPopUpSelection(1, false);
         verify(mockView).updateFiltersPopUpSelection(2, false);
 
@@ -147,7 +148,7 @@ public class MainPresenterTest {
 
     }
 
-    //Intento desmarcar el todos
+    //Intento desmarcar el "TODOS"
     @Test
     public void testOnFiltersPopUpBrandsOneSelected_UnselectAll() {
         presenter = new MainPresenter();
@@ -164,7 +165,6 @@ public class MainPresenterTest {
         // Caso: Se selecciona "Todos"
         presenter.onFiltersPopUpBrandsOneSelected(0, true);
         presenter.onFiltersPopUpBrandsOneSelected(0, false);
-        //presenter.onFiltersPopUpBrandsOneSelected(2, false);
 
         verify(mockView).updateFiltersPopUpSelection(0, true);
 
@@ -176,7 +176,7 @@ public class MainPresenterTest {
     }
 
 
-    //Desmarco uno y se marca el TODOS
+    //Desmarco uno y se marca el "TODOS"
     @Test
     public void testOnFiltersPopUpBrandsOneSelected_UnselectOne() {
         presenter = new MainPresenter();

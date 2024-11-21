@@ -1,6 +1,5 @@
-package es.unican.gasolineras;
+package es.unican.gasolineras.activities.main;
 
-import static org.junit.Assert.assertEquals;
 import static es.unican.gasolineras.utils.MockRepositories.getTestRepository;
 
 import android.content.Context;
@@ -21,7 +20,7 @@ import dagger.hilt.android.testing.BindValue;
 import dagger.hilt.android.testing.HiltAndroidRule;
 import dagger.hilt.android.testing.HiltAndroidTest;
 import dagger.hilt.android.testing.UninstallModules;
-import es.unican.gasolineras.activities.main.MainView;
+import es.unican.gasolineras.R;
 import es.unican.gasolineras.injection.RepositoriesModule;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 
