@@ -442,10 +442,7 @@ public class MainPresenterTest {
 
     }
 
-    @Test
-    public void inicializarUnPuntoConGasolineras() {
 
-    }
 
 
 
