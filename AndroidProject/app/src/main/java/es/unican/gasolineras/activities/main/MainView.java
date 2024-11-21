@@ -571,7 +571,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         TextView name = findViewById(R.id.ip_name_tv);
         name.setText(ip.getName());
         TextView radius = findViewById(R.id.ip_radius_tv);
-        radius.setText(String.format("Radio: %.1f km", ip.getRadius()));
+        radius.setText(String.format(Locale.US, "Radio: %.1f km", ip.getRadius()));
         TextView loadedTv = findViewById(R.id.ip_loaded_tv);
         loadedTv.setText(String.format("Encontradas: %d", loaded));
         ImageView img = findViewById(R.id.description_ip_image);

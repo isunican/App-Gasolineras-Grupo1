@@ -520,6 +520,10 @@ public class MainPresenter implements IMainContract.Presenter {
         return tempListSelection;
     }
 
+    /*
+    Error: se llama
+     */
+
     private void initialiceGasStationsList(List<Gasolinera> stations) {
         if (interestPoint != null) {
             stations = stations.stream()
@@ -602,7 +606,7 @@ public class MainPresenter implements IMainContract.Presenter {
         view.showStations(gasStations);
 
         if (gasStations.isEmpty()) {
-            view.showLoadError();
+            view.showInfoMessage("No se han encontrado gasolineras en el rango");
         } else {
             view.showLoadCorrect(gasStations.size());
         }

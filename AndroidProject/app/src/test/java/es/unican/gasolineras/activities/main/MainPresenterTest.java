@@ -1,5 +1,6 @@
 package es.unican.gasolineras.activities.main;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
@@ -28,6 +29,7 @@ import es.unican.gasolineras.common.BrandsEnum;
 import es.unican.gasolineras.common.IFilter;
 import es.unican.gasolineras.common.database.IGasStationsDAO;
 import es.unican.gasolineras.model.Filter;
+import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.model.InterestPoint;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 
@@ -59,9 +61,6 @@ public class MainPresenterTest {
         when(mockView.getGasolinerasRepository()).thenReturn(repository);
         when(mockView.getGasolinerasDAO()).thenReturn(mockGasStationsDAO);
         when(mockView.getConstantString(R.string.all_selections)).thenReturn("Todos");
-
-
-        //presenter = new MainPresenter(new InterestPoint())
 
     }
 
@@ -148,7 +147,7 @@ public class MainPresenterTest {
 
     }
 
-    //Intento desmarcar el "TODOS"
+    //Intento desmarcar el todos
     @Test
     public void testOnFiltersPopUpBrandsOneSelected_UnselectAll() {
         presenter = new MainPresenter();
@@ -165,6 +164,7 @@ public class MainPresenterTest {
         // Caso: Se selecciona "Todos"
         presenter.onFiltersPopUpBrandsOneSelected(0, true);
         presenter.onFiltersPopUpBrandsOneSelected(0, false);
+        //presenter.onFiltersPopUpBrandsOneSelected(2, false);
 
         verify(mockView).updateFiltersPopUpSelection(0, true);
 
@@ -176,7 +176,7 @@ public class MainPresenterTest {
     }
 
 
-    //Desmarco uno y se marca el "TODOS"
+    //Desmarco uno y se marca el TODOS
     @Test
     public void testOnFiltersPopUpBrandsOneSelected_UnselectOne() {
         presenter = new MainPresenter();
@@ -216,14 +216,6 @@ public class MainPresenterTest {
         presenter = new MainPresenter();
         presenter.init(mockView);
 
-        mockTempListSelection = new ArrayList<>(Arrays.asList(
-                new Selection("Todos", true),
-                new Selection("Marca1", false),
-                new Selection("Marca2", false)
-        ));
-
-        //  Inicializa la lista de selecciones de marcas
-        presenter.setTempListSelection(mockTempListSelection);
         IFilter f = new Filter()
                 .setGasBrands(Collections.singletonList(BrandsEnum.REPSOL));
         presenter.setTempFilter(f);
@@ -253,14 +245,6 @@ public class MainPresenterTest {
         presenter = new MainPresenter();
         presenter.init(mockView);
 
-        mockTempListSelection = new ArrayList<>(Arrays.asList(
-                new Selection("Todos", true),
-                new Selection("Marca1", false),
-                new Selection("Marca2", false)
-        ));
-
-        //  Inicializa la lista de selecciones de marcas
-        presenter.setTempListSelection(mockTempListSelection);
         IFilter f = new Filter();
         presenter.setTempFilter(f);
 
@@ -285,14 +269,6 @@ public class MainPresenterTest {
         presenter = new MainPresenter();
         presenter.init(mockView);
 
-        mockTempListSelection = new ArrayList<>(Arrays.asList(
-                new Selection("Todos", true),
-                new Selection("Marca1", false),
-                new Selection("Marca2", false)
-        ));
-
-        //  Inicializa la lista de selecciones de marcas
-        presenter.setTempListSelection(mockTempListSelection);
         mockTempListType = new ArrayList<>(Arrays.asList(
                 new Selection("Todos", false),
                 new Selection("Gasolina 95", false),
@@ -323,14 +299,6 @@ public class MainPresenterTest {
         presenter = new MainPresenter();
         presenter.init(mockView);
 
-        mockTempListSelection = new ArrayList<>(Arrays.asList(
-                new Selection("Todos", true),
-                new Selection("Marca1", false),
-                new Selection("Marca2", false)
-        ));
-
-        //  Inicializa la lista de selecciones de marcas
-        presenter.setTempListSelection(mockTempListSelection);
         mockTempListType = new ArrayList<>(Arrays.asList(
                 new Selection("Todos", true),
                 new Selection("Gasolina 95", false),
@@ -349,9 +317,6 @@ public class MainPresenterTest {
         assertTrue(listaPrueba.get(0).isSelected());
         assertFalse(listaPrueba.get(1).isSelected());
         assertFalse(listaPrueba.get(2).isSelected());
-
-
-
     }
 
 
@@ -359,6 +324,7 @@ public class MainPresenterTest {
     public void onFilterPopUpFuelTypesOneSelected_UD3_cTest() {
         presenter = new MainPresenter();
         presenter.init(mockView);
+
         mockTempListType = new ArrayList<>(Arrays.asList(
                 new Selection("Todos", true),
                 new Selection("Gasolina 95", false),
@@ -378,15 +344,13 @@ public class MainPresenterTest {
         assertFalse(listaPrueba.get(0).isSelected());
         assertFalse(listaPrueba.get(1).isSelected());
         assertTrue(listaPrueba.get(2).isSelected());
-
-
-
     }
 
     @Test
     public void onFilterPopUpFuelTypesOneSelected_UD3_dTest() {
         presenter = new MainPresenter();
         presenter.init(mockView);
+
         mockTempListType = new ArrayList<>(Arrays.asList(
                 new Selection("Todos", false),
                 new Selection("Gasolina 95", false),
@@ -408,15 +372,13 @@ public class MainPresenterTest {
         assertTrue(listaPrueba.get(0).isSelected());
         assertFalse(listaPrueba.get(1).isSelected());
         assertFalse(listaPrueba.get(2).isSelected());
-
-
-
     }
 
     @Test
     public void onFilterPopUpFuelTypesOneSelected_UD3_eTest() {
         presenter = new MainPresenter();
         presenter.init(mockView);
+
         mockTempListType = new ArrayList<>(Arrays.asList(
                 new Selection("Todos", false),
                 new Selection("Gasolina 95", false),
@@ -437,15 +399,72 @@ public class MainPresenterTest {
         assertTrue(listaPrueba.get(0).isSelected());
         assertFalse(listaPrueba.get(1).isSelected());
         assertFalse(listaPrueba.get(2).isSelected());
+    }
+
+    @Test
+    public void inicializarUnPuntoConGasolineras() {
+        //Creo el presenter con el constructor que me permite crear un punto de interés
+        presenter = new MainPresenter(new InterestPoint("Zona 1","#0000ff",43.3192,-4.2987,2));
+
+        //Preparo el repositorio para que devuelva la lista.
+        when(mockView.getGasolinerasRepository()).thenReturn(repository);
 
 
+        //Capturo para saber que devuelve el método showStations
+        ArgumentCaptor<List<Gasolinera>> captor = ArgumentCaptor.forClass(List.class);
+
+        //Inicializo el presenter.
+        presenter.init(mockView);
+
+        //Verifico que se llama al init.
+        verify(mockView).init();
+
+        //Capturo la información de showStations.
+        verify(mockView).showStations(captor.capture());
+
+        //Creo una gasolinera para comprobar.
+        Gasolinera g1 = new Gasolinera();
+        g1.setId("1006");
+
+        //Lista para alamacenar las gasolineras.
+        List<Gasolinera> stations = captor.getValue();
+
+
+        // Verificar que las gasolinera obtenida sea la correcta.
+        assertEquals(1, stations.size());
+        assertEquals(g1.getId(), stations.get(0).getId());
 
     }
 
+    @Test
+    public void inicializarUnPuntoSinGasolineras() {
+        //Creo el presenter con el constructor que me permite crear un punto de interés
+        presenter = new MainPresenter(new InterestPoint("Zona 2","#008000",42.8881,-4.0025,0.5));
+
+        //Preparo el repositorio para que devuelva la lista vacía.
+        when(mockView.getGasolinerasRepository()).thenReturn(repository);
+
+        //Capturo para saber que devuelve el método showStations
+        ArgumentCaptor<List<Gasolinera>> captor = ArgumentCaptor.forClass(List.class);
+
+        //Inicializo el presenter.
+        presenter.init(mockView);
+
+        //Verifico que se llama al init.
+        verify(mockView).init();
+
+        //Capturo la información de showStations.
+        verify(mockView).showStations(captor.capture());
 
 
+        //Almaceno la lista de gasolineras.
+        List<Gasolinera> stations = captor.getValue();
 
+        // Verifica que no se obitenen gasolineras.
+        assertEquals(0, stations.size());
 
-
+        //Verifico que se llama a showInfoMessage()
+        verify(mockView).showInfoMessage("No se han encontrado gasolineras en el rango");
+    }
 
 }
