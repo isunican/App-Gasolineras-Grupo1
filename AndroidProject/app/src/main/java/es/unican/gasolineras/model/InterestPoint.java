@@ -211,9 +211,7 @@ public class InterestPoint implements Parcelable {
      */
     public Location getLocation() {
         Location l = new Location(String.format("Interest point named %s", this.name));
-        l.setLatitude(this.latitude);
-        l.setLongitude(this.longitude);
-        return l;
+        return getLocation(l);
     }
 
     public Location getLocation(Location l) {

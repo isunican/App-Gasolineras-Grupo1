@@ -74,7 +74,9 @@ class InterestPoint {
     
     - inicializateData(String name, Color color, double latitude, double longitude, double radius)
     + getLocation() : Location
+    + getLocation(l: Location) : Location
     + isGasStationInRadius(g: Gasoolinera) : boolean
+    + isGasStationInRadius(g: Gasoolinera, l: Location) : boolean
 }
 
 IFilter <|.. Filter
