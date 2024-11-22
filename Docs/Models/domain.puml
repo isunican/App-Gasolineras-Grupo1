@@ -55,7 +55,7 @@ class Filter {
     - priceFilter(Gasolinera): Boolean
 }
 
-class OrderByPrice{
+class SorterByPrice{
 - FuelTypeEnum fuelType
 - Boolean ascending
 
@@ -81,7 +81,7 @@ class InterestPoint {
 
 IFilter <|.. Filter
 
-Comparator <|-- OrderByPrice
+Comparator <|-- SorterByPrice
 
 GasolinerasResponse *-- "*" Gasolinera : gasolineras
 

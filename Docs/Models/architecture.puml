@@ -69,16 +69,8 @@ interface IMainContract#Presenter {
     + onOrderPopUpAcceptClicked()
     + onOrderPopUpCancelClicked()
     + onOrderPopUpClearClicked()
-    + setTempFilter(IFilter f)
-    + getTempFilter() : IFilter
-    + setOrderByPrice(OrderByPrice o)
-    + getOrderByPrice() : OrderByPrice
-    + getFilter() : IFilter
-    + getTempListSelection() : List<Selection>
     + calculateSeekbarProgress() : String
-    + public method obtains the max price for all the gasStations when the view calls i
     + getMaxPrice() : double
-    + public method obtains the min price for all the gasStations when the view calls i
     + getMinPrice() : double
 }
 
