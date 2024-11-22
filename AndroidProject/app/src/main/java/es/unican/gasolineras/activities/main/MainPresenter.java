@@ -1,10 +1,9 @@
 package es.unican.gasolineras.activities.main;
 
-
+import android.database.sqlite.SQLiteException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -14,13 +13,13 @@ import es.unican.gasolineras.R;
 import es.unican.gasolineras.common.BrandsEnum;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.IFilter;
-import es.unican.gasolineras.common.LimitPricesEnum;
 import es.unican.gasolineras.common.OrderMethodsEnum;
-
+import es.unican.gasolineras.common.database.IGasStationsDAO;
 import es.unican.gasolineras.model.Filter;
 import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.model.IDCCAAs;
-import es.unican.gasolineras.model.OrderByPrice;
+import es.unican.gasolineras.model.InterestPoint;
+import es.unican.gasolineras.model.SorterByPrice;
 import es.unican.gasolineras.repository.ICallBack;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 import lombok.Getter;
@@ -39,18 +38,28 @@ public class MainPresenter implements IMainContract.Presenter {
     private IFilter tempFilter;
     @Setter
     private List<Selection> tempListSelection;
+    @Setter
+    @Getter
+    private InterestPoint interestPoint;
 
     private List<Gasolinera> gasStations;
-    // get values from LimitePricesEnum converted to float and integer
-    float minPriceLimit;
-    float maxPriceLimit;
+    private List<Gasolinera> initialGasStations;
+
+    private float minPriceLimit;
+    private float maxPriceLimit;
 
     int staticSeekBarProgress;
     private static final int SCALING_FACTOR = 100;
 
+    private boolean hasConnection;
+    public MainPresenter(InterestPoint point) {
+        interestPoint = point;
+    }
+
+    public MainPresenter() { }
+
     // Orden by price:
-    private OrderByPrice orderByPrice = new OrderByPrice();
-    private boolean restoreOrder = false;
+    private SorterByPrice sorterByPrice = new SorterByPrice();
     /**
      * @see IMainContract.Presenter#init(IMainContract.View)
      * @param view the view to control
@@ -82,9 +91,13 @@ public class MainPresenter implements IMainContract.Presenter {
         view.showInfoActivity();
     }
 
+    /**
+     * @see IMainContract.Presenter#onPointsClicked()
+     */
+
     @Override
     public void onPointsClicked() {
-        view.showPointsActivity();
+        view.showPointsActivity(interestPoint != null);
     }
 
     private <E> List<Selection> getSelections(List<E> selections, E[] allValues) {
@@ -140,7 +153,7 @@ public class MainPresenter implements IMainContract.Presenter {
         view.updateFiltersPopupTextViewsMaxPrice(tempFilter.getMaxPrice() == Float.MAX_VALUE ? maxPriceLimit : tempFilter.getMaxPrice());
         // Actualizamos el seekbar.
         if (tempFilter.getMaxPrice() == Float.MAX_VALUE) {
-            view.updateFiltersPopupSeekBarProgressMaxPrice(Integer.parseInt(calculateSeekbarProgress()));
+            view.updateFiltersPopupSeekBarProgressMaxPrice(Integer.parseInt(calculateSeekbarProgress()), minPriceLimit, maxPriceLimit);
         }
 
     }
@@ -312,7 +325,7 @@ public class MainPresenter implements IMainContract.Presenter {
         float result = (tempFilter.getMaxPrice() - minPriceLimit) / (maxPriceLimit - minPriceLimit) * limitPercent;
         // conver the float to int
         int progress = (int) result;
-        view.updateFiltersPopupSeekBarProgressMaxPrice(progress);
+        view.updateFiltersPopupSeekBarProgressMaxPrice(progress, minPriceLimit, maxPriceLimit);
     }
 
 
@@ -334,7 +347,7 @@ public class MainPresenter implements IMainContract.Presenter {
     public void onFiltersPopUpCancelClicked() {
         tempFilter = null;
         tempListSelection = null;
-        view.closeFiltersPopUp();
+        view.closeActivePopUp();
     }
 
     /**
@@ -344,8 +357,9 @@ public class MainPresenter implements IMainContract.Presenter {
         filter = tempFilter;
         tempFilter = null;
         tempListSelection = null;
-        view.closeFiltersPopUp();
-        load();
+        view.closeActivePopUp();
+        applyFilters();
+        showGasStations();
     }
 
     /**
@@ -357,67 +371,16 @@ public class MainPresenter implements IMainContract.Presenter {
         view.showInfoMessage("Se han limpiado los filtros");
     }
 
-    /**
-     * Loads the gas stations from the repository, and sends them to the view
-     */
-    private void load() {
-        IGasolinerasRepository repository = view.getGasolinerasRepository();
-
-        ICallBack callBack = new ICallBack() {
-
-            @Override
-            public void onSuccess(List<Gasolinera> stations) {
-                List<Gasolinera> filtered = null;
-                List<Gasolinera> originalFiltered = null;
-                gasStations = stations;
-
-                // set the min and the max price for the slider
-                minPriceLimit = (float) getMinPrice();
-                maxPriceLimit = (float) getMaxPrice();
-
-                try {
-                    filtered = filter.toFilter(stations);
-                    originalFiltered = new ArrayList<>(filtered);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-
-                if(filtered.isEmpty()){
-                    view.showLoadError();
-                }
-                else {
-                    if (restoreOrder) {
-                        view.showStations(originalFiltered);
-                        view.showLoadCorrect(originalFiltered.size());
-                    }
-                    else {
-                        Collections.sort(filtered,orderByPrice);
-                        view.showStations(filtered);
-                        view.showLoadCorrect(filtered.size());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable e) {
-                view.showLoadError();
-                view.showLoadError();
-            }
-        };
-
-        repository.requestGasolineras(callBack, IDCCAAs.CANTABRIA.id);
-    }
-
     // Methods for Ordering story user
 
     /**
      * @see IMainContract.Presenter#onOrderClicked()
      */
     public void onOrderClicked() {
-        if (orderByPrice.getFuelType() == null) {
+        if (sorterByPrice.getFuelType() == null) {
             view.showOrderPopUp(0, 0);
         } else {
-        view.showOrderPopUp((orderByPrice.getFuelType()).ordinal(), orderByPrice.getAscending() ? 0 : 1  );
+        view.showOrderPopUp((sorterByPrice.getFuelType()).ordinal(), sorterByPrice.getAscending() ? 0 : 1  );
 
         }
     }
@@ -426,7 +389,7 @@ public class MainPresenter implements IMainContract.Presenter {
      * @see IMainContract.Presenter#onFuelTypeSelected(FuelTypeEnum)
      */
     public void onFuelTypeSelected(FuelTypeEnum type) {
-        orderByPrice.setFuelType(type);
+        sorterByPrice.setFuelType(type);
     }
 
     /**
@@ -435,13 +398,13 @@ public class MainPresenter implements IMainContract.Presenter {
     public void onMethodOrderSelected(OrderMethodsEnum orderMethod) {
         switch (orderMethod) {
             case ASCENDING:
-                orderByPrice.setAscending(true);  // Asigna directamente si es ascendente
+                sorterByPrice.setAscending(true);  // Asigna directamente si es ascendente
                 break;
             case DESCENDING:
-                orderByPrice.setAscending(false); // Asigna directamente si es descendente
+                sorterByPrice.setAscending(false); // Asigna directamente si es descendente
                 break;
             default:
-                orderByPrice.setAscending(null); // Manejo de "sin orden"
+                sorterByPrice.setAscending(null); // Manejo de "sin orden"
                 break;
         }
     }
@@ -452,15 +415,15 @@ public class MainPresenter implements IMainContract.Presenter {
     @Override
     public void onOrderPopUpAcceptClicked() {
         // Llamar al método de carga que ya maneja la filtración y la ordenación
-        if (checkConflicts(filter, orderByPrice)) {
+        if (checkConflicts(filter, sorterByPrice)) {
             // Reestablecer el filtro a todos.
             filter.setFuelTypes(Arrays.asList(FuelTypeEnum.values()));
             view.showInfoMessage("Conflicto con filtro de Combustible, se ha restablecido el filtro.");
         }
         // Este método filtrará y ordenará según los criterios establecidos
-        restoreOrder = false;
-        load();
-        view.closeOrderPopUp();
+        applyOrder();
+        showGasStations();
+        view.closeActivePopUp();
     }
 
     /**
@@ -468,7 +431,7 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onOrderPopUpCancelClicked() {
-    view.closeOrderPopUp();
+    view.closeActivePopUp();
 
     }
 
@@ -477,35 +440,24 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     @Override
     public void onOrderPopUpClearClicked() {
-        restoreOrder = true;
-        load();
-        view.closeOrderPopUp();
+        applyOrder();
+        showGasStations();
+        view.closeActivePopUp();
     }
 
-    /**
-     * @see IMainContract.Presenter#setOrderByPrice(OrderByPrice o)
-     */
-    @Override
-    public void setOrderByPrice(OrderByPrice o) {
-        this.orderByPrice = o;
+    public void setSorterByPrice(SorterByPrice o) {
+        this.sorterByPrice = o;
     }
 
-    /**
-     * @see IMainContract.Presenter#getOrderByPrice()
-     */
-    @Override
-    public OrderByPrice getOrderByPrice() {
-        return orderByPrice;
+    public SorterByPrice getSorterByPrice() {
+        return sorterByPrice;
     }
 
 
     // Comprobar los conflictos de ordenación
-    private boolean checkConflicts(IFilter filter, OrderByPrice orderByPrice ) {
-        FuelTypeEnum fuelType = orderByPrice.getFuelType();
-        if (!filter.getFuelTypes().contains(fuelType)) {
-            return true;
-        }
-        return false;
+    private boolean checkConflicts(IFilter filter, SorterByPrice sorterByPrice) {
+        FuelTypeEnum fuelType = sorterByPrice.getFuelType();
+        return !filter.getFuelTypes().contains(fuelType);
     }
 
     /**
@@ -513,7 +465,7 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     public double getMaxPrice(){
         double maxPrice = 0.0;
-        for (Gasolinera gasStation : gasStations) {
+        for (Gasolinera gasStation : initialGasStations) {
             if (gasStation.getGasolina95E5() > maxPrice) {
                 maxPrice = gasStation.getGasolina95E5();
             } else if (gasStation.getGasoleoA() > maxPrice) {
@@ -532,43 +484,143 @@ public class MainPresenter implements IMainContract.Presenter {
      */
     public double getMinPrice(){
         double minPrice = Double.MAX_VALUE;
-        for (Gasolinera gasStation : gasStations) {
-                if (gasStation.getGasolina95E5() < minPrice && gasStation.getGasolina95E5() != 0.0) {
-                    minPrice = gasStation.getGasolina95E5();
-                } else if (gasStation.getGasoleoA() < minPrice && gasStation.getGasoleoA() != 0.0) {
-                    minPrice = gasStation.getGasoleoA();
-                }
-        }
+        List<FuelTypeEnum> listToIter = (filter.getFuelTypes() == null || filter.getFuelTypes().isEmpty()) ?
+                Arrays.asList(FuelTypeEnum.values()) : filter.getFuelTypes();
 
+        for (Gasolinera gasStation : gasStations) {
+            double maxInTypes = Double.MIN_VALUE;
+            boolean valid = true;
+            for (FuelTypeEnum t : listToIter) {
+                double price = gasStation.getPrecioPorTipo(t);
+                if (price == 0.0)
+                    valid = false;
+                else if (price > maxInTypes)
+                    maxInTypes = price;
+            }
+            if (valid && maxInTypes != Double.MIN_VALUE && maxInTypes < minPrice) {
+                minPrice = maxInTypes;
+            }
+        }
         if (minPrice == Double.MAX_VALUE){
             minPrice = 0.0;
         }
-
         //round to two decimal places
         minPrice = Math.ceil(minPrice * 100.00) /100.00;
-
-
         return minPrice;
     }
 
-    @Override
-    public void setTempFilter(IFilter f) {
-        this.tempFilter = f;
-    }
 
-    @Override
-    public IFilter getTempFilter() {
-        return tempFilter;
-    }
-
-    @Override
     public IFilter getFilter() {
         return filter;
     }
 
-    @Override
+
     public List<Selection> getTempListSelection() {
         return tempListSelection;
+    }
+
+    private void initialiceGasStationsList(List<Gasolinera> stations) {
+        if (interestPoint != null) {
+            stations = stations.stream()
+                    .filter(interestPoint::isGasStationInRadius)
+                    .collect(Collectors.toList());
+        }
+        initialGasStations = stations;
+        gasStations = stations;
+
+        applyFilters();
+        if (interestPoint != null) {
+            view.showInterestPointInfo(interestPoint, gasStations.size());
+        }
+        showGasStations();
+    }
+
+    /**
+     * Loads the gas stations from the repository, and sends them to the view
+     */
+    private void load() {
+        IGasolinerasRepository repository = view.getGasolinerasRepository();
+
+        ICallBack callBack = new ICallBack() {
+
+            @Override
+            public void onSuccess(List<Gasolinera> stations) {
+                try {
+                    hasConnection = true;
+                    persistGasStationsOnLocalDB(stations);
+                } catch (SQLiteException exception1) {
+                    view.showInfoMessage("Error al guardar datos en la base de datos");
+                }catch (Exception exception){
+                    view.showInfoMessage("Error al mostrar las gasolineras");
+                } finally {
+                    initialiceGasStationsList(stations);
+                }
+
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                try {
+                    hasConnection = false;
+                    List<Gasolinera> stations = getGasStationsFromLocalDB();
+                    initialiceGasStationsList(stations);
+                    if (stations.isEmpty()) {
+                        view.showInfoMessage("No hay datos guardados de gasolineras");
+                    } else {
+
+                        String date = view.getLocalDBDateRegister();
+                        view.showInfoMessage("Cargadas " + stations.size() + " gasolineras en fecha " + date);
+                    }
+                }catch (Exception exception) {
+                    initialiceGasStationsList(new ArrayList<>());
+                }
+            }
+        };
+
+        repository.requestGasolineras(callBack, IDCCAAs.CANTABRIA.id);
+    }
+
+    private void persistGasStationsOnLocalDB(List<Gasolinera> gasStations) {
+        IGasStationsDAO gasStationsDAO = view.getGasolinerasDAO();
+        gasStationsDAO.deleteAll();
+        for (Gasolinera gasStation : gasStations) {
+            gasStationsDAO.addGasStation(gasStation);
+        }
+
+        view.updateLocalDBDateRegister();
+    }
+
+    private List<Gasolinera> getGasStationsFromLocalDB(){
+        IGasStationsDAO gasStationsDAO = view.getGasolinerasDAO();
+        return gasStationsDAO.getAll();
+    }
+
+    private void applyFilters() {
+        // Filter the gas stations
+        gasStations = filter.toFilter(initialGasStations);
+
+        // Update the min and the max values for the slider
+        minPriceLimit = (float) getMinPrice();
+        maxPriceLimit = (float) getMaxPrice();
+    }
+
+    private void applyOrder() {
+        // Filter the gas stations
+        gasStations.sort(sorterByPrice);
+    }
+
+    private void showGasStations() {
+        view.showStations(gasStations);
+
+        if (gasStations.isEmpty()) {
+            if(interestPoint != null){
+                view.showInfoMessage("No se han encontrado gasolineras en el rango");
+            }else{
+                view.showLoadError();
+            }
+        } else if (hasConnection) {
+            view.showLoadCorrect(gasStations.size());
+        }
     }
 
 }

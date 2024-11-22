@@ -1,46 +1,55 @@
 package es.unican.gasolineras.activities.main;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import org.parceler.Parcels;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import es.unican.gasolineras.R;
-import es.unican.gasolineras.activities.info.InfoView;
 import es.unican.gasolineras.activities.details.DetailsView;
+import es.unican.gasolineras.activities.info.InfoView;
 import es.unican.gasolineras.activities.points.PointsView;
-import es.unican.gasolineras.common.LimitPricesEnum;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.OrderMethodsEnum;
+import es.unican.gasolineras.common.database.IGasStationsDAO;
+import es.unican.gasolineras.common.database.MyFuelDatabase;
 import es.unican.gasolineras.model.Gasolinera;
-import es.unican.gasolineras.model.OrderByPrice;
+import es.unican.gasolineras.model.InterestPoint;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 
 /**
@@ -49,13 +58,12 @@ import es.unican.gasolineras.repository.IGasolinerasRepository;
 @AndroidEntryPoint
 public class MainView extends AppCompatActivity implements IMainContract.View {
 
+    private static final String PRICE_FORMAT = "%.2f €/l";
+
     private View popupView;
-    PopupWindow popupWindow;
+    android.app.AlertDialog popupWindow;
     private AlertDialog alertDialog;
     boolean[] selectcionArray;
-    // get values from LimitePricesEnum converted to float and integer
-    float minPriceLimit;
-    float maxPriceLimit;
 
 
     /** The presenter of this view */
@@ -64,6 +72,9 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     /** The repository to access the data. This is automatically injected by Hilt in this class */
     @Inject
     IGasolinerasRepository repository;
+
+    /** dataStore object to save and retrieve the date of the gasStations Version */
+    private SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,9 +90,25 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Get the interest point
+        InterestPoint point = getIntent().getParcelableExtra("interestPoint");
+
+        // Set the correct tool bar
+        if (point == null) {
+            LinearLayout toolbarContent = findViewById(R.id.layoutToolbarIP);
+            toolbarContent.setVisibility(View.GONE);
+        } else {
+            ActionBar bar = Objects.requireNonNull(getSupportActionBar());
+            bar.setTitle("");
+        }
+
         // instantiate presenter and launch initial business logic
-        presenter = new MainPresenter();
+        if (point == null)
+            presenter = new MainPresenter();
+        else
+            presenter = new MainPresenter(point);
         presenter.init(this);
+
     }
 
     /**
@@ -139,6 +166,8 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
             Gasolinera station = (Gasolinera) parent.getItemAtPosition(position);
             presenter.onStationClicked(station);
         });
+
+        sharedPref = this.getPreferences(Context.MODE_PRIVATE);
     }
 
     /**
@@ -167,6 +196,15 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
      */
     @Override
     public void showLoadCorrect(int stations) {
+        Toast.makeText(this, "Cargadas " + stations + " gasolineras", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * @see IMainContract.View#showLoadCorrectFromLocalDB(int)
+     * @param stations
+     */
+    @Override
+    public void showLoadCorrectFromLocalDB(int stations) {
         Toast.makeText(this, "Cargadas " + stations + " gasolineras", Toast.LENGTH_SHORT).show();
     }
 
@@ -206,28 +244,32 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     }
 
     /**
-     * @see IMainContract.View#showPointsActivity()
+     * @see IMainContract.View#showPointsActivity(boolean deleteActual)
      */
     @Override
-    public void showPointsActivity() {
+    public void showPointsActivity(boolean deleteActual) {
         Intent intent = new Intent(this, PointsView.class);
+        if (deleteActual) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        }
         startActivity(intent);
+        if (deleteActual) {
+            finish();
+        }
     }
 
 
     private void createPopUp(int layoutId) {
         // Crear el layout del Popup
-        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainView.this);
+        LayoutInflater inflater = getLayoutInflater();
         popupView = inflater.inflate(layoutId, null);
-        int width = ViewGroup.LayoutParams.MATCH_PARENT;
-        int height = ViewGroup.LayoutParams.MATCH_PARENT;
-        boolean focusable = true; // Permite al usuario interactuar con los elementos del popup
-        popupWindow = new PopupWindow(popupView, width, height, focusable);
+        builder.setView(popupView);
+        popupWindow = builder.create();
 
 
-        // Muestra el PopupWindow en el centro de la pantalla
-        ConstraintLayout rootLayout = findViewById(R.id.main);
-        popupWindow.showAtLocation(rootLayout, Gravity.CENTER, 0, 0);
+        // Muestra el AlertDialog
+        popupWindow.show();
     }
 
     /**
@@ -240,32 +282,19 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
         // Fijar listener al TextView del tipo de combustible
         TextView typeSpinner = popupView.findViewById(R.id.typeSpinner);
-        typeSpinner.setOnClickListener(v -> {
-            presenter.onFiltersPopUpFuelTypesSelected();
-        });
+        typeSpinner.setOnClickListener(v -> presenter.onFiltersPopUpFuelTypesSelected());
 
         // Fijar listener al TextView de la marca de gasolineras
         TextView brandSpinner = popupView.findViewById(R.id.brandSpinner);
-        brandSpinner.setOnClickListener(v -> {
-            presenter.onFiltersPopUpBrandsSelected();
-        });
-        // Buscar el SeekBar en el layout
-        SeekBar maxPriceSeekBar = popupView.findViewById(R.id.MaxPriceSeekBar);
-        // Establece el rango del seekbar
-        maxPriceSeekBar.setMax(Integer.parseInt(presenter.calculateSeekbarProgress()));
-
-        // Ajusta el texto de los TextView minPriceLabel y maxPriceLabel
-        minPriceLimit =  (float) presenter.getMinPrice();
-        maxPriceLimit =  (float) presenter.getMaxPrice();
-
-        TextView minPriceLabel = popupView.findViewById(R.id.minPriceLabel);
-        TextView maxPriceLabel = popupView.findViewById(R.id.maxPriceLabel);
-        minPriceLabel.setText(String.valueOf(minPriceLimit));
-        maxPriceLabel.setText(String.valueOf(maxPriceLimit));
+        brandSpinner.setOnClickListener(v -> presenter.onFiltersPopUpBrandsSelected());
 
         // Establece la barra de progreso del precio maximo con el valor almacenado en el filtro
         presenter.onFiltersPopUpMaxPriceSeekBarLoaded();
 
+        // Buscar el SeekBar en el layout
+        SeekBar maxPriceSeekBar = popupView.findViewById(R.id.MaxPriceSeekBar);
+        // Establece el rango del seekbar
+        maxPriceSeekBar.setMax(Integer.parseInt(presenter.calculateSeekbarProgress()));
 
         // Fija listener al SeekBar del precio maximo de gasolineras para obtener el valor decimal
         maxPriceSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -288,21 +317,15 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
         // Fijar listener al boton de limpiar filtros
         ImageButton filterClear = popupView.findViewById(R.id.clear_filters_bt);
-        filterClear.setOnClickListener(v -> {
-            presenter.onFiltersPopUpClearFiltersClicked();
-        });
+        filterClear.setOnClickListener(v -> presenter.onFiltersPopUpClearFiltersClicked());
 
         // Fijar listener al boton de cancelar
         ImageButton cancelButton = popupView.findViewById(R.id.filters_cancel_button);
-        cancelButton.setOnClickListener(v -> {
-            presenter.onFiltersPopUpCancelClicked();
-        });
+        cancelButton.setOnClickListener(v -> presenter.onFiltersPopUpCancelClicked());
 
         // Fijar listener al boton de aceptar
         ImageButton accpetlButton = popupView.findViewById(R.id.filters_accept_button);
-        accpetlButton.setOnClickListener(v -> {
-            presenter.onFiltersPopUpAcceptClicked();
-        });
+        accpetlButton.setOnClickListener(v -> presenter.onFiltersPopUpAcceptClicked());
     }
 
 
@@ -331,16 +354,24 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
     public void updateFiltersPopupTextViewsMaxPrice(float truncatedMaxPrice) {
         // Actualizamos el label que muestra el valor maximo actual
         TextView lbSelectedMaxPrice = popupView.findViewById(R.id.lbSelectedMaxPrice);
-        lbSelectedMaxPrice.setText(String.valueOf(truncatedMaxPrice));
+        lbSelectedMaxPrice.setText(String.format(Locale.US, PRICE_FORMAT, truncatedMaxPrice));
     }
 
     /**
-     * @see IMainContract.View#updateFiltersPopupSeekBarProgressMaxPrice(int)
+     * @see IMainContract.View#updateFiltersPopupSeekBarProgressMaxPrice(int progress, float minPriceLimit, float maxPriceLimit)
      */
     @Override
-    public void updateFiltersPopupSeekBarProgressMaxPrice(int progress) {
-        // Actualizamos el progress del SeekBar
+    public void updateFiltersPopupSeekBarProgressMaxPrice(int progress, float minPriceLimit, float maxPriceLimit) {
+        // Fijar los labels
+        TextView minPriceLabel = popupView.findViewById(R.id.minPriceLabel);
+        minPriceLabel.setText(String.format(Locale.US, PRICE_FORMAT, minPriceLimit));
+        TextView maxPriceLabel = popupView.findViewById(R.id.maxPriceLabel);
+        maxPriceLabel.setText(String.format(Locale.US, PRICE_FORMAT, maxPriceLimit));
+
+        // Buscar el SeekBar en el layout
         SeekBar maxPriceSeekBar = popupView.findViewById(R.id.MaxPriceSeekBar);
+
+        // Actualizamos el progress del SeekBar
         maxPriceSeekBar.setProgress(progress);
     }
 
@@ -369,9 +400,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         }
 
         // Actualizar el estado de selección en el array
-        builder.setMultiChoiceItems(options, selectcionArray, (dialog, which, isChecked) -> {
-            presenter.onFiltersPopUpFuelTypesOneSelected(which, isChecked);
-        });
+        builder.setMultiChoiceItems(options, selectcionArray, (dialog, which, isChecked) -> presenter.onFiltersPopUpFuelTypesOneSelected(which, isChecked));
 
         // Botón "OK"
         builder.setPositiveButton("OK", (dialog, which) ->
@@ -402,10 +431,7 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         }
 
         // Actualizar el estado de selección en el array
-        builder.setMultiChoiceItems(options, selectcionArray, (dialog, which, isChecked) -> {
-            presenter.onFiltersPopUpBrandsOneSelected(which, isChecked);
-
-        });
+        builder.setMultiChoiceItems(options, selectcionArray, (dialog, which, isChecked) -> presenter.onFiltersPopUpBrandsOneSelected(which, isChecked));
 
         // Botón "OK"
         builder.setPositiveButton("OK", (dialog, which) ->
@@ -420,13 +446,19 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         alertDialog.show();
     }
 
-    public void closeFiltersPopUp() {
+    /**
+     * @see IMainContract.View#closeActivePopUp()
+     */
+    public void closeActivePopUp() {
         popupWindow.dismiss();
         popupView = null;
         alertDialog = null;
         popupWindow = null;
     }
 
+    /**
+     * @see IMainContract.View#showOrderPopUp(int, int)
+     */
     public void showOrderPopUp(int typeIndex, int methodIndex) {
         createPopUp(R.layout.activity_sort_layout);
         // Configurar los Spinners
@@ -487,33 +519,73 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
         // Manejo de los botones de aceptar y cancelar
         ImageButton acceptButton = popupView.findViewById(R.id.order_accept_button);
-        acceptButton.setOnClickListener (v -> { presenter.onOrderPopUpAcceptClicked();
-        });
+        acceptButton.setOnClickListener (v -> presenter.onOrderPopUpAcceptClicked());
 
         ImageButton cancelButton = popupView.findViewById(R.id.order_cancel_button);
-        cancelButton.setOnClickListener(v -> { presenter.onOrderPopUpCancelClicked();
-        });
+        cancelButton.setOnClickListener(v -> presenter.onOrderPopUpCancelClicked());
 
-        // TODO: Hacer el clear de los filtros.
         ImageButton clearButton = popupView.findViewById(R.id.bt_clear_order);
-        clearButton.setOnClickListener(v -> { presenter.onOrderPopUpClearClicked();
-        });
+        clearButton.setOnClickListener(v -> presenter.onOrderPopUpClearClicked());
 
     }
 
-    public void closeOrderPopUp(){
-        popupWindow.dismiss();
-        popupView = null;
-        alertDialog = null;
-        popupWindow = null;
-    }
-
-
+    /**
+     * @see IMainContract.View#getConstantString(int)
+     */
     public String getConstantString(int id) {
         return getString(id);
     }
 
+    /**
+     * @see IMainContract.View#getGasolinerasDAO()
+     */
+    @Override
+    public IGasStationsDAO getGasolinerasDAO() {
+        return MyFuelDatabase.getInstance(this.getBaseContext()).getGasStationsDAO();
+    }
+
+    /**
+     * @see IMainContract.View#updateLocalDBDateRegister()
+     */
+    @Override
+    public void updateLocalDBDateRegister() {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("DBUpdatedDate",LocalDate.now().toString());
+        editor.apply();
+    }
+
+    /**
+     * @see IMainContract.View#getLocalDBDateRegister()
+     */
+    @Override
+    public String getLocalDBDateRegister() {
+        return sharedPref.getString("DBUpdatedDate","");
+    }
+
     public MainPresenter getMainPresenter() {
         return presenter;
+    }
+
+    /**
+     * @see IMainContract.View#showInterestPointInfo(InterestPoint ip, int loaded)
+     */
+    @SuppressLint("DefaultLocale")
+    @Override
+    public void showInterestPointInfo(InterestPoint ip, int loaded) {
+        // Create the bar
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View horizontalLayout = inflater.inflate(R.layout.activity_points_information, null, false);
+        FrameLayout placeholder = findViewById(R.id.interest_point_placeholder);
+        placeholder.addView(horizontalLayout);
+
+        // Set the values
+        TextView name = findViewById(R.id.ip_name_tv);
+        name.setText(ip.getName());
+        TextView radius = findViewById(R.id.ip_radius_tv);
+        radius.setText(String.format(Locale.US, "Radio: %.1f km", ip.getRadius()));
+        TextView loadedTv = findViewById(R.id.ip_loaded_tv);
+        loadedTv.setText(String.format("Encontradas: %d", loaded));
+        ImageView img = findViewById(R.id.description_ip_image);
+        img.setImageTintList(ColorStateList.valueOf(Color.BLACK));
     }
 }

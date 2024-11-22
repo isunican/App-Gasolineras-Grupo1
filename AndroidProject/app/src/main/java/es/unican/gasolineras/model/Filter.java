@@ -1,24 +1,16 @@
 package es.unican.gasolineras.model;
 
 import android.annotation.SuppressLint;
-import android.os.Build;
-import android.util.Log;
-import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import es.unican.gasolineras.R;
 import es.unican.gasolineras.common.BrandsEnum;
 import es.unican.gasolineras.common.FuelTypeEnum;
 import es.unican.gasolineras.common.IFilter;
-import es.unican.gasolineras.common.LimitPricesEnum;
 import lombok.Getter;
 
 @Getter

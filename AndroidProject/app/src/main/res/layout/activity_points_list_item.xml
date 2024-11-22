@@ -17,73 +17,133 @@
         tools:ignore="ImageContrastCheck"
         tools:srcCompat="@drawable/location" />
 
-    <TextView
-        android:id="@+id/tvName"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        tools:text="Nombre"
-        app:layout_constraintStart_toEndOf="@+id/ivLocation"
-        app:layout_constraintTop_toTopOf="@+id/ivLocation" />
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ivLocation"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <!-- TextView para las coordenadas de latitud -->
-    <TextView
-        android:id="@+id/tvLatitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        tools:text="Latitud"
-        app:layout_constraintStart_toEndOf="@+id/ivLocation"
-        app:layout_constraintTop_toBottomOf="@+id/tvName" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
 
-    <!-- TextView para separador de las coordenadas de latitud -->
-    <TextView
-        android:id="@+id/tvSeparator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        tools:text="-"
-        app:layout_constraintStart_toEndOf="@+id/tvLatitude"
-        app:layout_constraintTop_toBottomOf="@+id/tvName" />
+            <TextView
+                android:id="@+id/tvNameField"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/point_name"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@+id/ivLocation"
+                app:layout_constraintTop_toTopOf="@+id/ivLocation" />
 
-    <!-- TextView para las coordenadas de logitud -->
-    <TextView
-        android:id="@+id/tvLongitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        tools:text="Longitud"
-        app:layout_constraintStart_toEndOf="@+id/tvSeparator"
-        app:layout_constraintTop_toBottomOf="@+id/tvName" />
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/tvNameField"
+                app:layout_constraintStart_toEndOf="@+id/tvNameField"
+                app:layout_constraintTop_toTopOf="@+id/ivLocation"
+                tools:text="Nombre" />
 
-    <!-- Label de Radio -->
-    <TextView
-        android:id="@+id/tvRadiusLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        tools:text="@string/point_radio"
-        app:layout_constraintTop_toBottomOf="@+id/tvLatitude"
-        app:layout_constraintStart_toEndOf="@+id/ivLocation" />
+        </LinearLayout>
 
-    <!-- Valor de Radio -->
-    <TextView
-        android:id="@+id/tvRadiusValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="2dp"
-        tools:text="0.0"
-        app:layout_constraintTop_toBottomOf="@+id/tvLatitude"
-        app:layout_constraintStart_toEndOf="@+id/tvRadiusLabel" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
 
-    <!-- Unidades de Radio -->
-    <TextView
-        android:id="@+id/tvRadiusUnits"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="2dp"
-        tools:text="km"
-        app:layout_constraintTop_toBottomOf="@+id/tvLatitude"
-        app:layout_constraintStart_toEndOf="@+id/tvRadiusValue" />
+            <TextView
+                android:id="@+id/tvLatitudeField"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/point_latitude"
+                android:textStyle="bold"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvLatitude"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:textSize="16sp"
+                tools:text="Latitud" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/tvLongitudeField"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/point_longitude"
+                android:textStyle="bold"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvLongitude"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:textSize="16sp"
+                tools:text="Longitud" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/tvRadiusLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:text="@string/point_radio"
+                android:textStyle="bold"
+                tools:text="@string/point_radio" />
+
+            <TextView
+                android:id="@+id/tvRadiusValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:textSize="16sp"
+            tools:text="0.0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_marginStart="2dp"
+                android:text="@string/point_radio_units"
+                tools:text="@string/point_radio_units" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/ivTrash"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="16dp"
+        android:contentDescription="@string/point_trash_description"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ImageContrastCheck"
+        tools:srcCompat="@drawable/trash" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

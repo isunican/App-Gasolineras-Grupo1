@@ -11,6 +11,7 @@ PointsView -right0)- PointsPresenter  : IPointsContract.View
 MainView -up..-> InfoView : <<use>>
 MainView -left..> DetailsView : <<use>>
 MainView -down..> PointsView : <<use>>
+PointsView -..> MainView : <<use>>
 MainPresenter -right(0- GasolinerasRepository : IGasolinerasRepository
 PointsPresenter -right(0- InterestPointsDAO : IInterestPointsDAO
 
@@ -31,24 +32,25 @@ interface IMainContract#View {
     + showInfoMessage(String message)
     + showStationDetails(Gasolinera station)
     + showInfoActivity()
+    + showPointsActivity(boolean deleteActual)
     + showFiltersPopUp()
     + showFiltersPopUpFuelTypesSelector(List<Selection> selections)
     + showFiltersPopUpBrandSelector(List<Selection> selections)
     + updateFiltersPopupTextViewsSelections(String fuelTypes, String fuelBrands)
     + updateFiltersPopupTextViewsMaxPrice(float truncatedMaxPrice)
-    + updateFiltersPopupSeekBarProgressMaxPrice(int progress)
-    + updateFiltersPopUpFuelTypesSelection(int position, boolean value)
-    + updateFiltersPopUpBrandsSelection(int position, boolean value)
-    + closeFiltersPopUp()
+    + updateFiltersPopupSeekBarProgressMaxPrice(int progress, float minPriceLimit, float maxPriceLimit)
+    + updateFiltersPopUpSelection(int position, boolean value)
+    + closeActivePopUp()
     + showOrderPopUp(int typeIndex, int methodIndex)
-    + closeOrderPopUp()
     + getConstantString(int id) : String
+    + showInterestPointInfo(InterestPoint ip, int loaded)
 }
 
 interface IMainContract#Presenter {
     + init(View view)
     + onStationClicked(Gasolinera station)
     + onMenuInfoClicked()
+    + onPointsClicked()
     + onFiltersClicked()
     + onFiltersPopUpFuelTypesSelected()
     + onFiltersPopUpBrandsSelected()
@@ -59,35 +61,44 @@ interface IMainContract#Presenter {
     + onFiltersPopUpMaxPriceSeekBarChanged(int progress)
     + onFiltersPopUpMaxPriceSeekBarLoaded()
     + onFiltersPopUpCancelClicked()
-    + onFiltersPopUpAcceptClicked()      
+    + onFiltersPopUpAcceptClicked()
     + onFiltersPopUpClearFiltersClicked()
     + onOrderClicked()
     + onFuelTypeSelected(FuelTypeEnum type)
     + onMethodOrderSelected(OrderMethodsEnum orderMethod)
     + onOrderPopUpAcceptClicked()
     + onOrderPopUpCancelClicked()
-    + onOrderPopUpClearClicked() 
-    + setTempFilter(IFilter f)   
-    + getTempFilter() : IFilter      
-    + setOrderByPrice(OrderByPrice o)
-    + getOrderByPrice() : OrderByPrice
-    + getFilter() : IFilter
-    + getTempListSelection() : List<Selection>
+    + onOrderPopUpClearClicked()
+    + calculateSeekbarProgress() : String
+    + getMaxPrice() : double
+    + getMinPrice() : double
 }
 
 interface IPointsContract#Presenter {
     + init(View view)
     + onHomeClicked()
-    + onCreatePointOfInterestClicked()    
+    + onCreatePointOfInterestClicked()
+    + onAcceptNewPointOfInterestClicked(InterestPoint newInterestPoint)
+    + onPointOfInterestClicked(InterestPoint interestPoint)
+    + onActivateDeleteModeClicked()
+    + onCancelDeleteModeClicked()
+    + onTrashIconClicked(int idSelectedPoint)
+    + onConfirmDeletionClicked(int idSelectedPoint)    
 }
 
 interface IPointsContract#View {
-+ init()
-+ getPointsDao() : InterestPointsDAO    
-+ showPoints(List<InterestPoint> points)
-+ showLoadCorrect(int numPoints)        
-+ showLoadError()
-+ showInfoMessage(String message)
+    + init()
+    + getPointsDao() : IInterestPointsDAO
+    + showPoints(List<InterestPoint> points)
+    + showLoadCorrect(int numPoints)
+    + showLoadError()
+    + showInfoMessage(String message)
+    + showMainPage()
+    + showPointOfInterestPopUp()
+    + launchMainActivityWith(InterestPoint selectedIP)
+    + showDeleteMode()
+    + showNormalMode()
+    + showDeleteConfirmationPopup(int idSelectedPoint)
 }
 
 interface IGasolinerasRepository {
@@ -101,6 +112,13 @@ interface IInterestPointsDAO {
     + addInterestPoint(InterestPoint interestPoint)      
     + deleteInterestPoint(InterestPoint interestPoint)   
     + updateInterestPoint(InterestPoint interestPoint)   
+    + deleteAll()
+}
+
+interface IGasStationDAO {
+    + getAll() : List<Gasolinera>
+    + getGasStationById(int id) : Gasolinera
+    + addGasStation(Gasolinera gasolinera)
     + deleteAll()
 }
 

@@ -21,6 +21,8 @@ import es.unican.gasolineras.model.GasolinerasResponse;
  */
 public class Utils {
 
+    private Utils(){}
+
     /**
      * Parses a list of gas stations from a json resource file.
      * The json must contain a serialized GasolinerasResponse object.
@@ -37,7 +39,6 @@ public class Utils {
                 .registerTypeAdapter(double.class, deserializer)
                 .create()
                 .fromJson(reader, typeToken);
-        List<Gasolinera> gasolineras = response.getGasolineras();
-        return gasolineras;
+        return response.getGasolineras();
     }
 }

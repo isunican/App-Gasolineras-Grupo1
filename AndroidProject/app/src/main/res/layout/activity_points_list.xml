@@ -92,7 +92,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:layout_weight="1"
-            android:text="@string/point_add_button" />
+            android:text="@string/point_add_button"
+            android:visibility="visible" />
 
         <!-- Imagen sort en el centro -->
         <ImageView
@@ -102,7 +103,8 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:contentDescription="@string/point_sort_generic_description"
-            android:src="@drawable/sort_generic" />
+            android:src="@drawable/sort_generic"
+            android:visibility="visible" />
 
         <!-- Botón de eliminar -->
         <Button
@@ -111,6 +113,18 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_weight="1"
-            android:text="@string/point_remove_button" />
+            android:text="@string/point_remove_button"
+            android:visibility="visible" />
+
+        <!-- Botón de salir de modo elminacion -->
+        <Button
+            android:id="@+id/btn_exit_delete_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_weight="1"
+            android:text="@string/point_exit_delete_mode_button"
+            android:visibility="gone" />
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

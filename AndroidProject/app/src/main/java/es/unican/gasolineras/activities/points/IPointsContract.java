@@ -2,8 +2,8 @@ package es.unican.gasolineras.activities.points;
 
 import java.util.List;
 
+import es.unican.gasolineras.common.database.IInterestPointsDAO;
 import es.unican.gasolineras.model.InterestPoint;
-import es.unican.gasolineras.roomDAO.InterestPointsDAO;
 
 /**
  * The Presenter-View contract for the Points activity.
@@ -40,7 +40,35 @@ public interface IPointsContract {
          * also the view is refresed with the new element
          * @param newInterestPoint the new point of interest
          */
-         void onAcceptNewPointOfInterestClicked(InterestPoint newInterestPoint);
+        public void onAcceptNewPointOfInterestClicked(InterestPoint newInterestPoint);
+
+        /**
+         * When you click on a interest point to see its stations
+         * @param interestPoint the point of interest
+         */
+        public void onPointOfInterestClicked(InterestPoint interestPoint);
+
+        /**
+         * When you click on the delete mode button, the view updates to support point of interest deletion.
+         */
+        public void onActivateDeleteModeClicked();
+
+        /**
+         * When you click on the cancel delete mode button, the view reverts to the normal mode, disabling point of interest deletion.
+         */
+        public void onCancelDeleteModeClicked();
+
+        /**
+         * When you click on the trash icon of a point of interest, a popup requests confirmation for deletion.
+         * @param idSelectedPoint the ID in the DDBB of the point of interest to delete.
+         */
+        public void onTrashIconClicked(int idSelectedPoint);
+
+        /**
+         * When you click on the confirm delete button in the popup, the point of interest is deleted.
+         * @param idSelectedPoint the ID in the DDBB of the point of interest to delete.
+         */
+        public void onConfirmDeletionClicked(int idSelectedPoint);
     }
 
     /**
@@ -56,10 +84,10 @@ public interface IPointsContract {
         public void init();
 
         /**
-         * Get the instance of the DDBB.
-         * @return the instance of the DDBB.
+         * Get the instance of the DAO for InterestPoints.
+         * @return the instance of the DAO for InterestPoints.
          */
-        public InterestPointsDAO getPointsDao();
+        public IInterestPointsDAO getPointsDao();
 
         /**
          * The view is requested to display the given list of points.
@@ -94,13 +122,50 @@ public interface IPointsContract {
          * The view is requested to open the main activity.
          * Only the Presenter should call this method
          */
-        void showMainPage();
+        public void showMainPage();
 
         /**
          * The view is requested to display a new window to allow creation
          * of new Point of Interest
          * Only the presenter should call this method
          */
-         void showPointOfInterestPopUp();
+        public void showPointOfInterestPopUp();
+
+        /**
+         * The view is requested to open the main activity with a point of interest.
+         * @param selectedIP the point of interest
+         */
+        public void launchMainActivityWith(InterestPoint selectedIP);
+
+        /**
+         * The view is requested to enter delete mode, shifting point information to reveal a trash icon for each item.
+         * Additionally, the add, sort, and delete buttons are replaced at the bottom with an exit button for delete mode.
+         */
+        public void showDeleteMode();
+
+        /**
+         * The view is requested to revert to the default view, exiting delete mode.
+         */
+        public void showNormalMode();
+
+        /**
+         * The view is requested to display a popup to confirm the deletion of a selected point of interest.
+         * This method notifies the presenter only if deletion is confirmed.
+         * @param idSelectedPoint the ID in the DDBB of the point of interest to delete.
+         */
+        public void showDeleteConfirmationPopup(int idSelectedPoint);
+
+        /**
+         * The view is requested to display a toast indicating a point of interest
+         * has been deleted and the name of the deleted point
+         * @param name of the deleted point of interest
+         */
+        void showInfoDeletedPoint(String name);
+
+        /**
+         * The view is requested to display a toast with a message to notice
+         * the user an error has occurred deleting a point of interest
+         */
+        void showDeleteError();
     }
 }
