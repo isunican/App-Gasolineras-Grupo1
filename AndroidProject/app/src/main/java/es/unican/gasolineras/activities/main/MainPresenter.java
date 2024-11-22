@@ -52,6 +52,7 @@ public class MainPresenter implements IMainContract.Presenter {
     int staticSeekBarProgress;
     private static final int SCALING_FACTOR = 100;
 
+    private boolean hasConnection;
     public MainPresenter(InterestPoint point) {
         interestPoint = point;
     }
@@ -550,6 +551,7 @@ public class MainPresenter implements IMainContract.Presenter {
             @Override
             public void onSuccess(List<Gasolinera> stations) {
                 try {
+                    hasConnection = true;
                     persistGasStationsOnLocalDB(stations);
                 } catch (SQLiteException exception1) {
                     view.showInfoMessage("Error al guardar datos en la base de datos");
@@ -564,6 +566,7 @@ public class MainPresenter implements IMainContract.Presenter {
             @Override
             public void onFailure(Throwable e) {
                 try {
+                    hasConnection = false;
                     List<Gasolinera> stations = getGasStationsFromLocalDB();
                     initialiceGasStationsList(stations);
                     if (stations.isEmpty()) {
@@ -620,7 +623,7 @@ public class MainPresenter implements IMainContract.Presenter {
             }else{
                 view.showLoadError();
             }
-        } else {
+        } else if (hasConnection) {
             view.showLoadCorrect(gasStations.size());
         }
     }
