@@ -39,7 +39,7 @@ import es.unican.gasolineras.common.database.IGasStationsDAO;
 import es.unican.gasolineras.common.database.MyFuelDatabase;
 import es.unican.gasolineras.model.Filter;
 import es.unican.gasolineras.model.Gasolinera;
-import es.unican.gasolineras.model.OrderByPrice;
+import es.unican.gasolineras.model.SorterByPrice;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 import es.unican.gasolineras.utils.MockRepositories;
 
@@ -115,7 +115,7 @@ public class MainPresenterITest {
         sut.init(mockMainView);
 
         //ID1.a
-        sut.setOrderByPrice(createOrderByPrice(FuelTypeEnum.GASOLINA_95E5, true));
+        sut.setSorterByPrice(createOrderByPrice(FuelTypeEnum.GASOLINA_95E5, true));
         sut.setTempFilter(new Filter());
 
         sut.onOrderPopUpAcceptClicked();
@@ -127,7 +127,7 @@ public class MainPresenterITest {
         verify(mockMainView, times(1)).closeActivePopUp();
 
         //ID1.b
-        sut.setOrderByPrice(createOrderByPrice(FuelTypeEnum.GASOLEO_A, false));
+        sut.setSorterByPrice(createOrderByPrice(FuelTypeEnum.GASOLEO_A, false));
         sut.setTempFilter(new Filter());
 
         sut.onOrderPopUpAcceptClicked();
@@ -139,15 +139,15 @@ public class MainPresenterITest {
         verify(mockMainView, times(2)).closeActivePopUp();
     }
 
-    private OrderByPrice createOrderByPrice(FuelTypeEnum fuelType, Boolean ascending) {
-        OrderByPrice orderByPrice = new OrderByPrice();
+    private SorterByPrice createOrderByPrice(FuelTypeEnum fuelType, Boolean ascending) {
+        SorterByPrice sorterByPrice = new SorterByPrice();
         if (fuelType != null) {
-            orderByPrice.setFuelType(fuelType);
+            sorterByPrice.setFuelType(fuelType);
         }
         if (ascending != null) {
-            orderByPrice.setAscending(ascending);
+            sorterByPrice.setAscending(ascending);
         }
-        return orderByPrice;
+        return sorterByPrice;
     }
 
     @Test

@@ -3,12 +3,10 @@ package es.unican.gasolineras.activities.main;
 import java.util.List;
 
 import es.unican.gasolineras.common.FuelTypeEnum;
-import es.unican.gasolineras.common.IFilter;
 import es.unican.gasolineras.common.OrderMethodsEnum;
 import es.unican.gasolineras.common.database.IGasStationsDAO;
 import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.model.InterestPoint;
-import es.unican.gasolineras.model.OrderByPrice;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 
 /**
