@@ -60,7 +60,7 @@ public class MainPresenterITest {
     @Mock
     private IMainContract.View mockMainView2;
 
-    private IMainContract.Presenter sut;
+    private MainPresenter sut;
 
     private IGasStationsDAO gasStationsDAO;
 

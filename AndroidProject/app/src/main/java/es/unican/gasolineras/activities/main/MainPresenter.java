@@ -92,6 +92,10 @@ public class MainPresenter implements IMainContract.Presenter {
         view.showInfoActivity();
     }
 
+    /**
+     * @see IMainContract.Presenter#onPointsClicked()
+     */
+
     @Override
     public void onPointsClicked() {
         view.showPointsActivity(interestPoint != null);
@@ -442,18 +446,10 @@ public class MainPresenter implements IMainContract.Presenter {
         view.closeActivePopUp();
     }
 
-    /**
-     * @see IMainContract.Presenter#setOrderByPrice(OrderByPrice o)
-     */
-    @Override
     public void setOrderByPrice(OrderByPrice o) {
         this.orderByPrice = o;
     }
 
-    /**
-     * @see IMainContract.Presenter#getOrderByPrice()
-     */
-    @Override
     public OrderByPrice getOrderByPrice() {
         return orderByPrice;
     }
@@ -514,12 +510,12 @@ public class MainPresenter implements IMainContract.Presenter {
         return minPrice;
     }
 
-    @Override
+
     public IFilter getFilter() {
         return filter;
     }
 
-    @Override
+
     public List<Selection> getTempListSelection() {
         return tempListSelection;
     }

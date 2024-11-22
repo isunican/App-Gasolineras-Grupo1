@@ -446,6 +446,9 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         alertDialog.show();
     }
 
+    /**
+     * @see IMainContract.View#closeActivePopUp()
+     */
     public void closeActivePopUp() {
         popupWindow.dismiss();
         popupView = null;
@@ -453,6 +456,9 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         popupWindow = null;
     }
 
+    /**
+     * @see IMainContract.View#showOrderPopUp(int, int)
+     */
     public void showOrderPopUp(int typeIndex, int methodIndex) {
         createPopUp(R.layout.activity_sort_layout);
         // Configurar los Spinners
@@ -523,6 +529,9 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
 
     }
 
+    /**
+     * @see IMainContract.View#getConstantString(int)
+     */
     public String getConstantString(int id) {
         return getString(id);
     }
@@ -535,6 +544,9 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         return MyFuelDatabase.getInstance(this.getBaseContext()).getGasStationsDAO();
     }
 
+    /**
+     * @see IMainContract.View#updateLocalDBDateRegister()
+     */
     @Override
     public void updateLocalDBDateRegister() {
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -542,6 +554,9 @@ public class MainView extends AppCompatActivity implements IMainContract.View {
         editor.apply();
     }
 
+    /**
+     * @see IMainContract.View#getLocalDBDateRegister()
+     */
     @Override
     public String getLocalDBDateRegister() {
         return sharedPref.getString("DBUpdatedDate","");

@@ -278,6 +278,10 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         dialog.show();
     }
 
+    /**
+     * @see IPointsContract.View#showInfoDeletedPoint(String) 
+     * @param name of the deleted point of interest
+     */
     @Override
     public void showInfoDeletedPoint(String name) {
         Toast.makeText(this, "Se ha eliminado el punto de interes '"+name+"'", Toast.LENGTH_SHORT).show();
@@ -361,6 +365,9 @@ public class PointsView extends AppCompatActivity implements IPointsContract.Vie
         colorPickerDialog.cancel();
     }
 
+    /**
+     * @see IPointsContract.View#launchMainActivityWith(InterestPoint) 
+     */
     @Override
     public void launchMainActivityWith(InterestPoint selectedIP) {
         Intent intent = new Intent(this, MainView.class);
