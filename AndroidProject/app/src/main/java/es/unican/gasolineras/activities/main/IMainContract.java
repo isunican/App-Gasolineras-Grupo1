@@ -3,12 +3,10 @@ package es.unican.gasolineras.activities.main;
 import java.util.List;
 
 import es.unican.gasolineras.common.FuelTypeEnum;
-import es.unican.gasolineras.common.IFilter;
 import es.unican.gasolineras.common.OrderMethodsEnum;
 import es.unican.gasolineras.common.database.IGasStationsDAO;
 import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.model.InterestPoint;
-import es.unican.gasolineras.model.OrderByPrice;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 
 /**
@@ -162,42 +160,6 @@ public interface IMainContract {
          * Only the View should call this method
          */
         public void onOrderPopUpClearClicked();
-
-        /**
-         * The presenter is informed to change de tempFilter
-         * This method is for the tests
-         */
-        public void setTempFilter(IFilter f);
-
-        /**
-         * The presenter is informed to get de tempFilter
-         * This method is for the tests
-         */
-        public IFilter getTempFilter();
-
-        /**
-         * Deliver of OrderByPrice object to set order in elements.
-         * suited for Integration texts
-         */
-        public void setOrderByPrice(OrderByPrice o);
-
-        /**
-         * Obtain OrderByPrice object from presenter.
-         * suited for Integration texts
-         */
-        public OrderByPrice getOrderByPrice();
-
-        /**
-         * The presenter is informed to get de filter
-         * This method is for the tests
-         */
-        public IFilter getFilter();
-
-        /**
-         * The presenter is informed to get de tempListSelection
-         * This method is for the tests
-         */
-        public List<Selection> getTempListSelection();
 
         /**
          * The presenter is requested to calculate the actual progress of the price seekbar.

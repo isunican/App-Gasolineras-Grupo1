@@ -1,8 +1,9 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="110dp">
 
     <ImageView
         android:id="@+id/ivLogo"
@@ -16,96 +17,105 @@
         tools:ignore="ImageContrastCheck"
         tools:srcCompat="@tools:sample/avatars" />
 
-    <TextView
-        android:id="@+id/tvName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/ivLogo"
-        app:layout_constraintTop_toTopOf="@+id/ivLogo"
-        tools:text="Nombre" />
-
-    <TextView
-        android:id="@+id/tvAddress"
+    <LinearLayout
+        android:id="@+id/llTextContainer"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:layout_marginEnd="16dp"
-        android:ellipsize="none"
-        android:maxLines="2"
-        android:textAllCaps="true"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/tv95Label"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ivLogo"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/tvName"
-        app:layout_constraintTop_toBottomOf="@+id/tvName"
-        tools:text="Direccion" />
-
-    <TextView
-        android:id="@+id/tv95Label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:textAllCaps="true"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/tv95"
-        app:layout_constraintStart_toEndOf="@+id/ivLogo"
-        app:layout_constraintTop_toBottomOf="@+id/tvAddress"
-        tools:text="LB 95" />
+        android:layout_marginEnd="16dp">
 
-    <TextView
-        android:id="@+id/tv95"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="2dp"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/tv95Label"
-        app:layout_constraintStart_toEndOf="@+id/tv95Label"
-        tools:text="Precio 95" />
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-    <TextView
-        android:id="@+id/tvDieselALabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:textAllCaps="true"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/lbGasoleoPriceUnits"
-        app:layout_constraintStart_toEndOf="@+id/lbGasoleoPriceUnits"
-        tools:text="LB Diesel" />
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="Nombre" />
 
-    <TextView
-        android:id="@+id/tvDieselA"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="2dp"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/tvDieselALabel"
-        app:layout_constraintStart_toEndOf="@+id/tvDieselALabel"
-        tools:text="Precio Diesel" />
+        <TextView
+            android:id="@+id/tvAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:ellipsize="none"
+            android:maxLines="2"
+            android:textAllCaps="true"
+            android:textSize="16sp"
+            tools:text="Direccion" />
 
-    <TextView
-        android:id="@+id/lbGasoleoPriceUnits"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="1dp"
-        android:text="@string/priceUds"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/tv95"
-        app:layout_constraintStart_toEndOf="@+id/tv95" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
 
-    <TextView
-        android:id="@+id/lbDieselPriceUnits"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="1dp"
-        android:text="@string/priceUds"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/tvDieselA"
-        app:layout_constraintStart_toEndOf="@+id/tvDieselA" />
+            <TextView
+                android:id="@+id/tv95Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAllCaps="true"
+                android:textSize="16sp"
+                tools:text="LB 95" />
+
+            <TextView
+                android:id="@+id/tv95"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:textSize="16sp"
+                tools:text="Precio 95" />
+
+            <TextView
+                android:id="@+id/lbGasoleoPriceUnits"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@string/priceUds"
+                android:textSize="16sp" />
+
+            <!-- Diesel -->
+            <TextView
+                android:id="@+id/tvDieselALabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textAllCaps="true"
+                android:textSize="16sp"
+                tools:text="LB Diesel" />
+
+            <TextView
+                android:id="@+id/tvDieselA"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:textSize="16sp"
+                tools:text="Precio Diesel" />
+
+            <TextView
+                android:id="@+id/lbDieselPriceUnits"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@string/priceUds"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

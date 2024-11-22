@@ -10,6 +10,7 @@ class Gasolinera {
     - String municipio
     - double gasoleoA
     - double gasolina95E5
+    + getLocation() : Location
 }
 
 class GasolinerasResponse {
@@ -54,7 +55,7 @@ class Filter {
     - priceFilter(Gasolinera): Boolean
 }
 
-class OrderByPrice{
+class SorterByPrice{
 - FuelTypeEnum fuelType
 - Boolean ascending
 
@@ -72,29 +73,15 @@ class InterestPoint {
     - Color color
     
     - inicializateData(String name, Color color, double latitude, double longitude, double radius)
-    + name, Color color, double latitude, double longitude, double radius)  : InterestPoint(String
-    + name, int colorArgb, double latitude, double longitude, double radius)  : InterestPoint(String
-    + name, String colorString, double latitude, double longitude, double radius)  : InterestPoint(String
-    + getId()  : int
-    + setId(int id)
-    + getName()  : String
-    + setName(String name)
-    + getColorArgb()  : int
-    + getLatitude()  : double
-    + setLatitude(double latitude)
-    + getLongitude()  : double
-    + setLongitude(double longitude)
-    + getRadius()  : double
-    + setRadius(double radius)
-    + getCreationDate()  : Date
-    + setCreationDate(Date creationDate)
-    + getColor() : Color
-    + setColor(Color color)
+    + getLocation() : Location
+    + getLocation(l: Location) : Location
+    + isGasStationInRadius(g: Gasoolinera) : boolean
+    + isGasStationInRadius(g: Gasoolinera, l: Location) : boolean
 }
 
 IFilter <|.. Filter
 
-Comparator <|-- OrderByPrice
+Comparator <|-- SorterByPrice
 
 GasolinerasResponse *-- "*" Gasolinera : gasolineras
 

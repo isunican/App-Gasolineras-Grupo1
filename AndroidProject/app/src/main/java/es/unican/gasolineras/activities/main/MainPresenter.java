@@ -2,7 +2,6 @@ package es.unican.gasolineras.activities.main;
 
 import android.database.sqlite.SQLiteException;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +19,7 @@ import es.unican.gasolineras.model.Filter;
 import es.unican.gasolineras.model.Gasolinera;
 import es.unican.gasolineras.model.IDCCAAs;
 import es.unican.gasolineras.model.InterestPoint;
-import es.unican.gasolineras.model.OrderByPrice;
+import es.unican.gasolineras.model.SorterByPrice;
 import es.unican.gasolineras.repository.ICallBack;
 import es.unican.gasolineras.repository.IGasolinerasRepository;
 import lombok.Getter;
@@ -52,6 +51,7 @@ public class MainPresenter implements IMainContract.Presenter {
     int staticSeekBarProgress;
     private static final int SCALING_FACTOR = 100;
 
+    private boolean hasConnection;
     public MainPresenter(InterestPoint point) {
         interestPoint = point;
     }
@@ -59,7 +59,7 @@ public class MainPresenter implements IMainContract.Presenter {
     public MainPresenter() { }
 
     // Orden by price:
-    private OrderByPrice orderByPrice = new OrderByPrice();
+    private SorterByPrice sorterByPrice = new SorterByPrice();
     /**
      * @see IMainContract.Presenter#init(IMainContract.View)
      * @param view the view to control
@@ -90,6 +90,10 @@ public class MainPresenter implements IMainContract.Presenter {
     public void onMenuInfoClicked() {
         view.showInfoActivity();
     }
+
+    /**
+     * @see IMainContract.Presenter#onPointsClicked()
+     */
 
     @Override
     public void onPointsClicked() {
@@ -373,10 +377,10 @@ public class MainPresenter implements IMainContract.Presenter {
      * @see IMainContract.Presenter#onOrderClicked()
      */
     public void onOrderClicked() {
-        if (orderByPrice.getFuelType() == null) {
+        if (sorterByPrice.getFuelType() == null) {
             view.showOrderPopUp(0, 0);
         } else {
-        view.showOrderPopUp((orderByPrice.getFuelType()).ordinal(), orderByPrice.getAscending() ? 0 : 1  );
+        view.showOrderPopUp((sorterByPrice.getFuelType()).ordinal(), sorterByPrice.getAscending() ? 0 : 1  );
 
         }
     }
@@ -385,7 +389,7 @@ public class MainPresenter implements IMainContract.Presenter {
      * @see IMainContract.Presenter#onFuelTypeSelected(FuelTypeEnum)
      */
     public void onFuelTypeSelected(FuelTypeEnum type) {
-        orderByPrice.setFuelType(type);
+        sorterByPrice.setFuelType(type);
     }
 
     /**
@@ -394,13 +398,13 @@ public class MainPresenter implements IMainContract.Presenter {
     public void onMethodOrderSelected(OrderMethodsEnum orderMethod) {
         switch (orderMethod) {
             case ASCENDING:
-                orderByPrice.setAscending(true);  // Asigna directamente si es ascendente
+                sorterByPrice.setAscending(true);  // Asigna directamente si es ascendente
                 break;
             case DESCENDING:
-                orderByPrice.setAscending(false); // Asigna directamente si es descendente
+                sorterByPrice.setAscending(false); // Asigna directamente si es descendente
                 break;
             default:
-                orderByPrice.setAscending(null); // Manejo de "sin orden"
+                sorterByPrice.setAscending(null); // Manejo de "sin orden"
                 break;
         }
     }
@@ -411,7 +415,7 @@ public class MainPresenter implements IMainContract.Presenter {
     @Override
     public void onOrderPopUpAcceptClicked() {
         // Llamar al método de carga que ya maneja la filtración y la ordenación
-        if (checkConflicts(filter, orderByPrice)) {
+        if (checkConflicts(filter, sorterByPrice)) {
             // Reestablecer el filtro a todos.
             filter.setFuelTypes(Arrays.asList(FuelTypeEnum.values()));
             view.showInfoMessage("Conflicto con filtro de Combustible, se ha restablecido el filtro.");
@@ -441,26 +445,18 @@ public class MainPresenter implements IMainContract.Presenter {
         view.closeActivePopUp();
     }
 
-    /**
-     * @see IMainContract.Presenter#setOrderByPrice(OrderByPrice o)
-     */
-    @Override
-    public void setOrderByPrice(OrderByPrice o) {
-        this.orderByPrice = o;
+    public void setSorterByPrice(SorterByPrice o) {
+        this.sorterByPrice = o;
     }
 
-    /**
-     * @see IMainContract.Presenter#getOrderByPrice()
-     */
-    @Override
-    public OrderByPrice getOrderByPrice() {
-        return orderByPrice;
+    public SorterByPrice getSorterByPrice() {
+        return sorterByPrice;
     }
 
 
     // Comprobar los conflictos de ordenación
-    private boolean checkConflicts(IFilter filter, OrderByPrice orderByPrice ) {
-        FuelTypeEnum fuelType = orderByPrice.getFuelType();
+    private boolean checkConflicts(IFilter filter, SorterByPrice sorterByPrice) {
+        FuelTypeEnum fuelType = sorterByPrice.getFuelType();
         return !filter.getFuelTypes().contains(fuelType);
     }
 
@@ -513,12 +509,12 @@ public class MainPresenter implements IMainContract.Presenter {
         return minPrice;
     }
 
-    @Override
+
     public IFilter getFilter() {
         return filter;
     }
 
-    @Override
+
     public List<Selection> getTempListSelection() {
         return tempListSelection;
     }
@@ -550,6 +546,7 @@ public class MainPresenter implements IMainContract.Presenter {
             @Override
             public void onSuccess(List<Gasolinera> stations) {
                 try {
+                    hasConnection = true;
                     persistGasStationsOnLocalDB(stations);
                 } catch (SQLiteException exception1) {
                     view.showInfoMessage("Error al guardar datos en la base de datos");
@@ -564,6 +561,7 @@ public class MainPresenter implements IMainContract.Presenter {
             @Override
             public void onFailure(Throwable e) {
                 try {
+                    hasConnection = false;
                     List<Gasolinera> stations = getGasStationsFromLocalDB();
                     initialiceGasStationsList(stations);
                     if (stations.isEmpty()) {
@@ -608,7 +606,7 @@ public class MainPresenter implements IMainContract.Presenter {
 
     private void applyOrder() {
         // Filter the gas stations
-        gasStations.sort(orderByPrice);
+        gasStations.sort(sorterByPrice);
     }
 
     private void showGasStations() {
@@ -620,7 +618,7 @@ public class MainPresenter implements IMainContract.Presenter {
             }else{
                 view.showLoadError();
             }
-        } else {
+        } else if (hasConnection) {
             view.showLoadCorrect(gasStations.size());
         }
     }
